@@ -7,7 +7,7 @@ namespace EaziLease.Models
         public string VIN {get; set;} = string.Empty; //Unique
         public string RegistrationNumber { get; set; } = string.Empty;
         public string Manufacturer { get; set; } = string.Empty; //e.g Toyota
-        public string ModelBuilder { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
         public int Year { get; set; }
         public string Color { get; set; } = string.Empty;
         public FuelType FuelType { get; set; }

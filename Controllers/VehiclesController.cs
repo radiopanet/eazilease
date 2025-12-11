@@ -140,5 +140,23 @@ namespace EaziLease.Controllers
             ViewBag.BranchId = new SelectList(_context.Branches.Where(b => !b.IsDeleted), "Id", "Name", vehicle.BranchId);
             return View(vehicle);
         }
+
+        //POST: Vehicles/Delete/1 (soft delete)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var vehicle = await _context.Vehicles.FindAsync(id);
+            if(vehicle != null && !vehicle.IsDeleted)
+            {
+                vehicle.IsDeleted = true;
+                vehicle.DeletedAt = DateTime.UtcNow;
+                vehicle.DeletedBy = User.Identity!.Name ?? "admin";
+                await _context.SaveChangesAsync();
+                TempData["success"] = "Vehicle moved to trash";
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

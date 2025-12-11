@@ -11,8 +11,6 @@
     <link rel="stylesheet" href="~/EaziLease.styles.css" asp-append-version="true" />
 </head>
 <body>
-@if(User.Identity?.IsAuthenticated == true){
-
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -21,7 +19,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -29,13 +27,17 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Vehicles" asp-action="Index">Vehicles</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Suppliers" asp-action="Index">Suppliers</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Branches" asp-action="Index">Branches</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Clients" asp-action="Index">Clients</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Drivers" asp-action="Index">Drivers</a></li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-}
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

@@ -7,7 +7,7 @@ namespace EaziLease.Data
     {
         private const string AdminEmail = "admin@eazilease.com";
         private const string AdminPassword = "Admin@123";
-        private const string AdminRole = "Role";
+        private const string AdminRole = "Admin";
 
         public static async Task Seed(IServiceProvider serviceProvider)
         {

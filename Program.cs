@@ -13,8 +13,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.FallbackPolicy = new AuthorizationPolicyBuilder()
+//     .RequireRole("Admin")
+//     .Build();
+// });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
@@ -22,29 +29,19 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
 
-    })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddRoles<IdentityRole>()
+  .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-    .RequireRole("Admin")
-    .Build();
-});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-
-    //Seed roles + admin user
-    using var scope = app.Services.CreateScope();
-    await IdentitySeedData.Seed(scope.ServiceProvider);
 }
 else
 {
@@ -52,7 +49,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseStaticFiles();
 // app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -67,6 +64,22 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        await IdentitySeedData.Seed(services);
+        Console.WriteLine("Admin user seeded successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Seeding failed: {ex.Message}");
+    }
+}
 
 app.Run();
 

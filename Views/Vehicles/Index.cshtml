@@ -1,0 +1,72 @@
+@model IEnumerable<EaziLease.Models.Vehicle>
+
+@{
+    ViewData["Title"] = "Vehicles";
+}
+
+<h1 class="h3 mb-4">Vehicles Management</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Vehicle</a>
+</p>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Reg #</th>
+                <th>Manufacturer & Model</th>
+                <th>Year</th>
+                <th>Branch</th>
+                <th>Supplier</th>
+                <th>Status</th>
+                <th>Current Driver</th>
+                <th>Current Client</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.RegistrationNumber)</td>
+                    <td>
+                        <strong>@item.Manufacturer</strong> @item.Model
+                    </td>
+                    <td>@item.Year</td>
+                    <td>@item.Branch?.Name</td>
+                    <td>@item.Supplier?.Name</td>
+                    <td>
+                        <span class="badge bg-@(item.Status switch {
+                            VehicleStatus.Available => "success",
+                            VehicleStatus.Leased => "primary",
+                            VehicleStatus.InMaintenance => "warning",
+                            VehicleStatus.OutOfService => "danger",
+                            _ => "secondary"
+                        })">
+                            @item.Status
+                        </span>
+                    </td>
+                    <td>@(item.CurrentDriver?.FullName ?? "—")</td>
+                    <td>@(item.CurrentLease?.Client?.CompanyName ?? "—")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" 
+                                    onclick="return confirm('Move to trash?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

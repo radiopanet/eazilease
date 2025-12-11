@@ -1,0 +1,34 @@
+@model EaziLease.Models.Vehicle
+
+<h2 class="h4">Vehicle Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Registration</dt>
+            <dd class="col-sm-9">@Model.RegistrationNumber</dd>
+
+            <dt class="col-sm-3">VIN</dt>
+            <dd class="col-sm-9">@Model.VIN</dd>
+
+            <dt class="col-sm-3">Make & Model</dt>
+            <dd class="col-sm-9"><strong>@Model.Manufacturer</strong> @Model.Model (@Model.Year)</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-@(Model.Status == VehicleStatus.Available ? "success" : "warning")">
+                    @Model.Status
+                </span>
+            </dd>
+
+            <dt class="col-sm-3">Current Driver</dt>
+            <dd class="col-sm-9">@(Model.CurrentDriver?.FullName ?? "Not assigned")</dd>
+
+            <dt class="col-sm-3">Current Client</dt>
+            <dd class="col-sm-9">@(Model.CurrentLease?.Client?.CompanyName ?? "Not leased")</dd>
+        </dl>
+
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

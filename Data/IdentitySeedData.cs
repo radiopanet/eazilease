@@ -1,0 +1,51 @@
+using EaziLease.Models;
+using Microsoft.AspNetCore.Identity;
+
+namespace EaziLease.Data
+{
+    public static class IdentitySeedData
+    {
+        private const string AdminEmail = "admin@eazilease.com";
+        private const string AdminPassword = "Admin@123";
+        private const string AdminRole = "Role";
+
+        public static async Task Seed(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+
+            //Create Admin Role
+            if(!await roleManager.RoleExistsAsync(AdminRole))
+            {
+                await roleManager.CreateAsync(new IdentityRole(AdminRole));
+            }
+
+            var adminUser = await userManager.FindByEmailAsync(AdminEmail);
+            if(adminUser == null)
+            {
+                adminUser = new ApplicationUser
+                {
+                    UserName = AdminEmail,
+                    Email = AdminEmail,
+                    FullName = "Administrator",
+                    EmailConfirmed = true
+                };
+
+                var createResult = await userManager.CreateAsync(adminUser, AdminPassword);
+                if (createResult.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(adminUser, AdminRole);
+                }
+            }
+            else
+            {
+                //Ensure existing user has admin roles
+                if(!await userManager.IsInRoleAsync(adminUser, AdminRole))
+                {
+                    await userManager.AddToRoleAsync(adminUser, AdminRole);
+                }
+            }
+        }
+    }
+}

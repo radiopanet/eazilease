@@ -1,5 +1,5 @@
 using EaziLease.Models.Entities;
-
+using System.ComponentModel.DataAnnotations.Schema;
 namespace EaziLease.Models
 {
     public class Vehicle: BaseEntity
@@ -32,6 +32,8 @@ namespace EaziLease.Models
 
         //Current Driver
         public string? CurrentDriverId { get; set; }
+        
+        [InverseProperty("CurrentVehicle")]
         public virtual Driver? CurrentDriver { get; set; }
 
         //History

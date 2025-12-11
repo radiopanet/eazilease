@@ -1,4 +1,6 @@
 using EaziLease.Models.Entities;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EaziLease.Models
 {
@@ -15,7 +17,10 @@ namespace EaziLease.Models
         public bool IsActive { get; set; } = true;
 
         // Current assignment (one driver → one vehicle at a time)
+
         public string? CurrentVehicleId { get; set; }
+        [ForeignKey(nameof(CurrentVehicleId))]
+        [InverseProperty("CurrentDriver")]
         public virtual Vehicle? CurrentVehicle { get; set; }
 
         // History

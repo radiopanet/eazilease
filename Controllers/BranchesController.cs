@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace EaziLease.Controllers
 {
     [Authorize]
-    public class BranchController : Controller
+    public class BranchesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public BranchController(ApplicationDbContext context) => _context = context;
+        public BranchesController(ApplicationDbContext context) => _context = context;
 
         public async Task<IActionResult> Index() =>
             View(await _context.Branches.Where(b => !b.IsDeleted).OrderBy(b => b.Name).ToListAsync());

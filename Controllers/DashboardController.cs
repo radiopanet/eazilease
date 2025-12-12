@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using EaziLease.Data;
 using EaziLease.Models;
-
+using EaziLease.Models.ViewModels;
 namespace EaziLease.Controllers
 {
     [Authorize]
@@ -55,21 +55,5 @@ namespace EaziLease.Controllers
 
             return View(report);
         }
-    }
-
-    // ViewModels (create folder Models/ViewModels if not exists)
-    public class ManufacturerReportViewModel
-    {
-        public string Manufacturer { get; set; } = string.Empty;
-        public int Total { get; set; }
-        public List<Breakdown> BySupplier { get; set; } = new();
-        public List<Breakdown> ByBranch { get; set; } = new();
-        public List<Breakdown> ByClient { get; set; } = new();
-    }
-
-    public class Breakdown
-    {
-        public string Name { get; set; } = string.Empty;
-        public int Count { get; set; }
     }
 }

@@ -46,10 +46,10 @@
                     <td>@item.Supplier?.Name</td>
                     <td>
                         <span class="badge bg-@(item.Status switch {
-                            VehicleStatus.Available => "success",
-                            VehicleStatus.Leased => "primary",
-                            VehicleStatus.InMaintenance => "warning",
-                            VehicleStatus.OutOfService => "danger",
+                            EaziLease.Models.VehicleStatus.Available => "success",
+                            EaziLease.Models.VehicleStatus.Leased => "primary",
+                            EaziLease.Models.VehicleStatus.InMaintenance => "warning",
+                            EaziLease.Models.VehicleStatus.OutOfService => "danger",
                             _ => "secondary"
                         })">
                             @item.Status

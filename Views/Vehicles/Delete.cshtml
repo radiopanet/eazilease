@@ -1,0 +1,57 @@
+@model EaziLease.Models.Vehicle
+
+@{
+    ViewData["Title"] = "Confirm Delete: " + Model.RegistrationNumber;
+}
+
+<h1 class="h3 mb-4 text-danger">Confirm Vehicle Deletion</h1>
+<hr />
+
+<div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> Warning!</h4>
+            <p>You are about to move the following vehicle to the trash. This action will mark the vehicle as deleted but preserve its data.</p>
+        </div>
+        
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="card p-4 shadow-sm">
+            
+            <dl class="row">
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RegistrationNumber)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.RegistrationNumber)</dd>
+                
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Manufacturer)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Manufacturer)</dd>
+                
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Model)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Model)</dd>
+                
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Year)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Year)</dd>
+                
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Branch)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Branch!.Name)</dd>
+                
+                <dt class="col-sm-4">Current Status</dt>
+                <dd class="col-sm-8">
+                    <span class="badge bg-@(Model.Status switch {
+                        VehicleStatus.Available => "success",
+                        VehicleStatus.Leased => "primary",
+                        VehicleStatus.InMaintenance => "warning",
+                        VehicleStatus.OutOfService => "danger",
+                        _ => "secondary"
+                    })">
+                        @Html.DisplayFor(model => model.Status)
+                    </span>
+                </dd>
+            </dl>
+            
+            <div class="d-flex justify-content-between pt-4 mt-3 border-top">
+                <button type="submit" class="btn btn-danger" style="width:180px;">
+                    <i class="bi bi-trash-fill"></i> Move to Trash
+                </button>
+                <a asp-action="Index" class="btn btn-secondary" style="width:180px;">Cancel and Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

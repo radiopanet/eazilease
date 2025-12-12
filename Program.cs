@@ -69,11 +69,13 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
     try
     {
         await IdentitySeedData.Seed(services);
         Console.WriteLine("Admin user seeded successfully.");
+        await SeedData.InitializeAsync(context);   // ← ADD THIS LINE
     }
     catch (Exception ex)
     {

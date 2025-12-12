@@ -1,6 +1,6 @@
-// Controllers/DashboardController.cs
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using EaziLease.Data;
 using EaziLease.Models;
 

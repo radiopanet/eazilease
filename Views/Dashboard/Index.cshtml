@@ -1,0 +1,142 @@
+@model List<EaziLease.Controllers.ManufacturerReportViewModel>
+
+@{
+    ViewData["Title"] = "Dashboard - Manufacturer Report";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="h2 mb-4 text-gray-800">EaziLease Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="row mb-5">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Vehicles</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalVehicles</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-car fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Available</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Available</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Leased</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Leased</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">In Maintenance</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.InMaintenance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manufacturer Report Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Vehicles by Manufacturer – Allocation Report</h6>
+            <span class="badge bg-success fs-6">Grand Total: @ViewBag.GrandTotal vehicles</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="manufacturerTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th rowspan="2" class="align-middle text-center">Manufacturer</th>
+                            <th rowspan="2" class="align-middle text-center">Total</th>
+                            <th colspan="100" class="text-center">Allocated To</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">Suppliers</th>
+                            <th class="text-center">Branches</th>
+                            <th class="text-center">Clients (Current)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="fw-bold">
+                                <td>@item.Manufacturer</td>
+                                <td class="text-center bg-light">@item.Total</td>
+                                <td colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    @foreach (var s in item.BySupplier.Take(5))
+                                    {
+                                        <span class="badge bg-secondary me-1 mb-1">@s.Name: @s.Count</span>
+                                    }
+                                    @if (item.BySupplier.Count > 5)
+                                    {
+                                        <small class="text-muted">+@(item.BySupplier.Count - 5) more</small>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var b in item.ByBranch.Take(5))
+                                    {
+                                        <span class="badge bg-info me-1 mb-1">@b.Name: @b.Count</span>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var c in item.ByClient)
+                                    {
+                                        if (c.Name != "Not Leased")
+                                        {
+                                            <span class="badge bg-success me-1 mb-1">@c.Name: @c.Count</span>
+                                        }
+                                    }
+                                    @if (item.ByClient.Any(c => c.Name == "Not Leased"))
+                                    {
+                                        <span class="badge bg-warning text-dark">Available: @item.ByClient.First(c => c.Name == "Not Leased").Count</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr><td colspan="5"><hr class="my-2"></td></tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-active fw-bold">
+                            <td>GRAND TOTAL</td>
+                            <td class="text-center">@ViewBag.GrandTotal</td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

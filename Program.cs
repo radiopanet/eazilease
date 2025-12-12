@@ -13,12 +13,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-    .RequireRole("Admin")
-    .Build();
-});
+
+//Removed by developer for real world simulation(public analytics <-> admin panel)
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.FallbackPolicy = new AuthorizationPolicyBuilder()
+//     .RequireRole("Admin")
+//     .Build();
+// });
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {

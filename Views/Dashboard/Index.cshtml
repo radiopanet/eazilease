@@ -22,7 +22,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -35,7 +34,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -48,7 +46,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
@@ -63,69 +60,70 @@
         </div>
     </div>
 
-    <!-- Manufacturer Report Table -->
+    <!-- Interactive Chart -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Vehicles by Manufacturer (Interactive Chart)</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="manufacturerChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Detailed Table (same as before, just cleaner) -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Vehicles by Manufacturer – Allocation Report</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Detailed Allocation Report</h6>
             <span class="badge bg-success fs-6">Grand Total: @ViewBag.GrandTotal vehicles</span>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="manufacturerTable">
+                <table class="table table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th rowspan="2" class="align-middle text-center">Manufacturer</th>
-                            <th rowspan="2" class="align-middle text-center">Total</th>
-                            <th colspan="100" class="text-center">Allocated To</th>
-                        </tr>
-                        <tr>
-                            <th class="text-center">Suppliers</th>
-                            <th class="text-center">Branches</th>
-                            <th class="text-center">Clients (Current)</th>
+                            <th>Manufacturer</th>
+                            <th>Total</th>
+                            <th>Suppliers</th>
+                            <th>Branches</th>
+                            <th>Current Clients</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr class="fw-bold">
+                            <tr class="table-light fw-bold">
                                 <td>@item.Manufacturer</td>
-                                <td class="text-center bg-light">@item.Total</td>
+                                <td class="text-center">@item.Total</td>
                                 <td colspan="3"></td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td>
-                                    @foreach (var s in item.BySupplier.Take(5))
+                                    @foreach (var s in item.BySupplier)
                                     {
                                         <span class="badge bg-secondary me-1 mb-1">@s.Name: @s.Count</span>
                                     }
-                                    @if (item.BySupplier.Count > 5)
-                                    {
-                                        <small class="text-muted">+@(item.BySupplier.Count - 5) more</small>
-                                    }
                                 </td>
                                 <td>
-                                    @foreach (var b in item.ByBranch.Take(5))
+                                    @foreach (var b in item.ByBranch)
                                     {
                                         <span class="badge bg-info me-1 mb-1">@b.Name: @b.Count</span>
                                     }
                                 </td>
                                 <td>
-                                    @foreach (var c in item.ByClient)
+                                    @foreach (var c in item.ByClient.Where(x => x.Name != "Not Leased"))
                                     {
-                                        if (c.Name != "Not Leased")
-                                        {
-                                            <span class="badge bg-success me-1 mb-1">@c.Name: @c.Count</span>
-                                        }
+                                        <span class="badge bg-success me-1 mb-1">@c.Name: @c.Count</span>
                                     }
-                                    @if (item.ByClient.Any(c => c.Name == "Not Leased"))
+                                    @if (item.ByClient.Any(x => x.Name == "Not Leased"))
                                     {
-                                        <span class="badge bg-warning text-dark">Available: @item.ByClient.First(c => c.Name == "Not Leased").Count</span>
+                                        var avail = item.ByClient.First(x => x.Name == "Not Leased").Count;
+                                        <span class="badge bg-warning text-dark">Available: @avail</span>
                                     }
                                 </td>
                             </tr>
-                            <tr><td colspan="5"><hr class="my-2"></td></tr>
+                            <tr><td colspan="5"><hr></td></tr>
                         }
                     </tbody>
                     <tfoot>
@@ -140,3 +138,57 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    const ctx = document.getElementById('manufacturerChart').getContext('2d');
+
+    const data = {
+        labels: [@Html.Raw(string.Join(",", Model.Select(m => $"'{m.Manufacturer}'")))],
+        datasets: [{
+            label: 'Number of Vehicles',
+            data: [@Html.Raw(string.Join(",", Model.Select(m => m.Total)))],
+            backgroundColor: [
+                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
+                '#e74a3b', '#858796', '#f8b739', '#5a5c69'
+            ],
+            borderColor: '#fff',
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            label += context.parsed.y;
+                            return label + ' vehicles';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+</script>
+}

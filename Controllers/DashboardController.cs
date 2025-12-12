@@ -6,7 +6,6 @@ using EaziLease.Models;
 using EaziLease.Models.ViewModels;
 namespace EaziLease.Controllers
 {
-    [Authorize]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,0 +1,15 @@
+@model VehicleAssignment
+<h4>Assign Driver to: @Model.Vehicle?.RegistrationNumber</h4>
+
+<form asp-action="AssignDriver" method="post">
+    <input type="hidden" asp-for="VehicleId" />
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label">Select Driver</label>
+        <select asp-for="DriverId" class="form-select" asp-items="ViewBag.DriverId"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Assign Driver</button>
+    <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary">Cancel</a>
+</form>

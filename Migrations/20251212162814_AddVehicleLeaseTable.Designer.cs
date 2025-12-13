@@ -3,6 +3,7 @@ using System;
 using EaziLease.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EaziLease.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251212162814_AddVehicleLeaseTable")]
+    partial class AddVehicleLeaseTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -514,11 +517,11 @@ namespace EaziLease.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("LeaseEndDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("LeaseEndDate")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("LeaseStartDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("LeaseStartDate")
+                        .HasColumnType("date");
 
                     b.Property<decimal>("MonthlyRate")
                         .HasColumnType("numeric");

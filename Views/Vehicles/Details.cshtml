@@ -73,6 +73,19 @@
                 </dl>
                 
             </div>
+            @if (Model.Status != VehicleStatus.Leased)
+{
+    <a asp-action="Lease" asp-route-id="@Model.Id" class="btn btn-success btn-sm">Lease to Client</a>
+}
+
+@if (Model.CurrentDriver == null)
+{
+    <a asp-action="AssignDriver" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Assign Driver</a>
+}
+else
+{
+    <span class="text-success">Driver: @Model.CurrentDriver.FullName</span>
+}
             <div class="card-footer text-end">
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>

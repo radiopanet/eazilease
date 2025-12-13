@@ -159,50 +159,101 @@ namespace EaziLease.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //GET: Vehicle/Lease/1
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Lease(string id)
-        {
-            var vehicle = _context.Vehicles
-                .Include(v => v.CurrentLease)
-                .FirstOrDefault(v => v.Id == id && !v.IsDeleted);
+        // GET: Vehicle/Lease/1
+[Authorize(Roles = "Admin")]
+public async Task<IActionResult> Lease(string id)
+{
+    var vehicle = await _context.Vehicles
+        .Include(v => v.CurrentLease)
+        .FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted);
 
-            if (vehicle == null) return NotFound();
-            if (vehicle.Status == VehicleStatus.Leased)
-                TempData["error"] = "Vehicle already leased!";
+    if (vehicle == null) return NotFound();
 
-            ViewBag.ClientId = new SelectList(_context.Clients.Where(c => !c.IsDeleted), "Id", "CompanyName");
-            return View(new VehicleLease { VehicleId = id, Vehicle = vehicle });
+    if (vehicle.Status == VehicleStatus.Leased)
+        TempData["error"] = "Vehicle already leased!";
 
-        }
+    ViewBag.ClientId = new SelectList(
+        _context.Clients.Where(c => !c.IsDeleted),
+        "Id", "CompanyName"
+    );
 
-        //POST: Vehicle/Lease/1
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Lease(VehicleLease lease)
-        {
-            if (ModelState.IsValid)
-            {
-                var vehicle = await _context.Vehicles.FindAsync(lease.VehicleId);
-                if (vehicle != null && vehicle.Status != VehicleStatus.Leased)
-                {
-                    vehicle.CurrentLeaseId = lease.Id; // will be set after save
-                    vehicle.Status = VehicleStatus.Leased;
-                    lease.Id = Guid.NewGuid().ToString();
-                    _context.VehicleLeases.Add(lease);
-                    await _context.SaveChangesAsync();
+    return View(new VehicleLease
+    {
+        VehicleId = id,
+        Vehicle = vehicle,
+        LeaseStartDate = DateTime.Today,
+        LeaseEndDate = DateTime.Today.AddMonths(1)
+    });
+}
 
-                    vehicle.CurrentLeaseId = lease.Id;
-                    await _context.SaveChangesAsync();
+// POST: Vehicle/Lease/1
+[HttpPost]
+[ValidateAntiForgeryToken]
+[Authorize(Roles = "Admin")]
+public async Task<IActionResult> Lease([Bind("VehicleId,ClientId,LeaseStartDate,LeaseEndDate,MonthlyRate")] VehicleLease lease)
+{
+    // Validate FK references
+    var vehicle = await _context.Vehicles.FindAsync(lease.VehicleId);
+    var client = await _context.Clients.FindAsync(lease.ClientId);
 
-                    TempData["success"] = $"Vehicle leased to {lease.Client.CompanyName}.";
-                    return RedirectToAction("Details", new { id = lease.VehicleId });
-                }
-            }
-            ViewBag.ClientId = new SelectList(_context.Clients, "Id", "CompanyName", lease.ClientId);
-            return View(lease);
-        }
+    if (vehicle == null)
+    {
+        ModelState.AddModelError("", "Vehicle not found.");
+        await ReloadFormData(lease);
+        return View(lease);
+    }
+
+    if (client == null)
+    {
+        ModelState.AddModelError("", "Client not found.");
+        await ReloadFormData(lease);
+        return View(lease);
+    }
+
+    if (vehicle.Status == VehicleStatus.Leased)
+    {
+        ModelState.AddModelError("", "This vehicle is already leased.");
+        await ReloadFormData(lease);
+        return View(lease);
+    }
+
+    if (!ModelState.IsValid)
+    {
+        await ReloadFormData(lease);
+        return View(lease);
+    }
+
+    // Save Lease
+    lease.Id = Guid.NewGuid().ToString();
+    lease.Vehicle = vehicle;
+    lease.Client = client;
+
+    _context.VehicleLeases.Add(lease);
+    await _context.SaveChangesAsync();
+
+    // Update Vehicle
+    vehicle.CurrentLeaseId = lease.Id;
+    vehicle.Status = VehicleStatus.Leased;
+
+    await _context.SaveChangesAsync();
+
+    TempData["success"] = $"Vehicle leased to {client.CompanyName}";
+    return RedirectToAction("Details", new { id = lease.VehicleId });
+}
+
+// Helper function
+private async Task ReloadFormData(VehicleLease lease)
+{
+    lease.Vehicle = await _context.Vehicles
+        .FirstOrDefaultAsync(v => v.Id == lease.VehicleId);
+
+    ViewBag.ClientId = new SelectList(
+        _context.Clients.Where(c => !c.IsDeleted),
+        "Id", "CompanyName",
+        lease.ClientId
+    );
+}
+
 
         // GET: Vehicles/AssignDriver/5
         [Authorize(Roles = "Admin")]
@@ -219,30 +270,47 @@ namespace EaziLease.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignDriver(VehicleAssignment assignment)
         {
+            var vehicle = await _context.Vehicles.FindAsync(assignment.VehicleId);
+            var driver = await _context.Drivers.FindAsync(assignment.DriverId);
+
+            if (vehicle == null)
+            {
+                ModelState.AddModelError("", "Vehicle not found.");
+                ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
+                return View(assignment);
+            }
+
+            if (driver == null || !driver.IsActive)
+            {
+                ModelState.AddModelError("", "Driver not found or inactive.");
+                ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
+                return View(assignment);
+            }
+
             if (ModelState.IsValid)
             {
-                var vehicle = await _context.Vehicles.FindAsync(assignment.VehicleId);
-                if (vehicle != null)
-                {
-                    // Close previous assignment if any
-                    var previous = await _context.VehicleAssignments
-                        .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.IsCurrent);
-                    if (previous != null) previous.ReturnedDate = DateOnly.FromDateTime(DateTime.Today);
+                // Close previous assignment
+                var previous = await _context.VehicleAssignments
+                    .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.IsCurrent);
+                if (previous != null)
+                    previous.ReturnedDate = DateOnly.FromDateTime(DateTime.Today);
 
-                    assignment.Id = Guid.NewGuid().ToString();
-                    assignment.AssignedDate = DateOnly.FromDateTime(DateTime.Today);
-                    _context.VehicleAssignments.Add(assignment);
+                assignment.Id = Guid.NewGuid().ToString();
+                assignment.Vehicle = vehicle;
+                assignment.Driver = driver;
 
-                    vehicle.CurrentDriverId = assignment.DriverId;
-                    await _context.SaveChangesAsync();
+                _context.VehicleAssignments.Add(assignment);
+                await _context.SaveChangesAsync();
 
-                    TempData["success"] = $"Driver {assignment.Driver.FullName} assigned";
-                    return RedirectToAction("Details", new { id = assignment.VehicleId });
-                }
+                vehicle.CurrentDriverId = driver.Id;
+                await _context.SaveChangesAsync();
+
+                TempData["success"] = $"Driver {driver.FullName} assigned";
+                return RedirectToAction("Details", new { id = assignment.VehicleId });
             }
+
             ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
             return View(assignment);
         }
-
     }
 }

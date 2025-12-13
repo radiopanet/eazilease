@@ -1,0 +1,31 @@
+@model VehicleLease
+
+<h4>Lease Vehicle: @Model.Vehicle?.RegistrationNumber</h4>
+
+<form asp-action="Lease" method="post">
+    <input type="hidden" asp-for="VehicleId" />
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label">Client</label>
+        <select asp-for="ClientId" class="form-select" asp-items="ViewBag.ClientId"></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LeaseStartDate" class="form-label">Start Date</label>
+        <input asp-for="LeaseStartDate" class="form-control" type="date" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LeaseEndDate" class="form-label">End Date</label>
+        <input asp-for="LeaseEndDate" class="form-control" type="date" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MonthlyRate" class="form-label">Monthly Rate (R)</label>
+        <input asp-for="MonthlyRate" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Lease Vehicle</button>
+    <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary">Cancel</a>
+</form>

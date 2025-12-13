@@ -5,10 +5,10 @@ namespace EaziLease.Models
     public class VehicleLease : BaseEntity
     {
         public string VehicleId { get; set; } = string.Empty;
-        public virtual Vehicle Vehicle { get; set; } = null!;
+        public virtual Vehicle? Vehicle { get; set; }
 
         public string ClientId { get; set; } = string.Empty;
-        public virtual Client Client { get; set; } = null!;
+        public virtual Client? Client { get; set; }
 
         // UPDATED: DateOnly → DateTime
         public DateTime LeaseStartDate { get; set; }

@@ -51,7 +51,7 @@
                     <dd class="col-sm-8">@Html.DisplayFor(model => model.Supplier!.Name)</dd>
 
                     <dt class="col-sm-4">Current Driver</dt>
-                    <dd class="col-sm-8">@(Model.CurrentDriver?.FullName ?? "N/A")</dd>
+                    <dd class="col-sm-8">@(Model.CurrentDrive.FullName ?? "N/A")</dd>
 
                     <dt class="col-sm-4">Current Client</dt>
                     <dd class="col-sm-8">@(Model.CurrentLease?.Client?.CompanyName ?? "N/A")</dd>

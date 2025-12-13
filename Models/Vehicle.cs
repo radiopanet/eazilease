@@ -22,7 +22,7 @@ namespace EaziLease.Models
 
         //Relationships
         public string SupplierId { get; set; } = string.Empty;
-        public virtual Supplier? Supplier { get; set; } = default!;
+        public virtual Supplier? Supplier { get; set; }
 
         public string BranchId { get; set; } = string.Empty;
 

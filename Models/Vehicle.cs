@@ -1,4 +1,5 @@
 using EaziLease.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace EaziLease.Models
 {
@@ -21,10 +22,11 @@ namespace EaziLease.Models
 
         //Relationships
         public string SupplierId { get; set; } = string.Empty;
-        public virtual Supplier Supplier { get; set; } = default!;
+        public virtual Supplier? Supplier { get; set; } = default!;
 
         public string BranchId { get; set; } = string.Empty;
-        public virtual Branch Branch { get; set; } = default!;
+
+        public virtual Branch? Branch { get; set; }
 
         //Current Lease (if any)
         public string? CurrentLeaseId { get; set; }
@@ -37,7 +39,7 @@ namespace EaziLease.Models
         public virtual Driver? CurrentDriver { get; set; }
 
         //History
-        public virtual ICollection<VehicleLease> LeaseHistory { get; set; } = default!;
-        public virtual ICollection<VehicleAssignment> AssignementHistory { get; set; } = default!;
+        public virtual ICollection<VehicleLease>? LeaseHistory { get; set; }
+        public virtual ICollection<VehicleAssignment>? AssignementHistory { get; set; }
     }
 }

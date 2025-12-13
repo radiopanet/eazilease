@@ -98,7 +98,13 @@ namespace EaziLease.Controllers
         public async Task<IActionResult> Edit(string id, Vehicle vehicle)
         {
             if (id != vehicle.Id) return NotFound();
-
+            foreach(var kvp in ModelState)
+            {
+                foreach(var err in kvp.Value.Errors)
+                {
+                    Console.WriteLine($"Property: {kvp.Key}, Error: {err.ErrorMessage}");
+                }
+            }
             if (ModelState.IsValid)
             {
                 try

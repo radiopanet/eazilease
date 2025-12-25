@@ -187,8 +187,8 @@ namespace EaziLease.Controllers
             {
                 VehicleId = id,
                 Vehicle = vehicle,
-                LeaseStartDate = DateTime.Today,
-                LeaseEndDate = DateTime.Today.AddMonths(1)
+                LeaseStartDate = DateTime.UtcNow.Date,
+                LeaseEndDate = DateTime.UtcNow.Date.AddMonths(1)
             });
         }
 
@@ -233,6 +233,7 @@ namespace EaziLease.Controllers
             lease.Id = Guid.NewGuid().ToString();
             lease.Vehicle = vehicle;
             lease.Client = client;
+            lease.LeaseStartDate = DateTime.UtcNow.Date;
 
             _context.VehicleLeases.Add(lease);
             await _context.SaveChangesAsync();
@@ -267,7 +268,8 @@ namespace EaziLease.Controllers
         {
             var vehicle = await _context.Vehicles.Include(v => v.CurrentDriver).FirstOrDefaultAsync(v => v.Id == id);
             ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive && !d.IsDeleted), "Id", "FullName");
-            return View(new VehicleAssignment { VehicleId = id });
+            return View(new VehicleAssignment { VehicleId = id,
+             Vehicle = vehicle });
         }
 
         // POST: Vehicles/AssignDriver/5
@@ -309,16 +311,18 @@ namespace EaziLease.Controllers
                             .ToListAsync()) // bring into memory since IsCurrent is a Computed Value
                             .FirstOrDefault(a => a.IsCurrent);
                 if (previous != null)
-                    previous.ReturnedDate = DateOnly.FromDateTime(DateTime.Today);
+                    previous.ReturnedDate = DateTime.UtcNow.Date;
 
                 assignment.Id = Guid.NewGuid().ToString();
                 assignment.Vehicle = vehicle;
                 assignment.Driver = driver;
+                assignment.AssignedDate = DateTime.UtcNow.Date;
 
                 _context.VehicleAssignments.Add(assignment);
                 await _context.SaveChangesAsync();
 
                 vehicle.CurrentDriverId = driver.Id;
+                vehicle.CurrentDriver = driver;
                 await _context.SaveChangesAsync();
 
                 TempData["success"] = $"Driver {driver.FullName} assigned";

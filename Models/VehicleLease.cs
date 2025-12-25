@@ -11,8 +11,8 @@ namespace EaziLease.Models
         public virtual Client? Client { get; set; }
 
         // UPDATED: DateOnly → DateTime
-        public DateTime LeaseStartDate { get; set; }
-        public DateTime LeaseEndDate { get; set; }
+        public DateTime LeaseStartDate { get; set; } = DateTime.UtcNow.Date;
+        public DateTime LeaseEndDate { get; set; } = DateTime.UtcNow.Date;
 
         public decimal MonthlyRate { get; set; }
 
@@ -20,7 +20,7 @@ namespace EaziLease.Models
             ((LeaseEndDate.Year - LeaseStartDate.Year) * 12) +
             (LeaseEndDate.Month - LeaseStartDate.Month);
 
-        public bool IsActive => DateTime.Today <= LeaseEndDate;
+        public bool IsActive => DateTime.UtcNow.Date <= LeaseEndDate;
 
         public decimal? ReturnOdometer { get; set; }
         public string? ReturnConditionNotes { get; set; }

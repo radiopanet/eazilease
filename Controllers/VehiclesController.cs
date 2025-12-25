@@ -345,5 +345,60 @@ namespace EaziLease.Controllers
             ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
             return View(assignment);
         }
+
+        //GET: Vehicles/EndLease/1
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EndLease(string id)
+        {
+            var vehicle = await _context.Vehicles
+                    .Include(v => v.CurrentLease)
+                    .ThenInclude(l => l!.Client)
+                    .FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted);
+
+            if (vehicle == null) return NotFound();
+
+            if (vehicle.CurrentLease == null)
+            {
+                TempData["error"] = "This vehicle is not currently leased.";
+                return RedirectToAction("Details", new {id});
+            }
+
+            return View(vehicle);
+        }
+
+        //POST: Vehicles/EndLease/1
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> EndLease(string id, DateTime returnDate, int? finalOdometerReading,
+                         string? returnNotes, decimal? penaltyFee)
+        {
+            
+            returnDate = DateTime.SpecifyKind(
+            DateTime.UtcNow.Date, DateTimeKind.Utc);
+            
+            var vehicle = await _context.Vehicles
+                .Include(v => v.CurrentLease)
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            if(vehicle == null || vehicle.CurrentLease == null)
+                return NotFound();
+
+            //Update the lease record   
+            vehicle.CurrentLease.ReturnDate = returnDate;
+            vehicle.CurrentLease.ReturnOdometer = finalOdometerReading;
+            vehicle.CurrentLease.ReturnConditionNotes = returnNotes;
+            vehicle.CurrentLease.PenaltyFee = penaltyFee;
+
+            //clear current lease reference
+            vehicle.CurrentLeaseId = null;
+            vehicle.Status = VehicleStatus.Available;  // or ask for new status
+
+            await _context.SaveChangesAsync();
+            TempData["success"] = "Lease ended successfully. Vehicle is now available.";
+            return RedirectToAction("Details", new {id});
+
+
+        }
     }
 }

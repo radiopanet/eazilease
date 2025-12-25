@@ -86,6 +86,12 @@ else
 {
     <span class="text-success">Driver: @Model.CurrentDriver.FullName</span>
 }
+@if (Model.CurrentLease != null)
+{
+    <a asp-action="EndLease" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mt-2">
+        End Lease / Return Vehicle
+    </a>
+}
             <div class="card-footer text-end">
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>

@@ -27,6 +27,9 @@ namespace EaziLease.Models
 
         public bool IsActive => DateTime.UtcNow.Date <= LeaseEndDate.Date;
 
+        public DateTime? ReturnDate {get; set;}
+        public decimal? PenaltyFee {get; set;}
+
         public decimal? ReturnOdometer { get; set; }
         public string? ReturnConditionNotes { get; set; }
     }

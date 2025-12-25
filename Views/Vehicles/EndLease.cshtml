@@ -1,0 +1,38 @@
+@model EaziLease.Models.Vehicle
+
+<h4>End Lease / Return Vehicle: @Model.RegistrationNumber</h4>
+<p class="text-muted mb-4">
+    Currently leased to: <strong>@Model.CurrentLease?.Client?.CompanyName</strong><br />
+    Lease period: @Model.CurrentLease?.LeaseStartDate to @Model.CurrentLease?.LeaseEndDate
+</p>
+
+<form asp-action="EndLease" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Return Date</label>
+            <input type="date" name="returnDate" class="form-control" value="@DateOnly.FromDateTime(DateTime.Today)" required />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Final Odometer Reading (km)</label>
+            <input type="number" name="finalOdometer" class="form-control" min="0" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Return Condition Notes</label>
+            <textarea name="returnNotes" class="form-control" rows="3" placeholder="Any damage, scratches, fuel level, etc..."></textarea>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Penalty Fee (R) - optional</label>
+            <input type="number" name="penaltyFee" class="form-control" step="0.01" min="0" />
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-danger">Confirm Return & End Lease</button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+</form>

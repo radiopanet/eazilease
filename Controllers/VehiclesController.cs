@@ -196,7 +196,7 @@ namespace EaziLease.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Lease([Bind("VehicleId,ClientId,LeaseStartDate,LeaseEndDate,MonthlyRate")] VehicleLease lease)
+        public async Task<IActionResult> Lease(VehicleLease lease)
         {
             // Validate FK references
             var vehicle = await _context.Vehicles.FindAsync(lease.VehicleId);

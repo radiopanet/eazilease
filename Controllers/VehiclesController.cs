@@ -198,6 +198,11 @@ namespace EaziLease.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Lease(VehicleLease lease)
         {
+            lease.LeaseStartDate = DateTime.SpecifyKind(
+            lease.LeaseStartDate.Date, DateTimeKind.Utc);
+
+            lease.LeaseEndDate = DateTime.SpecifyKind(
+                lease.LeaseEndDate.Date, DateTimeKind.Utc);
             // Validate FK references
             var vehicle = await _context.Vehicles.FindAsync(lease.VehicleId);
             var client = await _context.Clients.FindAsync(lease.ClientId);

@@ -11,14 +11,13 @@ namespace EaziLease.Models
         public string ClientId { get; set; } = string.Empty;
         public virtual Client? Client { get; set; }
 
-        // UPDATED: DateOnly → DateTime
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime LeaseStartDate { get; set; } = DateTime.UtcNow.Date;
+       
+        public DateTime LeaseStartDate { get; set; } = 
+            DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
 
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime LeaseEndDate { get; set; } = DateTime.UtcNow.Date;
+
+        public DateTime LeaseEndDate { get; set; } = 
+            DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
 
         public decimal MonthlyRate { get; set; }
 

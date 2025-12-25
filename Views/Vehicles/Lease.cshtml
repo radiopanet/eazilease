@@ -13,12 +13,12 @@
 
     <div class="mb-3">
         <label asp-for="LeaseStartDate" class="form-label">Start Date</label>
-        <input asp-for="LeaseStartDate" class="form-control" type="date" />
+        <input asp-for="LeaseStartDate" class="form-control" type="date" value="@Model.LeaseStartDate.ToString("yyyy-MM-dd")" />
     </div>
 
     <div class="mb-3">
         <label asp-for="LeaseEndDate" class="form-label">End Date</label>
-        <input asp-for="LeaseEndDate" class="form-control" type="date" />
+        <input asp-for="LeaseEndDate" class="form-control" type="date" value="@Model.LeaseEndDate.ToString("yyyy-MM-dd")" />
     </div>
 
     <div class="mb-3">

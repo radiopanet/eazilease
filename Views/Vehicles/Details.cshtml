@@ -92,6 +92,12 @@ else
         End Lease / Return Vehicle
     </a>
 }
+@if (Model.CurrentDriver != null)
+{
+    <a asp-action="ReturnDriver" asp-route-id="@Model.Id" class="btn btn-warning btn-sm mt-2">
+        Return Driver
+    </a>
+}
             <div class="card-footer text-end">
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>

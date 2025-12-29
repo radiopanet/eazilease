@@ -1,15 +1,44 @@
 @model VehicleAssignment
-<h4>Assign Driver to: @Model.Vehicle?.RegistrationNumber</h4>
+@{
+    var busyDrivers = ViewBag.BusyDrivers as List<EaziLease.Models.Driver>;
+    var vehicle = ViewBag.Vehicle as EaziLease.Models.Vehicle;
+}
+
+<h4>Assign Driver to: <strong>@vehicle?.RegistrationNumber</strong></h4>
+
+@if (busyDrivers != null && busyDrivers.Any())
+{
+    <div class="alert alert-warning">
+        <h6><i class="bi bi-exclamation-triangle"></i> Busy Drivers</h6>
+        <small>
+            These drivers are currently assigned to other vehicles:
+            @foreach (var driver in busyDrivers.Take(3))
+            {
+                <span class="badge bg-warning text-dark me-1">@driver.FullName → @driver.CurrentVehicle?.RegistrationNumber</span>
+            }
+            @if (busyDrivers.Count > 3)
+            {
+                <span>+@(busyDrivers.Count - 3) more</span>
+            }
+        </small>
+    </div>
+}
 
 <form asp-action="AssignDriver" method="post">
     <input type="hidden" asp-for="VehicleId" />
-    @* <input type="hidden" asp-for="Id" /> *@
-
+    
     <div class="mb-3">
-        <label class="form-label">Select Driver</label>
-        <select asp-for="DriverId" class="form-select" asp-items="ViewBag.DriverId"></select>
+        <label class="form-label">Select Available Driver <span class="text-danger">*</span></label>
+        <select asp-for="DriverId" class="form-select" required>
+            <option value="">Choose a driver...</option>
+            @foreach (var driver in (SelectList)ViewBag.DriverId)
+            {
+                <option value="@driver.Value">@driver.Text</option>
+            }
+        </select>
+        <div asp-validation-for="DriverId" class="text-danger"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Assign Driver</button>
-    <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary">Cancel</a>
+    <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary ms-2">Cancel</a>
 </form>

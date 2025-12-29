@@ -25,5 +25,6 @@ namespace EaziLease.Models
 
         // History
         public virtual ICollection<VehicleAssignment> AssignmentHistory { get; set; } = default!;
+        public bool IsCurrentlyAssigned => !string.IsNullOrEmpty(CurrentVehicleId);
     }
 }

@@ -100,7 +100,7 @@ namespace EaziLease.Controllers
         public async Task<IActionResult> Edit(string id, Vehicle vehicle)
         {
             if (id != vehicle.Id) return NotFound();
-           
+
             if (ModelState.IsValid)
             {
                 try
@@ -327,13 +327,31 @@ namespace EaziLease.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignDriver(string id)
         {
-            var vehicle = await _context.Vehicles.Include(v => v.CurrentDriver).FirstOrDefaultAsync(v => v.Id == id);
-            ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive && !d.IsDeleted), "Id", "FullName");
-            return View(new VehicleAssignment
-            {
-                VehicleId = id,
-                Vehicle = vehicle
-            });
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
+
+            // Get available drivers (not currently assigned)
+            var availableDrivers = await _context.Drivers
+                .Where(d => d.IsActive && !d.IsDeleted && string.IsNullOrEmpty(d.CurrentVehicleId))
+                .OrderBy(d => d.LastName)
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id,
+                    Text = d.FullName
+                })
+                .ToListAsync();
+
+            // Get busy drivers (for warning display)
+            var busyDrivers = await _context.Drivers
+                .Where(d => d.IsActive && !d.IsDeleted && !string.IsNullOrEmpty(d.CurrentVehicleId))
+                .Include(d => d.CurrentVehicle)
+                .OrderBy(d => d.LastName)
+                .ToListAsync();
+
+            ViewBag.DriverId = new SelectList(availableDrivers, "Value", "Text");
+            ViewBag.BusyDrivers = busyDrivers;  // For warning display
+            ViewBag.Vehicle = vehicle;
+
+            return View(new VehicleAssignment { VehicleId = id });
         }
 
         // POST: Vehicles/AssignDriver/5
@@ -348,49 +366,72 @@ namespace EaziLease.Controllers
             if (vehicle == null)
             {
                 ModelState.AddModelError("", "Vehicle not found.");
-                ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
+                await LoadDriverDropdowns(); // helper method
                 return View(assignment);
             }
 
             if (driver == null || !driver.IsActive)
             {
                 ModelState.AddModelError("", "Driver not found or inactive.");
-                ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
+                await LoadDriverDropdowns();
+                return View(assignment);
+            }
+
+            // **CRITICAL: Check if driver is already assigned elsewhere**
+            if (!string.IsNullOrEmpty(driver.CurrentVehicleId))
+            {
+                ModelState.AddModelError("",
+                    $"Driver {driver.FullName} is already assigned to vehicle {driver.CurrentVehicle?.RegistrationNumber} " +
+                    $"(Reg: {driver.CurrentVehicle?.RegistrationNumber}). Please return them first.");
+                await LoadDriverDropdowns();
                 return View(assignment);
             }
 
             if (ModelState.IsValid)
             {
-
+                // Close previous assignment for THIS vehicle
                 var previous = await _context.VehicleAssignments
                     .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);
 
                 if (previous != null)
                 {
-                    previous.ReturnedDate = DateTime.UtcNow.Date;
+                    previous.ReturnedDate = DateTime.SpecifyKind(
+                        DateTime.UtcNow.Date, DateTimeKind.Utc);
                 }
 
-                // CREATE NEW ASSIGNMENT - MUST BE NULL
+                // Create new assignment
                 assignment.Id = Guid.NewGuid().ToString();
                 assignment.Vehicle = vehicle;
                 assignment.Driver = driver;
-                assignment.AssignedDate = DateTime.UtcNow.Date;
+                assignment.AssignedDate = DateTime.SpecifyKind(
+                        DateTime.UtcNow.Date, DateTimeKind.Utc);
                 assignment.ReturnedDate = null;
 
                 _context.VehicleAssignments.Add(assignment);
                 await _context.SaveChangesAsync();
 
+                // Update BOTH vehicle and driver references
                 vehicle.CurrentDriverId = driver.Id;
-                vehicle.CurrentDriver = driver;
+                driver.CurrentVehicleId = vehicle.Id;  // ← THIS IS KEY
 
                 await _context.SaveChangesAsync();
 
-                TempData["success"] = $"Driver {driver.FullName} assigned successfully";
+                TempData["success"] = $"Driver {driver.FullName} assigned to {vehicle.RegistrationNumber}";
                 return RedirectToAction("Details", new { id = assignment.VehicleId });
             }
 
-            ViewBag.DriverId = new SelectList(_context.Drivers.Where(d => d.IsActive), "Id", "FullName", assignment.DriverId);
+            await LoadDriverDropdowns();
             return View(assignment);
+        }
+
+        // Helper method to reload dropdowns
+        private async Task LoadDriverDropdowns()
+        {
+            ViewBag.DriverId = new SelectList(
+                await _context.Drivers.Where(d => d.IsActive && !d.IsDeleted).OrderBy(d => d.LastName)
+                    .Select(d => new SelectListItem { Value = d.Id, Text = d.FullName })
+                    .ToListAsync(),
+                "Value", "Text", null);
         }
 
 
@@ -402,17 +443,6 @@ namespace EaziLease.Controllers
                     .Include(v => v.CurrentDriver)
                     .FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted);
 
-
-            // var allAssignments = await _context.VehicleAssignments
-            //     .Where(a => a.VehicleId == id)
-            //     .ToListAsync();
-
-            // var debugInfo = allAssignments.Any()
-            //     ? $"Found {allAssignments.Count} assignments. Current ones: {allAssignments.Count(a => a.ReturnedDate == null)}"
-            //     : "No assignments exist for this vehicle at all";
-
-            // ViewBag.DebugAssignments = debugInfo;  // Show in view        
-
             if (vehicle == null) return NotFound();
             if (vehicle.CurrentDriver == null)
             {
@@ -421,53 +451,6 @@ namespace EaziLease.Controllers
             }
             return View(vehicle);
         }
-
-        //POST: Vehicles/ReturnDriver/1
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // [Authorize(Roles = "Admin")]
-        // public async Task<IActionResult> ReturnDriver(string id, DateTime? returnDate = null)
-        // {
-        //     var vehicle = await _context.Vehicles
-        //         .Include(v => v.CurrentDriver) 
-        //         .FirstOrDefaultAsync(v => v.Id == id);
-
-        //     if (vehicle == null)
-        //         return NotFound();
-
-        //     // Find the CURRENT assignment (ReturnedDate == null)
-        //     var currentAssignment = await _context.VehicleAssignments
-        //         .Include(a => a.Driver)
-        //         .FirstOrDefaultAsync(a => a.VehicleId == id && a.ReturnedDate == null);
-
-        //     if (currentAssignment == null)
-        //     {
-        //         TempData["info"] = "No active driver assignment found to return.";
-        //         return RedirectToAction("Details", new { id });
-        //     }
-
-        //     var driverName = currentAssignment.Driver?.FullName ?? "unknown";
-
-        //     // Update the assignment
-        //     currentAssignment.ReturnedDate = returnDate ?? DateTime.UtcNow.Date;
-
-        //     // IMPORTANT: Clear the current driver reference on the vehicle
-        //     vehicle.CurrentDriverId = null;
-        //     vehicle.CurrentDriver = null; 
-
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //         TempData["success"] = $"Driver {currentAssignment.Driver?.FullName ?? "unknown"} has been successfully returned.";
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         TempData["error"] = $"Failed to return driver: {ex.Message}";
-        //         // Log ex if you have logging
-        //     }
-
-        //     return RedirectToAction("Details", new { id });
-        // }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -499,7 +482,7 @@ namespace EaziLease.Controllers
             if (vehicle == null)
                 return NotFound();
 
-           
+
             // Clear the current driver reference
             vehicle.CurrentDriverId = null;
             vehicle.CurrentDriver = null;

@@ -21,6 +21,12 @@ namespace EaziLease.Data
                 await roleManager.CreateAsync(new IdentityRole(AdminRole));
             }
 
+            const string SuperCandidateRole = "SuperAdminCandidate";
+            if(!await roleManager.RoleExistsAsync(SuperCandidateRole))
+                await roleManager.CreateAsync(new IdentityRole(SuperCandidateRole));
+
+
+
             var adminUser = await userManager.FindByEmailAsync(AdminEmail);
             if(adminUser == null)
             {
@@ -37,6 +43,8 @@ namespace EaziLease.Data
                 {
                     await userManager.AddToRoleAsync(adminUser, AdminRole);
                 }
+
+                
             }
             else
             {
@@ -45,6 +53,8 @@ namespace EaziLease.Data
                 {
                     await userManager.AddToRoleAsync(adminUser, AdminRole);
                 }
+                if (!await userManager.IsInRoleAsync(adminUser, SuperCandidateRole))
+                    await userManager.AddToRoleAsync(adminUser, SuperCandidateRole);
             }
         }
     }

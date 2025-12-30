@@ -11,6 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     //Add Models
+    public DbSet<AuditLogs> AuditLogs => Set<AuditLogs>();
     public DbSet<Supplier> Suppliers => Set<Supplier>();
     public DbSet<Branch> Branches => Set<Branch>();
     public DbSet<Client> Clients => Set<Client>();

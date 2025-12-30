@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using EaziLease.Data;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using EaziLease.Services;
 
 namespace EaziLease.Controllers
 {
@@ -12,10 +13,12 @@ namespace EaziLease.Controllers
     public class VehiclesController : Controller
     {
         public readonly ApplicationDbContext _context;
+        public readonly AuditService _auditService;
 
-        public VehiclesController(ApplicationDbContext context)
+        public VehiclesController(ApplicationDbContext context, AuditService auditService)
         {
             _context = context;
+            _auditService = auditService;
         }
 
         //GET: Vehicles
@@ -70,6 +73,8 @@ namespace EaziLease.Controllers
                 vehicle.CreatedBy = User.Identity!.Name ?? "admin";
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
+
+                await _auditService.LogAsync("Vehicle", vehicle.Id, "Created", $"New Vehicle {vehicle.RegistrationNumber} added.");
                 TempData["success"] = "Vehicle added successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -155,6 +160,8 @@ namespace EaziLease.Controllers
                 vehicle.DeletedAt = DateTime.UtcNow;
                 vehicle.DeletedBy = User.Identity!.Name ?? "admin";
                 await _context.SaveChangesAsync();
+
+                await _auditService.LogAsync("Vehicle", vehicle.Id, "Deleted", $"Vehicle {vehicle.RegistrationNumber} deleted.");
                 TempData["success"] = "Vehicle moved to trash";
 
             }
@@ -250,6 +257,9 @@ namespace EaziLease.Controllers
 
             await _context.SaveChangesAsync();
 
+            await _auditService.LogAsync("Lease", lease.Id, "LeaseStarted",
+                    $"Vehicle {lease.Vehicle?.RegistrationNumber} leased to {lease.Client?.CompanyName}");
+
             TempData["success"] = $"Vehicle leased to {client.CompanyName}";
             return RedirectToAction("Details", new { id = lease.VehicleId });
         }
@@ -303,6 +313,8 @@ namespace EaziLease.Controllers
             vehicle.Status = VehicleStatus.Available;  // or ask for new status
 
             await _context.SaveChangesAsync();
+
+            await _auditService.LogAsync("Lease", vehicle.CurrentLease.Id, "LeaseEnded", $"Vehicle {vehicle.RegistrationNumber} lease has ended.");
             TempData["success"] = "Lease ended successfully. Vehicle is now available.";
             return RedirectToAction("Details", new { id });
 

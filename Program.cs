@@ -4,6 +4,7 @@ using EaziLease.Data;
 using Npgsql.EntityFrameworkCore;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Authorization;
+using EaziLease.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuditService>();
 
 //Removed by developer for real world simulation(public analytics <-> admin panel)
 // builder.Services.AddAuthorization(options =>

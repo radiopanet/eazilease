@@ -1,7 +1,7 @@
 using EaziLease.Models.Entities;
 
 namespace EaziLease.Models;
-public class AuditLog: BaseEntity
+public class AuditLogs: BaseEntity
 {
     public string EntityType {get; set;} = string.Empty; //e.g Vehicle, Supplier
     public string EntityId {get; set;} = string.Empty;

@@ -314,6 +314,7 @@ namespace EaziLease.Controllers
             vehicle.Status = VehicleStatus.Available;  // or ask for new status
 
             await _context.SaveChangesAsync();
+            await _auditService.LogAsync("Vehicle", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
 
             await _auditService.LogAsync("Lease", vehicle.CurrentLease.Id, "LeaseEnded", $"Vehicle {vehicle.RegistrationNumber} lease has ended.");
             TempData["success"] = "Lease ended successfully. Vehicle is now available.";
@@ -428,6 +429,9 @@ namespace EaziLease.Controllers
                 driver.CurrentVehicleId = vehicle.Id;
 
                 await _context.SaveChangesAsync();
+                await _auditService.LogAsync("Driver", driver.Id, "AssignDriver",
+                        $"Driver {driver.FullName } has been assigned to ${vehicle.RegistrationNumber}" + 
+                        $"by {assignment.CreatedBy}");
 
                 TempData["success"] = $"Driver {driver.FullName} assigned to {vehicle.RegistrationNumber}";
                 return RedirectToAction("Details", new { id = assignment.VehicleId });
@@ -503,6 +507,8 @@ namespace EaziLease.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await _auditService.LogAsync("Driver", id,
+                    "ReturnDriver", $"Driver {vehicle?.CurrentDriver?.FullName} has been returned successfully.");
                 TempData["success"] = $"Driver {driverName} has been successfully returned.";
             }
             catch (Exception ex)
@@ -529,14 +535,6 @@ namespace EaziLease.Controllers
             if (vehicle == null) return NotFound();
             maintenance.ServiceDate = DateTime.SpecifyKind(
             DateTime.UtcNow.Date, DateTimeKind.Utc);
-
-            foreach(var kvp in ModelState)
-            {
-                foreach(var err in kvp.Value.Errors)
-                {
-                    Console.WriteLine($"Property {kvp.Key} with value {kvp.Value} gave the error {err.ErrorMessage}");
-                }
-            }
 
             if (ModelState.IsValid)
             {

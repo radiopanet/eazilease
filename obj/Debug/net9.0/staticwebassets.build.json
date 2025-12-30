@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "pIE2tvRrPhpHv0KvWIPYC2n1cMvqVtz8Cre5bmeg2WU=",
+  "Hash": "iXX4HbxfdNEYEsaTuGwcTyti7GIhOHyIzrV3UW2pbrw=",
   "Source": "EaziLease",
   "BasePath": "_content/EaziLease",
   "Mode": "Default",
@@ -2180,12 +2180,12 @@
       "OriginalItemSpec": "/home/tx/Projects/DotNet/EaziLease/wwwroot/js/site.js"
     },
     {
-      "Identity": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-1tz890859p.gz",
+      "Identity": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz",
       "SourceId": "EaziLease",
       "SourceType": "Computed",
       "ContentRoot": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/EaziLease",
-      "RelativePath": "EaziLease#[.{fingerprint=1tz890859p}]!.bundle.scp.css.gz",
+      "RelativePath": "EaziLease#[.{fingerprint=pptyjsojxs}]!.bundle.scp.css.gz",
       "AssetKind": "All",
       "AssetMode": "Reference",
       "AssetRole": "Alternative",
@@ -2194,8 +2194,8 @@
       "RelatedAsset": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/projectbundle/EaziLease.bundle.scp.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "g5amcfii8a",
-      "Integrity": "5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=",
+      "Fingerprint": "mhb8t9rppq",
+      "Integrity": "Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/projectbundle/EaziLease.bundle.scp.css"
@@ -3272,12 +3272,12 @@
       "OriginalItemSpec": "/home/tx/.nuget/packages/microsoft.aspnetcore.identity.ui/9.0.11/staticwebassets/V5/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Identity": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-1tz890859p.gz",
+      "Identity": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz",
       "SourceId": "EaziLease",
       "SourceType": "Computed",
       "ContentRoot": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/EaziLease",
-      "RelativePath": "EaziLease#[.{fingerprint=1tz890859p}]?.styles.css.gz",
+      "RelativePath": "EaziLease#[.{fingerprint=pptyjsojxs}]?.styles.css.gz",
       "AssetKind": "All",
       "AssetMode": "CurrentProject",
       "AssetRole": "Alternative",
@@ -3286,8 +3286,8 @@
       "RelatedAsset": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/bundle/EaziLease.styles.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "g5amcfii8a",
-      "Integrity": "5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=",
+      "Fingerprint": "mhb8t9rppq",
+      "Integrity": "Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/bundle/EaziLease.styles.css"
@@ -4063,8 +4063,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ApplicationBundle",
-      "Fingerprint": "1tz890859p",
-      "Integrity": "RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=",
+      "Fingerprint": "pptyjsojxs",
+      "Integrity": "ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/bundle/EaziLease.styles.css"
@@ -4084,8 +4084,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ProjectBundle",
-      "Fingerprint": "1tz890859p",
-      "Integrity": "RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=",
+      "Fingerprint": "pptyjsojxs",
+      "Integrity": "ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/projectbundle/EaziLease.bundle.scp.css"
@@ -6075,13 +6075,13 @@
       ]
     },
     {
-      "Route": "EaziLease.1tz890859p.bundle.scp.css",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-1tz890859p.gz",
+      "Route": "EaziLease.bundle.scp.css",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001872659176"
+          "Quality": "0.001623376623"
         }
       ],
       "ResponseHeaders": [
@@ -6091,19 +6091,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "533"
+          "Value": "615"
         },
         {
           "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Encoding",
@@ -6119,26 +6119,18 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
+          "Value": "W/\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
         }
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "1tz890859p"
-        },
-        {
-          "Name": "label",
-          "Value": "EaziLease.bundle.scp.css"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
         }
       ]
     },
     {
-      "Route": "EaziLease.1tz890859p.bundle.scp.css",
+      "Route": "EaziLease.bundle.scp.css",
       "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/projectbundle/EaziLease.bundle.scp.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -6148,7 +6140,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1078"
+          "Value": "2173"
         },
         {
           "Name": "Content-Type",
@@ -6156,11 +6148,156 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
+          "Value": "\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
+        }
+      ]
+    },
+    {
+      "Route": "EaziLease.bundle.scp.css.gz",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "615"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4="
+        }
+      ]
+    },
+    {
+      "Route": "EaziLease.pptyjsojxs.bundle.scp.css",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001623376623"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "615"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "pptyjsojxs"
+        },
+        {
+          "Name": "label",
+          "Value": "EaziLease.bundle.scp.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
+        }
+      ]
+    },
+    {
+      "Route": "EaziLease.pptyjsojxs.bundle.scp.css",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/projectbundle/EaziLease.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2173"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6170,7 +6307,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1tz890859p"
+          "Value": "pptyjsojxs"
         },
         {
           "Name": "label",
@@ -6178,13 +6315,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
         }
       ]
     },
     {
-      "Route": "EaziLease.1tz890859p.bundle.scp.css.gz",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-1tz890859p.gz",
+      "Route": "EaziLease.pptyjsojxs.bundle.scp.css.gz",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -6193,7 +6330,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "533"
+          "Value": "615"
         },
         {
           "Name": "Content-Type",
@@ -6201,11 +6338,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6223,7 +6360,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1tz890859p"
+          "Value": "pptyjsojxs"
         },
         {
           "Name": "label",
@@ -6231,18 +6368,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY="
+          "Value": "sha256-Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4="
         }
       ]
     },
     {
-      "Route": "EaziLease.1tz890859p.styles.css",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-1tz890859p.gz",
+      "Route": "EaziLease.pptyjsojxs.styles.css",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001872659176"
+          "Quality": "0.001623376623"
         }
       ],
       "ResponseHeaders": [
@@ -6252,15 +6389,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "533"
+          "Value": "615"
         },
         {
           "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6280,13 +6417,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
+          "Value": "W/\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1tz890859p"
+          "Value": "pptyjsojxs"
         },
         {
           "Name": "label",
@@ -6294,12 +6431,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
         }
       ]
     },
     {
-      "Route": "EaziLease.1tz890859p.styles.css",
+      "Route": "EaziLease.pptyjsojxs.styles.css",
       "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/bundle/EaziLease.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -6309,7 +6446,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1078"
+          "Value": "2173"
         },
         {
           "Name": "Content-Type",
@@ -6317,11 +6454,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
+          "Value": "\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6331,7 +6468,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1tz890859p"
+          "Value": "pptyjsojxs"
         },
         {
           "Name": "label",
@@ -6339,13 +6476,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
         }
       ]
     },
     {
-      "Route": "EaziLease.1tz890859p.styles.css.gz",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-1tz890859p.gz",
+      "Route": "EaziLease.pptyjsojxs.styles.css.gz",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -6354,7 +6491,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "533"
+          "Value": "615"
         },
         {
           "Name": "Content-Type",
@@ -6362,11 +6499,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6384,7 +6521,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1tz890859p"
+          "Value": "pptyjsojxs"
         },
         {
           "Name": "label",
@@ -6392,155 +6529,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY="
-        }
-      ]
-    },
-    {
-      "Route": "EaziLease.bundle.scp.css",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-1tz890859p.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.001872659176"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "533"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
-        }
-      ]
-    },
-    {
-      "Route": "EaziLease.bundle.scp.css",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/projectbundle/EaziLease.bundle.scp.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1078"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
-        }
-      ]
-    },
-    {
-      "Route": "EaziLease.bundle.scp.css.gz",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-1tz890859p.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "533"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY="
+          "Value": "sha256-Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4="
         }
       ]
     },
     {
       "Route": "EaziLease.styles.css",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-1tz890859p.gz",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001872659176"
+          "Quality": "0.001623376623"
         }
       ],
       "ResponseHeaders": [
@@ -6550,15 +6550,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "533"
+          "Value": "615"
         },
         {
           "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6578,13 +6578,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
+          "Value": "W/\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
         }
       ]
     },
@@ -6599,7 +6599,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1078"
+          "Value": "2173"
         },
         {
           "Name": "Content-Type",
@@ -6607,11 +6607,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc=\""
+          "Value": "\"ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6621,13 +6621,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-RdDZ3kHa7JdtYbNxe2Ok3Pflxyw1TjRY+sE+Qj4NUuc="
+          "Value": "sha256-ExJd8VCHL7i2zDUEkYzS42td470uGVbKlm4V5bysrso="
         }
       ]
     },
     {
       "Route": "EaziLease.styles.css.gz",
-      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-1tz890859p.gz",
+      "AssetFile": "/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -6636,7 +6636,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "533"
+          "Value": "615"
         },
         {
           "Name": "Content-Type",
@@ -6644,11 +6644,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY=\""
+          "Value": "\"Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Dec 2025 10:32:15 GMT"
+          "Value": "Tue, 30 Dec 2025 16:33:30 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6666,7 +6666,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-5KQS+roudY9Al/ZeTZF13bQcr5mQL3WbHV958mdU5hY="
+          "Value": "sha256-Kt04TbYQ3XU46cCv968g6gCaHCDgEqJ6OMtg6hf+bW4="
         }
       ]
     },

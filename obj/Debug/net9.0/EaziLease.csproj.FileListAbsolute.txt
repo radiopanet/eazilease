@@ -253,8 +253,6 @@
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/zeh797gu0w-jfsiqqwiad.gz
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/z1zu9npyaf-7sji4imez9.gz
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/lhoondsaxv-i8u353mo42.gz
-/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-1tz890859p.gz
-/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-1tz890859p.gz
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/staticwebassets.build.json
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/staticwebassets.development.json
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/staticwebassets.build.endpoints.json
@@ -390,3 +388,6 @@
 /home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/tr/Microsoft.CodeAnalysis.Scripting.resources.dll
 /home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/zh-Hans/Microsoft.CodeAnalysis.Scripting.resources.dll
 /home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Scripting.resources.dll
+/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/Areas/SuperAdmin/Views/Shared/_Layout.cshtml.rz.scp.css
+/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz
+/home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz

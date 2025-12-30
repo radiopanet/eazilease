@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using EaziLease.Models.ViewModels;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Http;
+using EaziLease.Services;
 
 namespace EaziLease.Controllers;
 
@@ -13,10 +14,12 @@ namespace EaziLease.Controllers;
 public class ElevationController : Controller
 {
     public readonly UserManager<ApplicationUser> _userManager;
+    public readonly AuditService _auditService;
 
-    public ElevationController(UserManager<ApplicationUser> userManager)
+    public ElevationController(UserManager<ApplicationUser> userManager, AuditService auditService)
     {
         _userManager = userManager;
+        _auditService = auditService;
     }
 
     [HttpGet]
@@ -44,6 +47,7 @@ public class ElevationController : Controller
 
         HttpContext.Session.SetString("IsSuperAdmin", "true");
         TempData["success"] = "Elevated to Super Admin mode.";
+        await _auditService.LogAsync("Elevation", user.Id, "Elevate", $"User {user.Email} has been elevated to SuperAdmin.");
         return RedirectToAction("Index", "SuperDashboard", new {Area = "SuperAdmin"});
     }
 

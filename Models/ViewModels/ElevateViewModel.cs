@@ -1,5 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 
-namespace EaziLease.Models;
+namespace EaziLease.Models.ViewModels;
 public class ElevateViewModel
 {
     [Required(ErrorMessage = "Password is required")]

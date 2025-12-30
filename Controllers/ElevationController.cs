@@ -2,6 +2,7 @@ using EaziLease.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using EaziLease.Models.ViewModels;
 using EaziLease.Models;
 
 namespace EaziLease.Controllers;

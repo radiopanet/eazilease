@@ -5,7 +5,7 @@ using EaziLease.Data;
 using Microsoft.EntityFrameworkCore;
 namespace EaziLease.Controllers;
 
-[Authorize(Roles="Admin")]
+[Authorize(Policy ="RequireSuperAdmin")]
 public class AuditController: Controller
 {
     private readonly ApplicationDbContext _context;

@@ -33,13 +33,15 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Branches" asp-action="Index">Branches</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Clients" asp-action="Index">Clients</a></li>
                         @* <li class="nav-item"><a class="nav-link" asp-controller="Drivers" asp-action="Index">Drivers</a></li> *@
-                        <li class="nav-item"><a class="nav-link" asp-controller="Audit" asp-action="Index">Audit Logs</a></li>
+
+
                         }
 
                         @if (User.Identity.IsAuthenticated)
                         {
                             if (Context.IsSuperAdminElevated())
                             {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Audit" asp-action="Index">Audit Logs</a></li>
                                 <li class="nav-item">
                                     <span class="nav-link text-success fw-bold">
                                         <i class="bi bi-shield-check"></i> Super Admin Mode Active

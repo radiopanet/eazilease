@@ -106,3 +106,101 @@ else
     </div>
 </div>
 
+<!-- ... existing vehicle details ... -->
+
+<!-- History Tabs -->
+<div class="mt-5">
+    <ul class="nav nav-tabs" id="historyTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="lease-tab" data-bs-toggle="tab" data-bs-target="#lease" type="button" role="tab">
+                Lease History
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="assignment-tab" data-bs-toggle="tab" data-bs-target="#assignment" type="button" role="tab">
+                Assignment History
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 p-4 rounded-bottom" id="historyTabContent">
+        <!-- Lease History Tab -->
+        <div class="tab-pane fade show active" id="lease" role="tabpanel">
+            @if (Model.LeaseHistory.Any())
+            {
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Monthly Rate</th>
+                            <th>Returned</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lease in Model.LeaseHistory.OrderByDescending(l => l.LeaseStartDate))
+                        {
+                            <tr>
+                                <td>@lease.Client.CompanyName</td>
+                                <td>@lease.LeaseStartDate</td>
+                                <td>@lease.LeaseEndDate</td>
+                                <td>@lease.MonthlyRate:C</td>
+                                <td>@(lease.ReturnDate.HasValue ? lease.ReturnDate.Value.ToString("d") : "Active")</td>
+                                <td>
+                                    <span class="badge @(lease.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(lease.IsActive ? "Active" : "Ended")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No lease history yet.</p>
+            }
+        </div>
+
+        <!-- Assignment History Tab -->
+        <div class="tab-pane fade" id="assignment" role="tabpanel">
+            @if (Model.AssignementHistory.Any())
+            {
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Driver</th>
+                            <th>Assigned</th>
+                            <th>Returned</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ass in Model.AssignementHistory.OrderByDescending(a => a.AssignedDate))
+                        {
+                            <tr>
+                                <td>@ass.Driver.FullName</td>
+                                <td>@ass.AssignedDate</td>
+                                <td>@(ass.ReturnedDate?.ToString("d") ?? "Current")</td>
+                                <td>
+                                    @{
+                                        var end = ass.ReturnedDate ?? DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
+                                        var days = (end.Day - ass.AssignedDate.Day) + 1;
+                                    }
+                                    @days days
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No assignment history yet.</p>
+            }
+        </div>
+    </div>
+</div>
+

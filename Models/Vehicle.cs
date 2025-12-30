@@ -39,7 +39,7 @@ namespace EaziLease.Models
         public virtual Driver? CurrentDriver { get; set; }
 
         //History
-        public virtual ICollection<VehicleLease>? LeaseHistory { get; set; }
-        public virtual ICollection<VehicleAssignment>? AssignementHistory { get; set; }
+        public virtual ICollection<VehicleLease> LeaseHistory { get; set; } = new List<VehicleLease>();
+        public virtual ICollection<VehicleAssignment> AssignementHistory { get; set; } = new List<VehicleAssignment>();
     }
 }

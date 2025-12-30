@@ -39,13 +39,13 @@ namespace EaziLease.Controllers
             if (id == null) return NotFound();
 
             var vehicle = await _context.Vehicles
-                .AsNoTracking()
                 .Include(v => v.Supplier)
                 .Include(v => v.Branch)
                 .Include(v => v.CurrentDriver)
                 .Include(v => v.CurrentLease).ThenInclude(l => l!.Client)
+                .Include(v => v.LeaseHistory).ThenInclude(l => l.Client)
+                .Include(v => v.AssignementHistory).ThenInclude(a => a.Driver)
                 .FirstOrDefaultAsync(m => m.Id == id && !m.IsDeleted);
-
 
             if (vehicle == null) return NotFound();
 
@@ -410,9 +410,9 @@ namespace EaziLease.Controllers
                 _context.VehicleAssignments.Add(assignment);
                 await _context.SaveChangesAsync();
 
-                // Update BOTH vehicle and driver references
+                
                 vehicle.CurrentDriverId = driver.Id;
-                driver.CurrentVehicleId = vehicle.Id;  // ← THIS IS KEY
+                driver.CurrentVehicleId = vehicle.Id;  
 
                 await _context.SaveChangesAsync();
 

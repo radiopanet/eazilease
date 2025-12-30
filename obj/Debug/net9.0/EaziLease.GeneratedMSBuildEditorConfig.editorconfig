@@ -48,8 +48,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/AuditLogs/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXVkaXRMb2dzL0luZGV4LmNzaHRtbA==
+[/home/tx/Projects/DotNet/EaziLease/Views/Audit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXVkaXQvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/tx/Projects/DotNet/EaziLease/Views/Branches/Create.cshtml]

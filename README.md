@@ -4,8 +4,11 @@
   ## FEATURES
     > Live Analytics
     > Secure Admin Panel
-    > Driver Assignment
+    > Driver Assignment / UnAssignement
     > Full Leasing
-    > Calender View - In Development
+    > Return Vehicle / End Lease
+    > Record vehicle Maintenance
+    > Lease/Assignment/Maintenance History
+    > AuditLogs - Partially Implemented(Still to be implemented on all actions)
     > PDF Contracts - In Development
-    > Return Vehicle / End Lease - In Development
+    > Calender View - In Development

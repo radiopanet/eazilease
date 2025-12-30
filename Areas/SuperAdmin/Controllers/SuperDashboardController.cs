@@ -17,7 +17,7 @@ namespace EaziLease.Areas.SuperAdmin.Controllers
         {
             HttpContext.Session.Remove("IsSuperAdmin");
             TempData["info"] = "Exited Super Admin mode.";
-            return RedirectToAction("Index", "Dashboard", new { area = "" });
+            return RedirectToAction("Index", "Dashboard");
         }
     }
 }

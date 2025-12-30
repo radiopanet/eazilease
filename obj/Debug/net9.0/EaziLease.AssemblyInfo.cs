@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EaziLease")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba7fa2f82376b21fa9ad9341a53565a49fb3ae13")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3da58e7131905ee4bbf993bfe6ea818fa7ad0023")]
 [assembly: System.Reflection.AssemblyProductAttribute("EaziLease")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EaziLease")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

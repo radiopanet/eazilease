@@ -5,6 +5,7 @@ using Npgsql.EntityFrameworkCore;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Authorization;
 using EaziLease.Services;
+using EaziLease.Extensions;
 
 
 
@@ -20,12 +21,15 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
 
 //Removed by developer for real world simulation(public analytics <-> admin panel)
-// builder.Services.AddAuthorization(options =>
-// {
-//     options.FallbackPolicy = new AuthorizationPolicyBuilder()
-//     .RequireRole("Admin")
-//     .Build();
-// });
+builder.Services.AddAuthorization(options =>
+{
+  options.AddPolicy("RequireSuperAdmin", policy =>
+        policy.RequireAuthenticatedUser()
+              .RequireRole("Admin")  // Must still be admin
+              .RequireAssertion(context => 
+                  context.Resource is HttpContext httpContext && 
+                  httpContext.IsSuperAdminElevated()));
+});
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {

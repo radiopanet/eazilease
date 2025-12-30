@@ -6,9 +6,7 @@ using EaziLease.Models;
 using Microsoft.AspNetCore.Authorization;
 using EaziLease.Services;
 using EaziLease.Extensions;
-
-
-
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +18,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
 
-//Removed by developer for real world simulation(public analytics <-> admin panel)
 builder.Services.AddAuthorization(options =>
 {
   options.AddPolicy("RequireSuperAdmin", policy =>
@@ -72,11 +69,19 @@ app.UseStaticFiles();
 // app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
+// app.UseAuthentication();        // ← Before Session
+// app.UseSession();               // ← MUST be AFTER Authentication, BEFORE Authorization
+// app.UseAuthorization();
 
 app.UseSession();
+app.UseAuthorization();
+
 
 app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

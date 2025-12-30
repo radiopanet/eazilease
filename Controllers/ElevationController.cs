@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using EaziLease.Models.ViewModels;
 using EaziLease.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace EaziLease.Controllers;
 
@@ -43,7 +44,7 @@ public class ElevationController : Controller
 
         HttpContext.Session.SetString("IsSuperAdmin", "true");
         TempData["success"] = "Elevated to Super Admin mode.";
-        return RedirectToAction("Index", "SuperDashboard");
+        return RedirectToAction("Index", "SuperDashboard", new {Area = "SuperAdmin"});
     }
 
     //GET: Exit elevation

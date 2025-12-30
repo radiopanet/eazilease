@@ -48,6 +48,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/tx/Projects/DotNet/EaziLease/Areas/SuperAdmin/Views/SuperDashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvU3VwZXJBZG1pbi9WaWV3cy9TdXBlckRhc2hib2FyZC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/tx/Projects/DotNet/EaziLease/Views/Audit/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXVkaXQvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -155,6 +159,10 @@ build_metadata.AdditionalFiles.CssScope =
 [/home/tx/Projects/DotNet/EaziLease/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/Areas/SuperAdmin/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvU3VwZXJBZG1pbi9WaWV3cy9TaGFyZWQvX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = b-eu9x0ojy9s
 
 [/home/tx/Projects/DotNet/EaziLease/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s

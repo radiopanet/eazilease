@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Super Admin Dashboard";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Super Admin Portal</h3>
+                    <small>Elevated privileges active</small>
+                </div>
+                <div class="card-body">
+                    <h4>Welcome, Super Admin</h4>
+                    <p>This is your secure area for administrative tasks.</p>
+
+                    <div class="list-group mt-4">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> User Management
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-journal-text"></i> View Audit Logs
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-gear"></i> App Settings
+                        </a>
+                    </div>
+
+                    <div class="mt-5 text-center">
+                        <a asp-controller="SuperDashboard" asp-action="Exit" class="btn btn-outline-danger">
+                            Exit Super Admin Mode
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -10,5 +10,6 @@
     > Record vehicle Maintenance
     > Lease/Assignment/Maintenance History
     > AuditLogs - Partially Implemented(Still to be implemented on all actions)
+    > SuperAdmin - For Application Management.
     > PDF Contracts - In Development
     > Calender View - In Development

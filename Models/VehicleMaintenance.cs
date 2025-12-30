@@ -5,7 +5,7 @@ namespace EaziLease.Models;
 public class VehicleMaintenance: BaseEntity
 {
     public string VehicleId { get; set; } = string.Empty;
-    public Vehicle Vehicle { get; set; } = null!;
+    public Vehicle? Vehicle { get; set; } = null!;
     public DateTime ServiceDate { get; set; }
     public string Description { get; set; } = string.Empty; // e.g. "Oil change + filter", "Brake pads replacement"
     public string? GarageName { get; set; }

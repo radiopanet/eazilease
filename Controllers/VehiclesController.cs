@@ -528,6 +528,14 @@ namespace EaziLease.Controllers
             var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
             if (vehicle == null) return NotFound();
 
+            foreach(var kvp in ModelState)
+            {
+                foreach(var err in kvp.Value.Errors)
+                {
+                    Console.WriteLine($"Property {kvp.Key} gave the error {err}");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 maintenance.Id = Guid.NewGuid().ToString();

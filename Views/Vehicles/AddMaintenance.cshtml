@@ -11,7 +11,7 @@
 
     <div class="mb-3">
         <label asp-for="ServiceDate" class="form-label"></label>
-        <input asp-for="ServiceDate" type="date" class="form-control" />
+        <input asp-for="ServiceDate" type="date" class="form-control" value=DateTime.SpecifyKind(DateTime.Utc.Date, DateKind.Utc)/>
     </div>
 
     <div class="mb-3">

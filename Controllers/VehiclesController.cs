@@ -45,6 +45,7 @@ namespace EaziLease.Controllers
                 .Include(v => v.Supplier)
                 .Include(v => v.Branch)
                 .Include(v => v.CurrentDriver)
+                .Include(v => v.MaintenanceHistory)
                 .Include(v => v.CurrentLease).ThenInclude(l => l!.Client)
                 .Include(v => v.LeaseHistory).ThenInclude(l => l.Client)
                 .Include(v => v.AssignementHistory).ThenInclude(a => a.Driver)

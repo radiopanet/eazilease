@@ -41,5 +41,6 @@ namespace EaziLease.Models
         //History
         public virtual ICollection<VehicleLease> LeaseHistory { get; set; } = new List<VehicleLease>();
         public virtual ICollection<VehicleAssignment> AssignementHistory { get; set; } = new List<VehicleAssignment>();
+        public ICollection<VehicleMaintenance> MaintenanceHistory {get; set; } = new List<VehicleMaintenance>();
     }
 }

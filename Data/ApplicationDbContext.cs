@@ -19,6 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<VehicleAssignment> VehicleAssignments => Set<VehicleAssignment>();
     public DbSet<VehicleLease> VehicleLeases => Set<VehicleLease>();
+    public DbSet<VehicleMaintenance> VehicleMaintenance => Set<VehicleMaintenance>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

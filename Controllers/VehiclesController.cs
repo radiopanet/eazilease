@@ -422,9 +422,9 @@ namespace EaziLease.Controllers
                 _context.VehicleAssignments.Add(assignment);
                 await _context.SaveChangesAsync();
 
-                
+
                 vehicle.CurrentDriverId = driver.Id;
-                driver.CurrentVehicleId = vehicle.Id;  
+                driver.CurrentVehicleId = vehicle.Id;
 
                 await _context.SaveChangesAsync();
 
@@ -510,6 +510,37 @@ namespace EaziLease.Controllers
             }
 
             return RedirectToAction("Details", new { id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult AddMaintenance(string vehicleId)
+        {
+            var vm = new VehicleMaintenance { VehicleId = vehicleId };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddMaintenance(VehicleMaintenance maintenance)
+        {
+            var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
+            if (vehicle == null) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                maintenance.Id = Guid.NewGuid().ToString();
+                _context.VehicleMaintenance.Add(maintenance);
+                await _context.SaveChangesAsync();
+
+                await _auditService.LogAsync("Maintenance", maintenance.Id, "ServiceRecorded",
+                    $"Maintenance on {vehicle.RegistrationNumber}: {maintenance.Description} @ R{maintenance.Cost}");
+
+                TempData["success"] = "Maintenance record added";
+                return RedirectToAction("Details", new { id = maintenance.VehicleId });
+            }
+
+            return View(maintenance);
         }
     }
 }

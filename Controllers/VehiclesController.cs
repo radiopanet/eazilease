@@ -527,12 +527,14 @@ namespace EaziLease.Controllers
         {
             var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
             if (vehicle == null) return NotFound();
+            maintenance.ServiceDate = DateTime.SpecifyKind(
+            DateTime.UtcNow.Date, DateTimeKind.Utc);
 
             foreach(var kvp in ModelState)
             {
                 foreach(var err in kvp.Value.Errors)
                 {
-                    Console.WriteLine($"Property {kvp.Key} gave the error {err}");
+                    Console.WriteLine($"Property {kvp.Key} with value {kvp.Value} gave the error {err.ErrorMessage}");
                 }
             }
 

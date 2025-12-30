@@ -1,0 +1,53 @@
+@model ElevateViewModel
+
+@{
+    ViewData["Title"] = "Elevate to Super Admin";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow mt-5">
+                <div class="card-header bg-dark text-white text-center">
+                    <h4 class="mb-0">Super Admin Elevation</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-center mb-4">
+                        Enter your account password to access Super Admin features.
+                    </p>
+
+                    <form asp-action="Elevate" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required autofocus />
+                            <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark btn-lg">Elevate to Super Admin</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <a asp-action="Index" asp-controller="Dashboard" class="text-muted">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* @if (HttpContext.Session.GetString("IsSuperAdmin") == "true")
+{
+    <li class="nav-item">
+        <a class="nav-link text-warning" asp-controller="Elevation" asp-action="Exit">
+            Exit Super Mode
+        </a>
+    </li>
+} *@
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -60,6 +60,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
@@ -80,13 +82,23 @@ if (app.Environment.IsDevelopment())
     {
         await IdentitySeedData.Seed(services);
         Console.WriteLine("Admin user seeded successfully.");
-        await SeedData.InitializeAsync(context);   // ← ADD THIS LINE
+        await SeedData.InitializeAsync(context);
     }
     catch (Exception ex)
     {
         Console.WriteLine($"Seeding failed: {ex.Message}");
     }
 }
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(
+    option =>
+    {
+        option.IdleTimeout = TimeSpan.FromMinutes(30);
+        option.Cookie.HttpOnly = true;
+        option.Cookie.IsEssential = true;
+    }
+);
 
 app.Run();
 

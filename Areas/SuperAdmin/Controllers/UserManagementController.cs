@@ -130,6 +130,6 @@ public class UserManagementController : Controller
             await _auditService.LogAsync("ApplicationUser", user.Id, "Delete", $"Unable to delete User {user.FullName}");
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction("Index", "SuperDashboard", new { Area = "SuperAdmin" });
     }
 }

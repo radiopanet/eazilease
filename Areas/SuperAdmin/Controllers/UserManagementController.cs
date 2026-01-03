@@ -175,4 +175,25 @@ public class UserManagementController : Controller
 
         return RedirectToAction("Index", "SuperDashboard", new { Area = "SuperAdmin" });
     }
+
+    public async Task<IActionResult> PasswordReset(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if(user == null) return NotFound();
+
+        var newPassword = "Temp" + Guid.NewGuid().ToString("N").Substring(0,8);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+        if(result.Succeeded)
+        {
+            TempData["success"] = $"Password reset for {user.Email}. New password: {newPassword} (change immediately!)";
+        }
+        else
+        {
+            TempData["error"] = "Failed to reset password.";
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }

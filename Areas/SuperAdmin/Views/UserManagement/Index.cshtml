@@ -52,6 +52,9 @@
                     <form asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this user?');">
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
+                    <form asp-action="ResetPassword" asp-route-id="@user.Id" method="post" class="d-inline" onsubmit="return confirm('Reset password?');">
+                        <button type="submit" class="btn btn-sm btn-info">Reset Password</button>
+                    </form>
                 </td>
             </tr>
         }

@@ -85,6 +85,49 @@ public class UserManagementController : Controller
         return View(model);
     }
 
+    //GET edit
+    public async Task<IActionResult> Edit(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if(user == null) return NotFound();
+
+        var model = new EditUserViewModel
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FullName = user.FullName
+
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditUserViewModel model)
+    {
+        if(!ModelState.IsValid) return View(model);
+
+        var user = await _userManager.FindByIdAsync(model.Id);
+        if(user == null) return NotFound();
+
+        user.Email = model.Email;
+        user.UserName = model.Email;
+        user.FullName = model.FullName;
+
+        var result = await _userManager.UpdateAsync(user);
+        if(result.Succeeded)
+        {
+            TempData["success"] = $"User {model.Email} updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        foreach (var error in result.Errors)
+        ModelState.AddModelError("", error.Description);
+
+        return View(model);
+    }
+
     // POST: Toggle CanElevate (SuperAdminCandidate role)
     [HttpPost]
     [ValidateAntiForgeryToken]

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using EaziLease.Models;
 using EaziLease.Models.ViewModels;
+using EaziLease.Services;
 
 
 [Area("SuperAdmin")]
@@ -11,11 +12,14 @@ public class UserManagementController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly AuditService _auditService;
 
-    public UserManagementController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public UserManagementController(UserManager<ApplicationUser> userManager,
+     RoleManager<IdentityRole> roleManager, AuditService auditService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
+        _auditService = auditService;
     }
 
     //GET list of users
@@ -45,5 +49,40 @@ public class UserManagementController : Controller
     {
         return View();
     }
+
+
+    //POST create user
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CreateUserViewModel model)
+    {
+        if(ModelState.IsValid)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName,
+                EmailConfirmed =true
+            };
+
+            var result = await  _userManager.CreateAsync(user, model.Password);
+            if(result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Admin");
+
+                TempData["success"] = $"User {model.Email} created successfully.";
+
+                await _auditService.LogAsync("ApplicationUser", user.Id, "Create",
+                $"User {model.Email} created successfully.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+        }
+        return View(model);
+    }
+
     
 }

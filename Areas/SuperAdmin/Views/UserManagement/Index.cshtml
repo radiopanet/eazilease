@@ -1,0 +1,56 @@
+@using EaziLease.Models.ViewModels
+
+@model IEnumerable<UserVeiwModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2 class="mb-4">User Management</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New User</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Roles</th>
+            <th>Can Elevate</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FullName</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span class="badge bg-info me-1">@role</span>
+                    }
+                </td>
+                <td>
+                    <span class="badge @(user.CanElevate ? "bg-success" : "bg-secondary")">
+                        @(user.CanElevate ? "Yes" : "No")
+                    </span>
+                </td>
+                <td>
+                    <form asp-action="ToggleElevate" asp-route-id="@user.Id" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm @(user.CanElevate ? "btn-warning" : "btn-success")">
+                            @(user.CanElevate ? "Revoke Elevate" : "Grant Elevate")
+                        </button>
+                    </form>
+
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this user?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

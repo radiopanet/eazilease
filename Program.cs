@@ -69,10 +69,8 @@ app.UseStaticFiles();
 // app.UseHttpsRedirection();
 app.UseRouting();
 
-// app.UseAuthentication();        // ← Before Session
-// app.UseSession();               // ← MUST be AFTER Authentication, BEFORE Authorization
-// app.UseAuthorization();
 
+app.UseAuthentication();
 app.UseSession();
 app.UseAuthorization();
 
@@ -81,7 +79,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=SuperDashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

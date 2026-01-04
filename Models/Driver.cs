@@ -10,7 +10,8 @@ namespace EaziLease.Models
         public string LastName { get; set; } = string.Empty;
         public string FullName => $"{FirstName} {LastName}";
         public string LicenseNumber { get; set; } = string.Empty;
-        public DateOnly LicenseExpiry { get; set; }
+        public DateTime? LicenseExpiry { get; set; } =
+            DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
         public string Phone { get; set; } = string.Empty;
         public string? Email { get; set; }
         public int AccidentCount { get; set; } = 0;
@@ -24,7 +25,7 @@ namespace EaziLease.Models
         public virtual Vehicle? CurrentVehicle { get; set; }
 
         // History
-        public virtual ICollection<VehicleAssignment> AssignmentHistory { get; set; } = default!;
+        public virtual ICollection<VehicleAssignment>? AssignmentHistory { get; set; } = null;
         public bool IsCurrentlyAssigned => !string.IsNullOrEmpty(CurrentVehicleId);
     }
 }

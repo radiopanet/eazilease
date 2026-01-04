@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using EaziLease.Services;
 
 namespace EaziLease.Controllers
 {
@@ -11,8 +12,13 @@ namespace EaziLease.Controllers
     public class BranchesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly AuditService _auditService;
 
-        public BranchesController(ApplicationDbContext context) => _context = context;
+        public BranchesController(ApplicationDbContext context, AuditService auditService)
+        {
+            _context = context;
+            _auditService = auditService;
+        }
 
         public async Task<IActionResult> Index() =>
             View(await _context.Branches.Where(b => !b.IsDeleted).OrderBy(b => b.Name).ToListAsync());
@@ -29,6 +35,7 @@ namespace EaziLease.Controllers
                 _context.Add(branch);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Branch added";
+                await _auditService.LogAsync("Branches", branch.Id, "Create", $"Branch {branch.Name} added successfully");
                 return RedirectToAction(nameof(Index));
             }
             return View(branch);
@@ -58,6 +65,8 @@ namespace EaziLease.Controllers
 
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Branch updated";
+                await _auditService.LogAsync("Branches", existing.Id, "Edit",
+                     $"Branch {existing.Name} updated by {existing.UpdatedBy} at {existing.UpdatedAt}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(branch);
@@ -75,6 +84,8 @@ namespace EaziLease.Controllers
                 branch.DeletedBy = User.Identity!.Name;
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Branch deleted";
+                await _auditService.LogAsync("Braches", branch.Id, "Delete",
+                     $"Branch {branch.Name} deleted by {branch.DeletedBy} at {branch.DeletedAt}");
             }
             return RedirectToAction(nameof(Index));
         }

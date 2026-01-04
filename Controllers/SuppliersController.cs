@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using EaziLease.Data;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using EaziLease.Services;
 
 namespace EaziLease.Controllers
 {
@@ -11,8 +12,13 @@ namespace EaziLease.Controllers
     public class SuppliersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly AuditService _auditService;
 
-        public SuppliersController(ApplicationDbContext context) => _context = context;
+        public SuppliersController(ApplicationDbContext context, AuditService auditService)
+        {
+            _context = context;
+            _auditService = auditService;
+        }
 
         public async Task<IActionResult> Index() =>
             View(await _context.Suppliers.Where(s => !s.IsDeleted).OrderBy(s => s.Name).ToListAsync());
@@ -29,6 +35,8 @@ namespace EaziLease.Controllers
                 _context.Add(supplier);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Supplier added";
+                await _auditService.LogAsync("Supplier", supplier.Id, "Create",
+                    $"Supplier {supplier.Name} added by {supplier.CreatedBy} at {supplier.CreatedAt}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(supplier);
@@ -61,6 +69,8 @@ namespace EaziLease.Controllers
 
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Supplier updated";
+                await _auditService.LogAsync("Supplier", supplier.Id, "Edit", 
+                    $"Supplier {existing.Name} updated by {existing.UpdatedBy} at {existing.UpdatedAt}.");
                 return RedirectToAction(nameof(Index));
             }
             return View(supplier);
@@ -78,6 +88,8 @@ namespace EaziLease.Controllers
                 supplier.DeletedBy = User.Identity!.Name;
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Supplier deleted";
+                await _auditService.LogAsync("Supplier", supplier.Id, "Delete",
+                    $"{supplier.Name} deleted by {supplier.DeletedBy} at {supplier.DeletedAt}");
             }
             return RedirectToAction(nameof(Index));
         }

@@ -50,11 +50,11 @@ namespace EaziLease.Data
             // 4. Drivers
             var drivers = new[]
             {
-                new Driver { FirstName = "Sipho", LastName = "Mthembu", LicenseNumber = "D12345678", LicenseExpiry = new DateOnly(2027, 12, 31), Phone = "072 111 2233", Email = "sipho@eazilease.co.za", IsActive = true },
-                new Driver { FirstName = "Fatima", LastName = "Patel",   LicenseNumber = "D87654321", LicenseExpiry = new DateOnly(2026, 10, 15), Phone = "083 444 5566", Email = "fatima@eazilease.co.za", IsActive = true },
-                new Driver { FirstName = "Jaco",   LastName = "van Zyl", LicenseNumber = "D11223344", LicenseExpiry = new DateOnly(2028, 03, 20), Phone = "081 777 8899", IsActive = true },
-                new Driver { FirstName = "Naledi", LastName = "Dlamini", LicenseNumber = "D55667788", LicenseExpiry = new DateOnly(2027, 08, 08), Phone = "060 999 0001", IsActive = true },
-                new Driver { FirstName = "Pieter", LastName = "Nel",     LicenseNumber = "D99887766", LicenseExpiry = new DateOnly(2025, 11, 30), Phone = "082 555 6677", IsActive = true }
+                new Driver { FirstName = "Sipho", LastName = "Mthembu", LicenseNumber = "D12345678", LicenseExpiry = new DateTime(2027, 12, 31), Phone = "072 111 2233", Email = "sipho@eazilease.co.za", IsActive = true },
+                new Driver { FirstName = "Fatima", LastName = "Patel",   LicenseNumber = "D87654321", LicenseExpiry = new DateTime(2026, 10, 15), Phone = "083 444 5566", Email = "fatima@eazilease.co.za", IsActive = true },
+                new Driver { FirstName = "Jaco",   LastName = "van Zyl", LicenseNumber = "D11223344", LicenseExpiry = new DateTime(2028, 03, 20), Phone = "081 777 8899", IsActive = true },
+                new Driver { FirstName = "Naledi", LastName = "Dlamini", LicenseNumber = "D55667788", LicenseExpiry = new DateTime(2027, 08, 08), Phone = "060 999 0001", IsActive = true },
+                new Driver { FirstName = "Pieter", LastName = "Nel",     LicenseNumber = "D99887766", LicenseExpiry = new DateTime(2025, 11, 30), Phone = "082 555 6677", IsActive = true }
             };
             context.Drivers.AddRange(drivers);
             await context.SaveChangesAsync();

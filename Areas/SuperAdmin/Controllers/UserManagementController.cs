@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using EaziLease.Models;
 using EaziLease.Models.ViewModels;
 using EaziLease.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
 [Area("SuperAdmin")]
@@ -119,11 +118,16 @@ public class UserManagementController : Controller
         if(result.Succeeded)
         {
             TempData["success"] = $"User {model.Email} updated successfully.";
+            await _auditService.LogAsync("UserManagement", model.Id, "Edit",
+            $"User {model.Email} updated successfully.");
             return RedirectToAction(nameof(Index));
         }
 
         foreach (var error in result.Errors)
-        ModelState.AddModelError("", error.Description);
+        {
+            ModelState.AddModelError("", error.Description); 
+            await _auditService.LogAsync("UserManagement", model.Id, "Edit", error.Description);
+        }
 
         return View(model);
     }
@@ -176,7 +180,7 @@ public class UserManagementController : Controller
         return RedirectToAction("Index", "SuperDashboard", new { Area = "SuperAdmin" });
     }
 
-    public async Task<IActionResult> PasswordReset(string id)
+    public async Task<IActionResult> ResetPassword(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if(user == null) return NotFound();
@@ -188,6 +192,8 @@ public class UserManagementController : Controller
         if(result.Succeeded)
         {
             TempData["success"] = $"Password reset for {user.Email}. New password: {newPassword} (change immediately!)";
+            await _auditService.LogAsync("UserManagement", user.Id,"ResetPassword", 
+             $"Password reset for {user.Email}. New password: {newPassword} (change immediately!)");
         }
         else
         {

@@ -20,6 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<VehicleAssignment> VehicleAssignments => Set<VehicleAssignment>();
     public DbSet<VehicleLease> VehicleLeases => Set<VehicleLease>();
     public DbSet<VehicleMaintenance> VehicleMaintenance => Set<VehicleMaintenance>();
+    public DbSet<RateOverrideRequest> RateOverrideRequests => Set<RateOverrideRequest>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,0 +1,71 @@
+@using EaziLease.Models.ViewModels
+@model RateOverrideRequestViewModel
+
+@{
+    ViewData["Title"] = "Request Rate Override";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">Request Daily Rate Override - @Model.VehicleRegistration</h4>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                Current daily rate: <strong>@Model.CurrentDailyRate.ToString("C")</strong>
+            </div>
+
+            <form asp-action="RequestRateOverride" method="post">
+                <input type="hidden" asp-for="VehicleId" />
+
+                <div class="mb-3">
+                    <label asp-for="RequestedDailyRate" class="form-label"></label>
+                    <input asp-for="RequestedDailyRate" class="form-control" />
+                    <span asp-validation-for="RequestedDailyRate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Reason" class="form-label">Reason for Override (required)</label>
+                    <textarea asp-for="Reason" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Reason" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="IsPermanent" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsPermanent" class="form-check-label">
+                        Make this override permanent (no end date)
+                    </label>
+                </div>
+
+                <div class="row mb-3" id="temporaryDates" style="display: @(Model.IsPermanent ? "none" : "flex");">
+                    <div class="col-md-6">
+                        <label asp-for="EffectiveFrom" class="form-label"></label>
+                        <input asp-for="EffectiveFrom" type="date" class="form-control" 
+                               min="@Model.MinimumEffectiveDate.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="EffectiveFrom" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="EffectiveTo" class="form-label"></label>
+                        <input asp-for="EffectiveTo" type="date" class="form-control" />
+                        <span asp-validation-for="EffectiveTo" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-success btn-lg">Submit Override Request</button>
+                    <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        document.querySelector('[asp-for="IsPermanent"]').addEventListener('change', function() {
+            document.getElementById('temporaryDates').style.display = this.checked ? 'none' : 'flex';
+        });
+    </script>
+}

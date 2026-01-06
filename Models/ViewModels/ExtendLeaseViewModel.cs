@@ -1,4 +1,4 @@
-namespace EaziLease.Models.ViewModel;
+namespace EaziLease.Models.ViewModels;
 
 public class ExtendLeaseViewModel
 {

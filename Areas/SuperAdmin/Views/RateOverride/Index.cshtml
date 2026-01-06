@@ -1,0 +1,48 @@
+@model IEnumerable<RateOverrideRequest>
+
+<h2>Pending Rate Override Requests</h2>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No pending requests.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Vehicle</th>
+                <th>Requested Rate</th>
+                <th>Original Rate</th>
+                <th>Type</th>
+                <th>Requested By</th>
+                <th>Reason</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var req in Model)
+            {
+                <tr>
+                    <td>@req.Vehicle?.RegistrationNumber</td>
+                    <td>@req.RequestedDailyRate.ToString("C")</td>
+                    <td>@req.OriginalDailyRate.ToString("C")</td>
+                    <td>@(req.IsPermanent ? "Permanent" : "Temporary")</td>
+                    <td>@req.RequestedBy</td>
+                    <td>@req.Reason</td>
+                    <td>
+                        <form asp-action="Approve" asp-route-id="@req.Id" method="post" class="d-inline">
+                            <input type="text" name="notes" placeholder="Approval notes (optional)" class="form-control form-control-sm d-inline w-auto" />
+                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                        </form>
+
+                        <form asp-action="Reject" asp-route-id="@req.Id" method="post" class="d-inline">
+                            <input type="text" name="notes" placeholder="Rejection reason" class="form-control form-control-sm d-inline w-auto" />
+                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

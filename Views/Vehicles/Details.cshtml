@@ -89,27 +89,32 @@
             }   
             @if (Model?.CurrentLease != null )
             {
+                @if (Model.CurrentLease != null && Model.CurrentLease.IsActive)
+                {
+                    <div class="mt-4">
+                        <h5>Current Lease</h5>
+                        <p>
+                            Client: <strong>@Model.CurrentLease.Client?.CompanyName</strong><br />
+                            Period: @Model.CurrentLease.LeaseStartDate.ToString("dd MMM yyyy") – 
+                                    @Model.CurrentLease.LeaseEndDate.ToString("dd MMM yyyy")
+                        </p>
+
+                        <!-- NEW: Extend Lease Button -->
+                        <a asp-controller="Vehicles" asp-action="ExtendLease" asp-route-leaseId="@Model.CurrentLease.Id" 
+                        class="btn btn-success btn-sm">
+                            <i class="bi bi-calendar-plus"></i> Extend Lease
+                        </a>
+                    </div>
+                    <a asp-controller="Vehicles" asp-action="RequestRateOverride" asp-route-vehicleId="@Model.Id" 
+                         class="btn btn-info btn-sm mt-2">
+                         <i class="bi bi-currency-exchange"></i> Request Rate Override
+                    </a>
+                }
+                <hr />
                 <a asp-action="EndLease" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mt-2">
                     End Lease / Return Vehicle
                 </a>
-                <!-- Inside the lease info section, e.g. after showing current lease details -->
-@if (Model.CurrentLease != null && Model.CurrentLease.IsActive)
-{
-    <div class="mt-4">
-        <h5>Current Lease</h5>
-        <p>
-            Client: <strong>@Model.CurrentLease.Client?.CompanyName</strong><br />
-            Period: @Model.CurrentLease.LeaseStartDate.ToString("dd MMM yyyy") – 
-                    @Model.CurrentLease.LeaseEndDate.ToString("dd MMM yyyy")
-        </p>
-
-        <!-- NEW: Extend Lease Button -->
-        <a asp-controller="Vehicles" asp-action="ExtendLease" asp-route-leaseId="@Model.CurrentLease.Id" 
-           class="btn btn-success btn-sm">
-            <i class="bi bi-calendar-plus"></i> Extend Lease
-        </a>
-    </div>
-}
+                
             }
             @if (Model?.CurrentDriver != null)
             {

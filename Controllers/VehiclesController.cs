@@ -6,7 +6,7 @@ using EaziLease.Data;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EaziLease.Services;
-using EaziLease.Models.ViewModel;
+using EaziLease.Models.ViewModels;
 
 namespace EaziLease.Controllers
 {
@@ -634,8 +634,58 @@ namespace EaziLease.Controllers
 
             await _context.SaveChangesAsync();
 
+            await _auditService.LogAsync("VehicleLease", lease.Id, "ExtendLease",
+                 $"Lease {lease.Vehicle.RegistrationNumber} extendend successfully.");
             TempData["success"] = "Lease extended successfully.";
             return RedirectToAction("Details", new { id = lease.VehicleId });
         }
+
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> RequestRateOverride(string vehicleId)
+        {
+            var vehicle = await _context.Vehicles.FindAsync(vehicleId);
+
+            if(vehicle == null) return NotFound();
+
+            var model = new RateOverrideRequestViewModel
+            {
+                VehicleId = vehicle.Id,
+                RequestedDailyRate = vehicle.DailyRate,
+                CurrentDailyRate = vehicle.DailyRate
+            };
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> RequestRateOverride(RateOverrideRequestViewModel model)
+        {
+            if(!ModelState.IsValid) return View(model);
+
+            var vehicle = await _context.Vehicles.FindAsync(model.VehicleId);
+            if(vehicle == null) return NotFound();
+
+            var request = new RateOverrideRequest
+            {
+                VehicleId = model.VehicleId,
+                RequestedDailyRate = model.RequestedDailyRate,
+                OriginalDailyRate = vehicle.DailyRate,
+                IsPermanent = model.IsPermanent,
+                EffectiveFrom = model.EffectiveFrom,
+                EffectiveTo = model.EffectiveTo,
+                RequestedBy = User.Identity?.Name ?? "unknown",
+                Reason = model.Reason
+            };
+
+            _context.RateOverrideRequests.Add(request);
+            await _context.SaveChangesAsync();
+            
+            TempData["success"] = "Rate override request submitted. Awaiting SuperAdmin approval.";
+            return RedirectToAction("Details", new { id = model.VehicleId });
+        }
+
     }
 }

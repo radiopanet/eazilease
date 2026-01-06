@@ -31,10 +31,13 @@ namespace EaziLease.Models
         public decimal? FinalAmount {get; set;}
 
         public LeaseStatus Status {get; set;} = LeaseStatus.Active;
-        public bool IsActive => Status == LeaseStatus.Active;
+        public bool IsActive => ReturnDate == null;
 
         public decimal? ReturnOdometer { get; set; }
         public string? ReturnConditionNotes { get; set; }
+
+        public bool IsExtended {get; set;}
+        public int ExtensionCount {get; set;}
 
         public void CalculateMonthlyRate(decimal dailyRate)
         {
@@ -56,6 +59,22 @@ namespace EaziLease.Models
 
             return dailyRate * daysUsed;
         }
+
+        public void ExtendLease(DateTime newEndDate, decimal newMonthlyRate)
+        {
+            if(!IsActive)
+                throw new InvalidOperationException("Only active leases can be extended.");
+
+            if(newEndDate <= LeaseEndDate)
+                throw new ArgumentException("New end date must be later than current end date.");
+
+            LeaseEndDate = newEndDate;
+            MonthlyRate = newMonthlyRate;
+            IsExtended = true;
+            ExtensionCount++;  
+        }
+
+        
 
 
     }

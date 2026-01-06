@@ -257,9 +257,9 @@ namespace EaziLease.Controllers
             {
                 ModelState.AddModelError("",
                     "This client has already leased this vehicle before.");
-                    await ReloadFormData(lease);
+                await ReloadFormData(lease);
                 return View(lease);
-            } 
+            }
 
             // Save Lease
             lease.Id = Guid.NewGuid().ToString();
@@ -580,6 +580,32 @@ namespace EaziLease.Controllers
             }
 
             return View(maintenance);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExtendLease(string leaseId, DateTime newEndDate)
+        {
+            newEndDate = DateTime.SpecifyKind(newEndDate.Date, DateTimeKind.Utc);
+
+            var lease = await _context.VehicleLeases
+                .Include(l => l.Vehicle)
+                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
+
+            if (lease == null)
+                return NotFound();
+
+            // Recalculate monthly rate from daily rate
+            var days = (newEndDate - lease.LeaseStartDate).Days + 1;
+            var newMonthlyRate = lease.Vehicle!.DailyRate * 30;
+
+            lease.ExtendLease(newEndDate, newMonthlyRate);
+
+            await _context.SaveChangesAsync();
+
+            TempData["success"] = "Lease extended successfully.";
+            return RedirectToAction("Details", new { id = lease.VehicleId });
         }
     }
 }

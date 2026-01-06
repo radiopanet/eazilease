@@ -28,9 +28,34 @@ namespace EaziLease.Models
 
         public DateTime? ReturnDate {get; set;}
         public decimal? PenaltyFee {get; set;}
-        public bool IsActive => ReturnDate == null && DateTime.UtcNow.Date <= LeaseEndDate;
+
+        public LeaseStatus Status {get; set;} = LeaseStatus.Active;
+        public bool IsActive => Status == LeaseStatus.Active;
 
         public decimal? ReturnOdometer { get; set; }
         public string? ReturnConditionNotes { get; set; }
+
+        public void CalculateMonthlyRate(decimal dailyRate)
+        {
+            const int DAYS_IN_MONTH = 30;
+            MonthlyRate = dailyRate * DAYS_IN_MONTH;
+        }
+
+        public decimal CalculateProRataAmount(decimal dailyRate)
+        {
+            if(ReturnDate == null)
+                return MonthlyRate;
+
+            var start = LeaseStartDate.Date;
+            var end = ReturnDate.Value.Date;
+
+            var daysUsed = (end - start).Days + 1;
+
+            if(daysUsed < 0) daysUsed = 0;
+
+            return dailyRate * daysUsed;
+        }
+
+
     }
 }

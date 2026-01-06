@@ -194,7 +194,8 @@ namespace EaziLease.Controllers
                 VehicleId = id,
                 Vehicle = vehicle,
                 LeaseStartDate = DateTime.UtcNow.Date,
-                LeaseEndDate = DateTime.UtcNow.Date.AddMonths(1)
+                LeaseEndDate = DateTime.UtcNow.Date.AddMonths(1),
+                MonthlyRate = vehicle.DailyRate * 30
             });
         }
 
@@ -245,11 +246,8 @@ namespace EaziLease.Controllers
                 await ReloadFormData(lease);
                 return View(lease);
             }
-            if(lease.VehicleId == vehicle.Id && lease.ClientId == client.Id)
-            {
-                ModelState.AddModelError("", "No duplicate lease of the same vehicle allowed.");
-                return View(lease);
-            }
+
+            lease.CalculateMonthlyRate(vehicle.DailyRate);
 
             // Save Lease
             lease.Id = Guid.NewGuid().ToString();
@@ -302,7 +300,7 @@ namespace EaziLease.Controllers
         {
 
             returnDate = DateTime.SpecifyKind(
-            DateTime.UtcNow.Date, DateTimeKind.Utc);
+            returnDate.Date, DateTimeKind.Utc);
 
             var vehicle = await _context.Vehicles
                 .Include(v => v.CurrentLease)
@@ -312,10 +310,12 @@ namespace EaziLease.Controllers
                 return NotFound();
 
             //Update the lease record   
+            vehicle.CurrentLease.Status = LeaseStatus.Completed;
             vehicle.CurrentLease.ReturnDate = returnDate;
             vehicle.CurrentLease.ReturnOdometer = finalOdometerReading;
             vehicle.CurrentLease.ReturnConditionNotes = returnNotes;
             vehicle.CurrentLease.PenaltyFee = penaltyFee;
+
 
             //clear current lease reference
             vehicle.CurrentLeaseId = null;

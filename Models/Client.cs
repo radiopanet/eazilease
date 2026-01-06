@@ -15,8 +15,11 @@ namespace EaziLease.Models
         public string ContactEmail { get; set; } = string.Empty;
         [Display(Name="Phone Number")]
         public string ContactPhone { get; set; } = string.Empty;
-        [Display(Name ="Credit Limit")]
-        public string? CreditLimit { get; set; }
+        [Required]
+        [DataType(DataType.Currency)]
+        [Display(Name ="Credit Limit (R)")]
+        [Range(0, double.MaxValue, ErrorMessage="Credit Limit must me non-negative.")]
+        public decimal CreditLimit { get; set; } = 0m;
 
         //Navigation
         public virtual ICollection<VehicleLease>? Leases {get; set;} = default!;

@@ -655,7 +655,6 @@ namespace EaziLease.Controllers
             };
 
             return View(model);
-
         }
 
         [HttpPost]
@@ -670,7 +669,7 @@ namespace EaziLease.Controllers
 
             model.EffectiveFrom = DateTime.SpecifyKind(model.EffectiveFrom.Value.Date,
                     DateTimeKind.Utc);
-            model.EffectiveTo = DateTime.SpecifyKind(model.EffectiveTo.Value, DateTimeKind.Utc);        
+            model.EffectiveTo = DateTime.SpecifyKind(model.EffectiveTo.Value.Date, DateTimeKind.Utc);        
 
             var request = new RateOverrideRequest
             {

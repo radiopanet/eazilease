@@ -1,0 +1,194 @@
+@model List<EaziLease.Models.ViewModels.ManufacturerReportViewModel>
+
+@{
+    ViewData["Title"] = "Dashboard - Manufacturer Report";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="h2 mb-4 text-gray-800">EaziLease Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="row mb-5">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Vehicles</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalVehicles</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-car fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Available</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Available</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Leased</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Leased</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">In Maintenance</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.InMaintenance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Chart -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Vehicles by Manufacturer (Interactive Chart)</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="manufacturerChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Detailed Table (same as before, just cleaner) -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Detailed Allocation Report</h6>
+            <span class="badge bg-success fs-6">Grand Total: @ViewBag.GrandTotal vehicles</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Manufacturer</th>
+                            <th>Total</th>
+                            <th>Suppliers</th>
+                            <th>Branches</th>
+                            <th>Current Clients</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="table-light fw-bold">
+                                <td>@item.Manufacturer</td>
+                                <td class="text-center">@item.Total</td>
+                                <td colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    @foreach (var s in item.BySupplier)
+                                    {
+                                        <span class="badge bg-secondary me-1 mb-1">@s.Name: @s.Count</span>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var b in item.ByBranch)
+                                    {
+                                        <span class="badge bg-info me-1 mb-1">@b.Name: @b.Count</span>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var c in item.ByClient.Where(x => x.Name != "Not Leased"))
+                                    {
+                                        <span class="badge bg-success me-1 mb-1">@c.Name: @c.Count</span>
+                                    }
+                                    @if (item.ByClient.Any(x => x.Name == "Not Leased"))
+                                    {
+                                        var avail = item.ByClient.First(x => x.Name == "Not Leased").Count;
+                                        <span class="badge bg-warning text-dark">Available: @avail</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr><td colspan="5"><hr></td></tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-active fw-bold">
+                            <td>GRAND TOTAL</td>
+                            <td class="text-center">@ViewBag.GrandTotal</td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const ctx = document.getElementById('manufacturerChart').getContext('2d');
+
+    const data = {
+        labels: [@Html.Raw(string.Join(",", Model.Select(m => $"'{m.Manufacturer}'")))],
+        datasets: [{
+            label: 'Number of Vehicles',
+            data: [@Html.Raw(string.Join(",", Model.Select(m => m.Total)))],
+            backgroundColor: [
+                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
+                '#e74a3b', '#858796', '#f8b739', '#5a5c69'
+            ],
+            borderColor: '#fff',
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            label += context.parsed.y;
+                            return label + ' vehicles';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+</script>
+}

@@ -1,192 +1,189 @@
 @model List<EaziLease.Models.ViewModels.ManufacturerReportViewModel>
 
 @{
-    ViewData["Title"] = "Dashboard - Manufacturer Report";
+    ViewData["Title"] = "EaziLease | Insights";
 }
 
+<style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.9);
+        --accent-blue: #4361ee;
+        --accent-green: #2ec4b6;
+    }
+
+    body { background-color: #f8f9fc; font-family: 'Inter', sans-serif; }
+    
+    .glass-card {
+        background: var(--glass-bg);
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover { transform: translateY(-5px); }
+
+    .icon-shape {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+    }
+
+    .table-modern thead {
+        background: transparent;
+        border-bottom: 2px solid #f1f1f1;
+    }
+
+    .table-modern td { vertical-align: middle; padding: 1.2rem 0.75rem; }
+
+    .badge-soft {
+        padding: 0.5em 0.8em;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+</style>
+
 <div class="container-fluid py-4">
-    <h1 class="h2 mb-4 text-gray-800">EaziLease Dashboard</h1>
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">EaziLease Dashboard</h1>
+            <p class="text-muted">Fleet distribution and manufacturer insights</p>
+        </div>
+        <button class="btn btn-primary px-4 py-2 shadow-sm" style="border-radius: 10px;">
+            <i class="fas fa-download me-2"></i> Export Report
+        </button>
+    </div>
 
-    <!-- Summary Cards -->
-    <div class="row mb-5">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Vehicles</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalVehicles</div>
+    <div class="row g-4 mb-5">
+        @{
+            var stats = new[] {
+                new { Label = "Total Fleet", Value = ViewBag.TotalVehicles, Icon = "fa-car-side", Color = "bg-primary" },
+                new { Label = "Available", Value = ViewBag.Available, Icon = "fa-check-circle", Color = "bg-success" },
+                new { Label = "Leased", Value = ViewBag.Leased, Icon = "fa-file-contract", Color = "bg-info" },
+                new { Label = "In Maintenance", Value = ViewBag.InMaintenance, Icon = "fa-tools", Color = "bg-warning" }
+            };
+        }
+        @foreach (var s in stats)
+        {
+            <div class="col-xl-3 col-md-6">
+                <div class="card glass-card stat-card p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape @s.Color text-white shadow">
+                            <i class="fas @s.Icon fa-lg"></i>
                         </div>
-                        <div class="col-auto"><i class="fas fa-car fa-2x text-gray-300"></i></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Available</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Available</div>
+                        <div class="ms-3">
+                            <p class="text-xs fw-bold text-uppercase text-muted mb-0">@s.Label</p>
+                            <h3 class="fw-bold mb-0">@s.Value</h3>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Leased</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Leased</div>
-                        </div>
-                    </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card glass-card h-100 p-4">
+                <h5 class="fw-bold mb-4">Manufacturer Distribution</h5>
+                <div style="height: 300px;">
+                    <canvas id="manufacturerChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">In Maintenance</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.InMaintenance</div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card glass-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold m-0">Quick Allocation</h5>
+                    <span class="badge bg-light text-dark border">Total: @ViewBag.GrandTotal</span>
+                </div>
+                <div class="list-group list-group-flush overflow-auto" style="max-height: 350px;">
+                    @foreach (var item in Model)
+                    {
+                        <div class="list-group-item bg-transparent border-0 px-0 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">@item.Manufacturer</span>
+                                <span class="badge rounded-pill bg-primary">@item.Total units</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-accent-blue" style="width: @( (double)item.Total / (int)ViewBag.GrandTotal * 100 )%"></div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Interactive Chart -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Vehicles by Manufacturer (Interactive Chart)</h6>
-        </div>
-        <div class="card-body">
-            <canvas id="manufacturerChart" height="100"></canvas>
-        </div>
-    </div>
-
-    <!-- Detailed Table (same as before, just cleaner) -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Detailed Allocation Report</h6>
-            <span class="badge bg-success fs-6">Grand Total: @ViewBag.GrandTotal vehicles</span>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
+    <div class="card glass-card mt-4 p-4">
+        <h5 class="fw-bold mb-4">Deep Dive: Manufacturer Details</h5>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr class="text-muted">
+                        <th>MANUFACTURER</th>
+                        <th>SUPPLIERS</th>
+                        <th>DISTRIBUTION (BRANCH)</th>
+                        <th>CLIENT STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <th>Manufacturer</th>
-                            <th>Total</th>
-                            <th>Suppliers</th>
-                            <th>Branches</th>
-                            <th>Current Clients</th>
+                            <td class="fw-bold text-dark">@item.Manufacturer</td>
+                            <td>
+                                @foreach (var s in item.BySupplier) {
+                                    <span class="badge bg-light text-secondary border me-1">@s.Name</span>
+                                }
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    @string.Join(", ", item.ByBranch.Select(b => $"{b.Name} ({b.Count})"))
+                                </small>
+                            </td>
+                            <td>
+                                @{ var avail = item.ByClient.FirstOrDefault(x => x.Name == "Not Leased")?.Count ?? 0; }
+                                <div class="d-flex gap-2">
+                                    <span class="badge-soft bg-success-subtle text-success">@item.ByClient.Where(x => x.Name != "Not Leased").Sum(x => x.Count) Leased</span>
+                                    <span class="badge-soft bg-warning-subtle text-dark">@avail Available</span>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr class="table-light fw-bold">
-                                <td>@item.Manufacturer</td>
-                                <td class="text-center">@item.Total</td>
-                                <td colspan="3"></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    @foreach (var s in item.BySupplier)
-                                    {
-                                        <span class="badge bg-secondary me-1 mb-1">@s.Name: @s.Count</span>
-                                    }
-                                </td>
-                                <td>
-                                    @foreach (var b in item.ByBranch)
-                                    {
-                                        <span class="badge bg-info me-1 mb-1">@b.Name: @b.Count</span>
-                                    }
-                                </td>
-                                <td>
-                                    @foreach (var c in item.ByClient.Where(x => x.Name != "Not Leased"))
-                                    {
-                                        <span class="badge bg-success me-1 mb-1">@c.Name: @c.Count</span>
-                                    }
-                                    @if (item.ByClient.Any(x => x.Name == "Not Leased"))
-                                    {
-                                        var avail = item.ByClient.First(x => x.Name == "Not Leased").Count;
-                                        <span class="badge bg-warning text-dark">Available: @avail</span>
-                                    }
-                                </td>
-                            </tr>
-                            <tr><td colspan="5"><hr></td></tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr class="table-active fw-bold">
-                            <td>GRAND TOTAL</td>
-                            <td class="text-center">@ViewBag.GrandTotal</td>
-                            <td colspan="3"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 @section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('manufacturerChart').getContext('2d');
-
-    const data = {
-        labels: [@Html.Raw(string.Join(",", Model.Select(m => $"'{m.Manufacturer}'")))],
-        datasets: [{
-            label: 'Number of Vehicles',
-            data: [@Html.Raw(string.Join(",", Model.Select(m => m.Total)))],
-            backgroundColor: [
-                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
-                '#e74a3b', '#858796', '#f8b739', '#5a5c69'
-            ],
-            borderColor: '#fff',
-            borderWidth: 2,
-            borderRadius: 8,
-            borderSkipped: false,
-        }]
-    };
-
+    const ctx = document.getElementById('manufacturerChart');
+    
     new Chart(ctx, {
         type: 'bar',
-        data: data,
+        data: {
+            labels: [@Html.Raw(string.Join(",", Model.Select(m => $"'{m.Manufacturer}'")))],
+            datasets: [{
+                data: [@Html.Raw(string.Join(",", Model.Select(m => m.Total)))],
+                backgroundColor: '#4361ee',
+                borderRadius: 10,
+                barThickness: 20
+            }]
+        },
         options: {
+            indexAxis: 'y', // Makes it a horizontal bar for a more modern "ranking" look
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) label += ': ';
-                            label += context.parsed.y;
-                            return label + ' vehicles';
-                        }
-                    }
-                }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 }
-                }
-            },
-            animation: {
-                duration: 1500,
-                easing: 'easeOutQuart'
+                x: { grid: { display: false }, ticks: { display: true } },
+                y: { grid: { display: false } }
             }
         }
     });

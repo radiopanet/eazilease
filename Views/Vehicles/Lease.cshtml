@@ -6,6 +6,12 @@
     <input type="hidden" asp-for="VehicleId" />
     <input type="hidden" asp-for="Id" />
 
+    <div id="creditWarning" class="alert alert-warning d-none">
+        Warning: This lease may exceed client's credit limit.
+    </div>
+
+
+
     <div class="mb-3">
         <label class="form-label">Client</label>
         <select asp-for="ClientId" class="form-select" asp-items="ViewBag.ClientId"></select>
@@ -13,12 +19,14 @@
 
     <div class="mb-3">
         <label asp-for="LeaseStartDate" class="form-label">Start Date</label>
-        <input asp-for="LeaseStartDate" class="form-control" type="date" value="@Model.LeaseStartDate.ToString("yyyy-MM-dd")" />
+        <input asp-for="LeaseStartDate" class="form-control" type="date"
+            value="@Model.LeaseStartDate.ToString("yyyy-MM-dd")" />
     </div>
 
     <div class="mb-3">
         <label asp-for="LeaseEndDate" class="form-label">End Date</label>
-        <input asp-for="LeaseEndDate" class="form-control" type="date" value="@Model.LeaseEndDate.ToString("yyyy-MM-dd")" />
+        <input asp-for="LeaseEndDate" class="form-control" type="date"
+            value="@Model.LeaseEndDate.ToString("yyyy-MM-dd")" />
     </div>
 
     <div class="mb-3">
@@ -29,3 +37,17 @@
     <button type="submit" class="btn btn-success">Lease Vehicle</button>
     <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary">Cancel</a>
 </form>
+<script>
+    // Simple client-side preview (optional)
+    document.querySelector('[name="MonthlyRate"]').addEventListener('input', function () {
+        const rate = parseFloat(this.value) || 0;
+        const currentCommitted = @Model.Client?.CurrentCommittedAmount; // pass from controller
+        const limit = @Model.Client?.CreditLimit;
+        const warning = document.getElementById('creditWarning');
+        if (currentCommitted + rate > limit) {
+            warning.classList.remove('d-none');
+        } else {
+            warning.classList.add('d-none');
+        }
+    });
+</script>

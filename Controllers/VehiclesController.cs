@@ -250,6 +250,22 @@ namespace EaziLease.Controllers
 
             lease.CalculateMonthlyRate(vehicle.DailyRate);
 
+            //Check client's credit limit and enforce limit on lease
+            decimal currentCommitted = client.CurrentCommittedAmount;
+            decimal newTotal = currentCommitted + lease.MonthlyRate;
+
+            if (newTotal > client.CreditLimit)
+            {
+                    ModelState.AddModelError("",
+                $"Client credit limit exceeded. " +
+                $"Current committed: {currentCommitted:C}, " +
+                $"New lease would add {lease.MonthlyRate:C}, " +
+                $"Total would be {newTotal:C} (limit: {client.CreditLimit:C}).");
+
+                ViewBag.ClientId = new SelectList(_context.Clients, "Id", "CompanyName", lease.ClientId);
+                return View(lease);
+            }
+
             var hasLeasedBefore = await _context.VehicleLeases
                 .AnyAsync(l => l.VehicleId == lease.VehicleId &&
                 l.ClientId == lease.ClientId);
@@ -348,8 +364,63 @@ namespace EaziLease.Controllers
             await _auditService.LogAsync("VehicleLease", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
             //await _auditService.LogAsync("Lease", lease.Id, "LeaseEnded", $"Lease ended early. Final billed amount: R{lease.FinalAmount}");
             return RedirectToAction("Details", new { id });
+        }
+
+        public async Task<IActionResult> ExtendLease(string leaseId)
+        {
+            var lease = await _context.VehicleLeases
+                .Include(l => l.Vehicle)
+                .Include(l => l.Client)
+                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
+
+            if (lease == null)
+                return NotFound();
+
+            var model = new ExtendLeaseViewModel
+            {
+                LeaseId = lease.Id,
+                VehicleId = lease.VehicleId,
+                VehicleRegistration = lease.Vehicle?.RegistrationNumber ?? "",
+                ClientName = lease.Client?.CompanyName ?? "",
+                CurrentEndDate = lease.LeaseEndDate,
+                DailyRate = lease.Vehicle?.DailyRate ?? 0
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExtendLease(string leaseId, DateTime newEndDate)
+        {
+            newEndDate = DateTime.SpecifyKind(newEndDate.Date, DateTimeKind.Utc);
+            if (newEndDate == default)
+                return BadRequest("New end date is required.");
 
 
+            var lease = await _context.VehicleLeases
+                .Include(l => l.Vehicle)
+                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
+
+            if (lease == null)
+                return NotFound();
+
+            if (newEndDate <= lease.LeaseEndDate)
+                return BadRequest("New end date must be after current end date.");
+
+            // Recalculate monthly rate from daily rate
+            var days = (newEndDate - lease.LeaseStartDate).Days + 1;
+            var newMonthlyRate = lease.Vehicle!.DailyRate * 30.4167m;
+
+            lease.ExtendLease(newEndDate, newMonthlyRate);
+
+            await _context.SaveChangesAsync();
+
+            await _auditService.LogAsync("VehicleLease", lease.Id, "ExtendLease",
+                 $"Lease {lease.Vehicle.RegistrationNumber} extendend successfully.");
+            TempData["success"] = "Lease extended successfully.";
+            return RedirectToAction("Details", new { id = lease.VehicleId });
         }
 
         // Helper function
@@ -583,69 +654,12 @@ namespace EaziLease.Controllers
             return View(maintenance);
         }
 
-        public async Task<IActionResult> ExtendLease(string leaseId)
-        {
-            var lease = await _context.VehicleLeases
-                .Include(l => l.Vehicle)
-                .Include(l => l.Client)
-                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
-
-            if (lease == null)
-                return NotFound();
-
-            var model = new ExtendLeaseViewModel
-            {
-                LeaseId = lease.Id,
-                VehicleId = lease.VehicleId,
-                VehicleRegistration = lease.Vehicle?.RegistrationNumber ?? "",
-                ClientName = lease.Client?.CompanyName ?? "",
-                CurrentEndDate = lease.LeaseEndDate,
-                DailyRate = lease.Vehicle?.DailyRate ?? 0
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
         [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExtendLease(string leaseId, DateTime newEndDate)
-        {
-            newEndDate = DateTime.SpecifyKind(newEndDate.Date, DateTimeKind.Utc);
-            if(newEndDate == default)
-                return BadRequest("New end date is required.");
-
-        
-            var lease = await _context.VehicleLeases
-                .Include(l => l.Vehicle)
-                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
-
-            if (lease == null)
-                return NotFound();
-
-            if(newEndDate <= lease.LeaseEndDate)
-                return BadRequest("New end date must be after current end date.");
-
-            // Recalculate monthly rate from daily rate
-            var days = (newEndDate - lease.LeaseStartDate).Days + 1;
-            var newMonthlyRate = lease.Vehicle!.DailyRate * 30.4167m;
-
-            lease.ExtendLease(newEndDate, newMonthlyRate);
-
-            await _context.SaveChangesAsync();
-
-            await _auditService.LogAsync("VehicleLease", lease.Id, "ExtendLease",
-                 $"Lease {lease.Vehicle.RegistrationNumber} extendend successfully.");
-            TempData["success"] = "Lease extended successfully.";
-            return RedirectToAction("Details", new { id = lease.VehicleId });
-        }
-
-        [Authorize(Roles="Admin")]
         public async Task<IActionResult> RequestRateOverride(string vehicleId)
         {
             var vehicle = await _context.Vehicles.FindAsync(vehicleId);
 
-            if(vehicle == null) return NotFound();
+            if (vehicle == null) return NotFound();
 
             var model = new RateOverrideRequestViewModel
             {
@@ -659,17 +673,17 @@ namespace EaziLease.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RequestRateOverride(RateOverrideRequestViewModel model)
         {
-            if(!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return View(model);
 
             var vehicle = await _context.Vehicles.FindAsync(model.VehicleId);
-            if(vehicle == null) return NotFound();
+            if (vehicle == null) return NotFound();
 
             model.EffectiveFrom = DateTime.SpecifyKind(model.EffectiveFrom.Value.Date,
                     DateTimeKind.Utc);
-            model.EffectiveTo = DateTime.SpecifyKind(model.EffectiveTo.Value.Date, DateTimeKind.Utc);        
+            model.EffectiveTo = DateTime.SpecifyKind(model.EffectiveTo.Value.Date, DateTimeKind.Utc);
 
             var request = new RateOverrideRequest
             {
@@ -685,7 +699,7 @@ namespace EaziLease.Controllers
 
             _context.RateOverrideRequests.Add(request);
             await _context.SaveChangesAsync();
-            
+
             TempData["success"] = "Rate override request submitted. Awaiting SuperAdmin approval.";
             return RedirectToAction("Details", new { id = model.VehicleId });
         }

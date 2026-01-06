@@ -1,5 +1,6 @@
 using EaziLease.Models.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EaziLease.Models
 {
@@ -20,6 +21,24 @@ namespace EaziLease.Models
         [Display(Name ="Credit Limit (R)")]
         [Range(0, double.MaxValue, ErrorMessage="Credit Limit must me non-negative.")]
         public decimal CreditLimit { get; set; } = 0m;
+
+        [NotMapped]
+        public decimal CurrentCommittedAmount
+        {
+            get
+            {
+                if(Leases == null) return 0m;
+                return Leases
+                            .Where(l => l.IsActive)
+                            .Sum(l => l.MonthlyRate);
+            }
+        }
+
+        [NotMapped]
+        public bool HasAvailableCredit => CreditLimit >= CurrentCommittedAmount;
+
+        [NotMapped]
+        public decimal AvailableCredit => CreditLimit - CurrentCommittedAmount;
 
         //Navigation
         public virtual ICollection<VehicleLease>? Leases {get; set;} = default!;

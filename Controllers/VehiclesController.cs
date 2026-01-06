@@ -6,6 +6,7 @@ using EaziLease.Data;
 using EaziLease.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EaziLease.Services;
+using EaziLease.Models.ViewModel;
 
 namespace EaziLease.Controllers
 {
@@ -582,13 +583,39 @@ namespace EaziLease.Controllers
             return View(maintenance);
         }
 
+        public async Task<IActionResult> ExtendLease(string leaseId)
+        {
+            var lease = await _context.VehicleLeases
+                .Include(l => l.Vehicle)
+                .Include(l => l.Client)
+                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
+
+            if (lease == null)
+                return NotFound();
+
+            var model = new ExtendLeaseViewModel
+            {
+                LeaseId = lease.Id,
+                VehicleId = lease.VehicleId,
+                VehicleRegistration = lease.Vehicle?.RegistrationNumber ?? "",
+                ClientName = lease.Client?.CompanyName ?? "",
+                CurrentEndDate = lease.LeaseEndDate,
+                DailyRate = lease.Vehicle?.DailyRate ?? 0
+            };
+
+            return View(model);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExtendLease(string leaseId, DateTime newEndDate)
         {
             newEndDate = DateTime.SpecifyKind(newEndDate.Date, DateTimeKind.Utc);
+            if(newEndDate == default)
+                return BadRequest("New end date is required.");
 
+        
             var lease = await _context.VehicleLeases
                 .Include(l => l.Vehicle)
                 .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
@@ -596,9 +623,12 @@ namespace EaziLease.Controllers
             if (lease == null)
                 return NotFound();
 
+            if(newEndDate <= lease.LeaseEndDate)
+                return BadRequest("New end date must be after current end date.");
+
             // Recalculate monthly rate from daily rate
             var days = (newEndDate - lease.LeaseStartDate).Days + 1;
-            var newMonthlyRate = lease.Vehicle!.DailyRate * 30;
+            var newMonthlyRate = lease.Vehicle!.DailyRate * 30.4167m;
 
             lease.ExtendLease(newEndDate, newMonthlyRate);
 

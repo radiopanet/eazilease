@@ -1,0 +1,54 @@
+@using EaziLease.Models.ViewModel
+@model ExtendLeaseViewModel
+
+@{
+    ViewData["Title"] = "Extend Lease";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Extend Lease for Vehicle: @Model.VehicleRegistration</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-4">
+                <dt class="col-sm-4">Current End Date</dt>
+                <dd class="col-sm-8">@Model.CurrentEndDate.ToString("dd MMMM yyyy")</dd>
+
+                <dt class="col-sm-4">Client</dt>
+                <dd class="col-sm-8">@Model.ClientName</dd>
+
+                <dt class="col-sm-4">Daily Rate</dt>
+                <dd class="col-sm-8">@Model.DailyRate.ToString("C")</dd>
+            </dl>
+
+            <form asp-action="ExtendLease" method="post">
+                <input type="hidden" name="leaseId" value="@Model.LeaseId" />
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">New Lease End Date</label>
+                    <input type="date" name="newEndDate" class="form-control" 
+                           min="@Model.CurrentEndDate.AddDays(1).ToString("yyyy-MM-dd")" required />
+                    <small class="text-muted">Must be after current end date</small>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Note:</strong> Monthly rate will be recalculated based on new duration.
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-success btn-lg px-5">
+                        Extend Lease
+                    </button>
+                    <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-secondary btn-lg px-5">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -25,10 +25,10 @@ namespace EaziLease.Models
             ((LeaseEndDate.Year - LeaseStartDate.Year) * 12) +
             (LeaseEndDate.Month - LeaseStartDate.Month);
 
-        public bool IsActive => DateTime.UtcNow.Date <= LeaseEndDate;
 
         public DateTime? ReturnDate {get; set;}
         public decimal? PenaltyFee {get; set;}
+        public bool IsActive => ReturnDate == null && DateTime.UtcNow.Date <= LeaseEndDate;
 
         public decimal? ReturnOdometer { get; set; }
         public string? ReturnConditionNotes { get; set; }

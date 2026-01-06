@@ -7,12 +7,7 @@
 <h1 class="h3 mb-4">Vehicle Details</h1>
 <hr />
 
-<div class="row">
-<div class="col-md-4">
-<a asp-action="AddMaintenance" asp-route-vehicleId="@Model.Id" class="btn btn-info btn-sm">
-    <i class="bi bi-tools"></i> Record Maintenance
-</a>
-</div>
+
 
     <div class="col-lg-8 col-md-10 mx-auto">
         <div class="card shadow-sm">
@@ -79,31 +74,39 @@
                 </dl>
                 
             </div>
-            @if (Model.Status != VehicleStatus.Leased)
-{
-    <a asp-action="Lease" asp-route-id="@Model.Id" class="btn btn-success btn-sm">Lease to Client</a>
-}
+            @if (Model.Status != VehicleStatus.Leased && Model.Status != VehicleStatus.InMaintenance)
+            {
+                <a asp-action="Lease" asp-route-id="@Model.Id" class="btn btn-success btn-sm mt-2">Lease to Client</a>
+            }
 
-@if (Model.CurrentDriver == null)
-{
-    <a asp-action="AssignDriver" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Assign Driver</a>
-}
-else
-{
-    <span class="text-success">Driver: @Model.CurrentDriver.FullName</span>
-}
-@if (Model.CurrentLease != null)
-{
-    <a asp-action="EndLease" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mt-2">
-        End Lease / Return Vehicle
-    </a>
-}
-@if (Model.CurrentDriver != null)
-{
-    <a asp-action="ReturnDriver" asp-route-id="@Model.Id" class="btn btn-warning btn-sm mt-2">
-        Return Driver
-    </a>
-}
+            @if (Model.CurrentDriver == null && Model.Status != VehicleStatus.InMaintenance)
+            {
+                <a asp-action="AssignDriver" asp-route-id="@Model.Id" class="btn btn-primary btn-sm mt-2">Assign Driver</a>
+            }
+            else
+            {
+                <span class="text-success">Driver: @Model?.CurrentDriver?.FullName</span>
+            }   
+            @if (Model?.CurrentLease != null )
+            {
+                <a asp-action="EndLease" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mt-2">
+                    End Lease / Return Vehicle
+                </a>
+            }
+            @if (Model?.CurrentDriver != null)
+            {
+                <a asp-action="ReturnDriver" asp-route-id="@Model.Id" class="btn btn-warning btn-sm mt-2">
+                    Return Driver
+                </a>
+            }
+            @if(Model.CurrentLease == null && Model.Status != VehicleStatus.InMaintenance)
+            {
+                <a asp-action="AddMaintenance" asp-route-vehicleId="@Model.Id" class="btn btn-info btn-sm mt-2">
+                    <i class="bi bi-tools"></i> Record Maintenance
+                </a>
+
+            }
+
             <div class="card-footer text-end">
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>

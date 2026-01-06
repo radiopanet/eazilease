@@ -29,14 +29,7 @@ namespace EaziLease.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Driver driver)
         {
-            foreach(var kvp in ModelState)
-            {
-                foreach(var err in kvp.Value.Errors)
-                {
-                    Console.WriteLine($"Property {kvp.Key} with value {kvp.Value} threw the following error:- {err}");
-                }
-            }
-
+            driver.LicenseExpiry = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
             if (ModelState.IsValid)
             {
                 driver.CreatedBy = User.Identity!.Name ?? "admin";
@@ -60,6 +53,8 @@ namespace EaziLease.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Driver driver)
         {
+            driver.LicenseExpiry = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
+
             if (id != driver.Id) return NotFound();
             if (ModelState.IsValid)
             {
@@ -83,6 +78,14 @@ namespace EaziLease.Controllers
             }
             return View(driver);
         }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            var driver = await _context.Drivers.FindAsync(id);
+            if(driver == null || driver.IsDeleted) return NotFound();
+            return View(driver);
+        }
+
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

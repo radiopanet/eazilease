@@ -72,6 +72,13 @@ namespace EaziLease.Controllers
             return View(branch);
         }
 
+        public async Task<IActionResult> Delete(string id)
+        {
+            var branch = await _context.Branches.FindAsync(id);
+            if(branch == null || branch.IsDeleted) return NotFound();
+            return View(branch);
+        }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -84,7 +91,7 @@ namespace EaziLease.Controllers
                 branch.DeletedBy = User.Identity!.Name;
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Branch deleted";
-                await _auditService.LogAsync("Braches", branch.Id, "Delete",
+                await _auditService.LogAsync("Branches", branch.Id, "Delete",
                      $"Branch {branch.Name} deleted by {branch.DeletedBy} at {branch.DeletedAt}");
             }
             return RedirectToAction(nameof(Index));

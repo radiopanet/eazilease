@@ -15,11 +15,11 @@
                     <p>This is your secure area for administrative tasks.</p>
 
                     <div class="list-group mt-4">
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <i class="bi bi-people"></i> User Management
+                        <a asp-area="" asp-action="Index" asp-controller="Audit" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> View Audit Logs
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <i class="bi bi-journal-text"></i> View Audit Logs
+                        <a asp-area="SuperAdmin" asp-controller="UserManagement" asp-action="Index" class="list-group-item list-group-item-action">
+                            <i class="bi bi-journal-text"></i> User Management
                         </a>
                         <a href="#" class="list-group-item list-group-item-action">
                             <i class="bi bi-gear"></i> App Settings

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EaziLease Super Admin</title>
+    <title>@ViewData["Title"] - EaziLease Admin Portal</title>
 
 
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
@@ -18,11 +18,10 @@
 </head>
 <body class="bg-light">
 
-    <!-- Super Admin Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">
-                EaziLease <small class="text-warning">Super Admin</small>
+            <a class="navbar-brand fw-bold" asp-area="SuperAdmin" asp-action="Index" asp-controller="SuperDashboard">
+                EaziLease <small class="text-warning">Admin</small>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#superNavbar">
@@ -31,13 +30,18 @@
 
             <div class="collapse navbar-collapse" id="superNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
+                   <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">
+                            User Portal
+                        </a>
+                    </li>
+                    @* <li class="nav-item">
                         <a class="nav-link" asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Index">
                             Dashboard
                         </a>
-                    </li>
+                    </li> *@
                     <li class="nav-item">
-                        <a class="nav-link" href="/SuperAdmin/UserManagement/Index">
+                        <a class="nav-link" asp-area="SuperAdmin" asp-controller="UserManagement" asp-action="Index">
                              User Management
                         </a>
                     </li>
@@ -46,12 +50,12 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <span class="nav-link text-success fw-bold">
-                            <i class="bi bi-shield-check-fill"></i> Super Mode Active
+                            <i class="bi bi-shield-check-fill"></i> Admin
                         </span>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-warning" asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Exit">
-                            <i class="bi bi-box-arrow-left"></i> Exit Super Mode
+                            <i class="bi bi-box-arrow-left"></i> Exit Admin Portal
                         </a>
                     </li>
                 </ul>

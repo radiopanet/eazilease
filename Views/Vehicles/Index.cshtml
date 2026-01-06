@@ -1,3 +1,4 @@
+@using EaziLease.Extensions
 @model IEnumerable<EaziLease.Models.Vehicle>
 
 @{
@@ -60,10 +61,14 @@
                     <td>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Details</a>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-danger" 
-                                    onclick="return confirm('Move to trash?')">Delete</button>
-                        </form>
+                        @if(User.Identity.IsAuthenticated){
+                            if(Context.IsSuperAdminElevated()){
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                            onclick="return confirm('Move to trash?')">Delete</button>
+                                </form>
+                            }    
+                        }
                     </td>
                 </tr>
             }

@@ -19,13 +19,13 @@ namespace EaziLease.Models
         public DateTime LeaseEndDate { get; set; } = 
             DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
 
-        public decimal MonthlyRate { get; set; }
+        public decimal MonthlyRate {get; set;}
 
         public int TermInMonths =>
             ((LeaseEndDate.Year - LeaseStartDate.Year) * 12) +
             (LeaseEndDate.Month - LeaseStartDate.Month);
 
-        public bool IsActive => DateTime.UtcNow.Date <= LeaseEndDate.Date;
+        public bool IsActive => DateTime.UtcNow.Date <= LeaseEndDate;
 
         public DateTime? ReturnDate {get; set;}
         public decimal? PenaltyFee {get; set;}

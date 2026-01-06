@@ -76,6 +76,13 @@ namespace EaziLease.Controllers
             return View(supplier);
         }
 
+        public async Task<IActionResult> Delete(string id)
+        {
+            var supplier = await _context.Suppliers.FindAsync(id);
+            if(supplier == null || supplier.IsDeleted) return NotFound();
+            return View(supplier);
+        }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

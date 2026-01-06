@@ -1,72 +1,83 @@
-@model EaziLease.Models.Supplier
+@model EaziLease.Models.Driver
 
 @{
-    ViewData["Title"] = "Edit Supplier";
+    ViewData["Title"] = "Edit Driver";
 }
 
 <form method="post" asp-action="Edit">
     <input asp-for="Id" hidden />
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary">Edit Supplier</h2>
+            <h2 class="text-primary">Edit Driver</h2>
             <hr />
         </div>
         
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="mb-3 row">
-            <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+            <label asp-for="FirstName" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+             <div class="mb-3 row">
+            <label asp-for="LastName" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="ContactPerson" class="col-sm-2 col-form-label"></label>
+            <label asp-for="Email" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <input asp-for="ContactPerson" class="form-control" />
-                <span asp-validation-for="ContactPerson" class="text-danger"></span>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="ContactEmail" class="col-sm-2 col-form-label"></label>
+            <label asp-for="Phone" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <input asp-for="ContactEmail" class="form-control" />
-                <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
         </div>
 
         <div class="mb-3 row">
-            <label asp-for="ContactPhone" class="col-sm-2 col-form-label"></label>
+            <label asp-for="LicenseNumber" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <input asp-for="ContactPhone" class="form-control" />
-                <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                <input asp-for="LicenseNumber" class="form-control" />
+                <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+            </div>
+        </div>
+        
+       <div class="mb-3 row">
+            <label asp-for="LicenseExpiry" class="form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="LicenseExpiry" type="date" class="form-control" />
+                <span asp-validation-for="LicenseExpiry" class="text-danger"></span>
             </div>
         </div>
         
         <div class="mb-3 row">
-            <label asp-for="Address" class="col-sm-2 col-form-label"></label>
+            <label asp-for="AccidentCount" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+                <input asp-for="AccidentCount" class="form-control" />
+                <span asp-validation-for="AccidentCount" class="text-danger"></span>
             </div>
         </div>
         
+       
         <div class="mb-3 row">
-            <label asp-for="City" class="col-sm-2 col-form-label"></label>
+            <label asp-for="IsActive" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-        </div>
-        
-        <div class="mb-3 row">
-            <label asp-for="Country" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="Country" class="form-control" />
-                <span asp-validation-for="Country" class="text-danger"></span>
+                <select asp-for="IsActive" class="form-control">
+                    <option value=True>True</option>
+                    <option value=False>False</option>
+                </select>
+                <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
         </div>
 

@@ -131,6 +131,8 @@ namespace EaziLease.Controllers
                     existing.BranchId = vehicle.BranchId;
                     existing.Status = vehicle.Status;
 
+                    // if(vehicle.Status == )
+
                     existing.UpdatedAt = DateTime.UtcNow;
                     existing.UpdatedBy = User.Identity!.Name ?? "admin";
 
@@ -243,6 +245,11 @@ namespace EaziLease.Controllers
                 await ReloadFormData(lease);
                 return View(lease);
             }
+            if(lease.VehicleId == vehicle.Id && lease.ClientId == client.Id)
+            {
+                ModelState.AddModelError("", "No duplicate lease of the same vehicle allowed.");
+                return View(lease);
+            }
 
             // Save Lease
             lease.Id = Guid.NewGuid().ToString();
@@ -255,6 +262,7 @@ namespace EaziLease.Controllers
             // Update Vehicle
             vehicle.CurrentLeaseId = lease.Id;
             vehicle.Status = VehicleStatus.Leased;
+            
 
             await _context.SaveChangesAsync();
 
@@ -311,13 +319,15 @@ namespace EaziLease.Controllers
 
             //clear current lease reference
             vehicle.CurrentLeaseId = null;
+            vehicle.CurrentLease = null;
+
             vehicle.Status = VehicleStatus.Available;  // or ask for new status
 
             await _context.SaveChangesAsync();
-            await _auditService.LogAsync("Vehicle", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
 
-            await _auditService.LogAsync("Lease", vehicle.CurrentLease.Id, "LeaseEnded", $"Vehicle {vehicle.RegistrationNumber} lease has ended.");
             TempData["success"] = "Lease ended successfully. Vehicle is now available.";
+
+            await _auditService.LogAsync("Vehicle", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
             return RedirectToAction("Details", new { id });
 
 
@@ -425,12 +435,14 @@ namespace EaziLease.Controllers
                 await _context.SaveChangesAsync();
 
 
-                vehicle.CurrentDriverId = driver.Id;
-                driver.CurrentVehicleId = vehicle.Id;
+                // vehicle.CurrentDriverId = driver.Id;
+                vehicle.CurrentDriver = driver;
+                // driver.CurrentVehicleId = vehicle.Id;
+                driver.CurrentVehicle = vehicle;
 
                 await _context.SaveChangesAsync();
                 await _auditService.LogAsync("Driver", driver.Id, "AssignDriver",
-                        $"Driver {driver.FullName } has been assigned to ${vehicle.RegistrationNumber}" + 
+                        $"Driver {driver.FullName} has been assigned to ${vehicle.RegistrationNumber}" +
                         $"by {assignment.CreatedBy}");
 
                 TempData["success"] = $"Driver {driver.FullName} assigned to {vehicle.RegistrationNumber}";

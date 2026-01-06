@@ -44,6 +44,21 @@ public class UserManagementController : Controller
         return View(userList);
     }
 
+    //GET user by name or email
+    // public async Task<IActionResult> Index(string search)
+    // {
+    //     var user = _userManager.Users.AsQueryable().Where(u => u.FullName.Contains(search));
+    //     if(user == null)
+    //     {
+    //         return NotFound();
+    //     }
+    //     else
+    //     {
+    //         return View(user);
+    //     }     
+
+    // }
+
     //GET create user
     public IActionResult Create()
     {
@@ -180,12 +195,24 @@ public class UserManagementController : Controller
         return RedirectToAction("Index", "SuperDashboard", new { Area = "SuperAdmin" });
     }
 
+
+    [ActionName("ResetPassword")]
+    [HttpGet]
+    public async Task<IActionResult> Reset(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if(user == null) return NotFound();
+
+        return View(user);
+    }
+
+
     public async Task<IActionResult> ResetPassword(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if(user == null) return NotFound();
 
-        var newPassword = "Temp" + Guid.NewGuid().ToString("N").Substring(0,8);
+        var newPassword = "Temp@" + Guid.NewGuid().ToString("N").Substring(0,8);
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
         var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
 
@@ -194,6 +221,8 @@ public class UserManagementController : Controller
             TempData["success"] = $"Password reset for {user.Email}. New password: {newPassword} (change immediately!)";
             await _auditService.LogAsync("UserManagement", user.Id,"ResetPassword", 
              $"Password reset for {user.Email}. New password: {newPassword} (change immediately!)");
+
+            return View(result); 
         }
         else
         {

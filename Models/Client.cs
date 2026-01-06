@@ -12,7 +12,8 @@ namespace EaziLease.Models
         public string? CreditLimit { get; set; }
 
         //Navigation
-        public virtual ICollection<VehicleLease> Leases {get; set;} = default!;
+        public virtual ICollection<VehicleLease>? Leases {get; set;} = default!;
         public int ActiveLeaseCount => Leases?.Count(l => l.IsActive) ?? 0;
+       
     }
 }

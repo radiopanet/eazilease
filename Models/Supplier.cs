@@ -13,6 +13,6 @@ namespace EaziLease.Models
         public string? Country {get; set;}
         public decimal? AverageRating {get; set;}
 
-        public virtual ICollection<Vehicle> Vehicles {get; set;} = null!;
+        public virtual ICollection<Vehicle>? Vehicles {get; set;} = null!;
     }
 }

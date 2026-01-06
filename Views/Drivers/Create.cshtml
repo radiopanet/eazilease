@@ -1,7 +1,7 @@
 @model EaziLease.Models.Driver
 
 @{
-    ViewData["Title"] = "Create Supplier";
+    ViewData["Title"] = "Add Driver";
 }
 
 <form method="post" asp-action="Create">
@@ -71,13 +71,10 @@
         <div class="mb-3 row">
             <label asp-for="IsActive" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
-                <fieldset asp-for="IsActive" class="form-control">
-                    <legend class="col-sm-2 col-form-label">Select Status</legend>
-                    <input type="radio" class="form-control" value="true">
-                    <label asp-for="IsActive" class="col-sm-2 col-form-label">True</label>
-                    <input type="radio" class="form-control" value="false">
-                    <label asp-for="IsActive" class="col-sm-2 col-form-label">False</label>
-                </fieldset>
+                <select asp-for="IsActive" class="form-control">
+                    <option value=True>True</option>
+                    <option value=False>False</option>
+                </select>
                 <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
         </div>

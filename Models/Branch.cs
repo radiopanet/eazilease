@@ -12,6 +12,6 @@ namespace EaziLease.Models
 
         // Navigation
         public virtual ApplicationUser? Manager { get; set; }
-        public virtual ICollection<Vehicle> Vehicles { get; set; } = default!;
+        public virtual ICollection<Vehicle>? Vehicles { get; set; } = null;
     }
 }

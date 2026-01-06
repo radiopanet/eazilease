@@ -668,6 +668,10 @@ namespace EaziLease.Controllers
             var vehicle = await _context.Vehicles.FindAsync(model.VehicleId);
             if(vehicle == null) return NotFound();
 
+            model.EffectiveFrom = DateTime.SpecifyKind(model.EffectiveFrom.Value.Date,
+                    DateTimeKind.Utc);
+            model.EffectiveTo = DateTime.SpecifyKind(model.EffectiveTo.Value, DateTimeKind.Utc);        
+
             var request = new RateOverrideRequest
             {
                 VehicleId = model.VehicleId,

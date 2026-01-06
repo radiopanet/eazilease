@@ -28,6 +28,7 @@ namespace EaziLease.Models
 
         public DateTime? ReturnDate {get; set;}
         public decimal? PenaltyFee {get; set;}
+        public decimal? FinalAmount {get; set;}
 
         public LeaseStatus Status {get; set;} = LeaseStatus.Active;
         public bool IsActive => Status == LeaseStatus.Active;

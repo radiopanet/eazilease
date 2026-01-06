@@ -249,6 +249,18 @@ namespace EaziLease.Controllers
 
             lease.CalculateMonthlyRate(vehicle.DailyRate);
 
+            var hasLeasedBefore = await _context.VehicleLeases
+                .AnyAsync(l => l.VehicleId == lease.VehicleId &&
+                l.ClientId == lease.ClientId);
+
+            if (hasLeasedBefore)
+            {
+                ModelState.AddModelError("",
+                    "This client has already leased this vehicle before.");
+                    await ReloadFormData(lease);
+                return View(lease);
+            } 
+
             // Save Lease
             lease.Id = Guid.NewGuid().ToString();
             lease.Vehicle = vehicle;
@@ -260,7 +272,7 @@ namespace EaziLease.Controllers
             // Update Vehicle
             vehicle.CurrentLeaseId = lease.Id;
             vehicle.Status = VehicleStatus.Leased;
-            
+
 
             await _context.SaveChangesAsync();
 
@@ -309,6 +321,8 @@ namespace EaziLease.Controllers
             if (vehicle == null || vehicle.CurrentLease == null)
                 return NotFound();
 
+            var lease = vehicle.CurrentLease;
+
             //Update the lease record   
             vehicle.CurrentLease.Status = LeaseStatus.Completed;
             vehicle.CurrentLease.ReturnDate = returnDate;
@@ -316,6 +330,9 @@ namespace EaziLease.Controllers
             vehicle.CurrentLease.ReturnConditionNotes = returnNotes;
             vehicle.CurrentLease.PenaltyFee = penaltyFee;
 
+
+            lease.FinalAmount = lease.CalculateProRataAmount(vehicle.DailyRate)
+                + penaltyFee ?? 0;
 
             //clear current lease reference
             vehicle.CurrentLeaseId = null;
@@ -327,7 +344,8 @@ namespace EaziLease.Controllers
 
             TempData["success"] = "Lease ended successfully. Vehicle is now available.";
 
-            await _auditService.LogAsync("Vehicle", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
+            await _auditService.LogAsync("VehicleLease", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
+            //await _auditService.LogAsync("Lease", lease.Id, "LeaseEnded", $"Lease ended early. Final billed amount: R{lease.FinalAmount}");
             return RedirectToAction("Details", new { id });
 
 

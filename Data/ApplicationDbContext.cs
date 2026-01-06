@@ -66,6 +66,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey<Driver>(d => d.CurrentVehicleId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        builder.Entity<VehicleLease>()
+            .HasIndex(l => l.VehicleId)
+            .HasFilter("\"ReturnDate\" IS NULL")
+            .IsUnique();
+    
+
         //Soft delete global query filter
         builder.Entity<Supplier>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<Branch>().HasQueryFilter(e => !e.IsDeleted);

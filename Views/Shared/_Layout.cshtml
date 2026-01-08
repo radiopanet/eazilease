@@ -5,80 +5,192 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - EaziLease</title>
-    <script type="importmap"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
-    <link rel="stylesheet" href="~/css/app.css"/>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/EaziLease.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            --glass-white: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        #wrapper { display: flex; width: 100%; align-items: stretch; }
+
+        #sidebar {
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            background: #1e293b; /* Dark Slate */
+            color: #fff;
+            transition: all 0.3s;
+            min-height: 100vh;
+            z-index: 1000;
+        }
+
+        #sidebar .sidebar-header { padding: 2rem 1.5rem; background: #0f172a; }
+        
+        .nav-link-custom {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link-custom i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
+        
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            border-left-color: #3b82f6;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        #content { width: 100%; transition: all 0.3s; }
+
+        .admin-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        footer { background: white; padding: 1.5rem 0; border-top: 1px solid #e2e8f0; }
+
+        @@media (max-width: 992px) {
+            #sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
+            #sidebar.active { margin-left: 0; }
+            #sidebarCollapse { display: block; }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
+<div id="wrapper">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h4 class="mb-0 fw-bold text-white tracking-tighter">
+                <i class="fas fa-bolt text-primary me-2"></i>EaziLease
+            </h4>
+        </div>
+
+        <div class="py-4">
+            <small class="text-uppercase px-4 mb-2 d-block opacity-50 fw-bold" style="font-size: 0.65rem;">Main Menu</small>
+            <a asp-controller="Dashboard" asp-action="Index" class="nav-link-custom active">
+                <i class="fas fa-chart-pie"></i> Insights
+            </a>
+
+            @if(User.Identity?.IsAuthenticated == true && User.IsInRole("Admin")){
+                <small class="text-uppercase px-4 mt-4 mb-2 d-block opacity-50 fw-bold" style="font-size: 0.65rem;">Management</small>
+                <a asp-controller="Vehicles" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-car-side"></i> Fleet Inventory
+                </a>
+                <a asp-controller="Suppliers" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-truck-loading"></i> Suppliers
+                </a>
+                <a asp-controller="Branches" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-code-branch"></i> Branches
+                </a>
+                <a asp-controller="Clients" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-building"></i> Clients
+                </a>
+                <a asp-controller="Drivers" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-user-steering"></i> Drivers
+                </a>
+            }
+
+            @if (User.Identity.IsAuthenticated && Context.IsSuperAdminElevated())
+            {
+                <small class="text-uppercase px-4 mt-4 mb-2 d-block opacity-50 fw-bold text-warning" style="font-size: 0.65rem;">System Admin</small>
+                <a asp-controller="Audit" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-shield-alt"></i> Audit Logs
+                </a>
+                <a asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-user-shield"></i> Admin Portal
+                </a>
+            }
+        </div>
+    </nav>
+
+    <div id="content">
+        <nav class="navbar navbar-expand-lg top-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">EaziLease</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <button type="button" id="sidebarCollapse" class="btn btn-light border me-3">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <div class="navbar-collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                        </li> *@
-                        @if(User.Identity?.IsAuthenticated == true && User.IsInRole("Admin")){
-                        <li class="nav-item"><a class="nav-link" asp-controller="Vehicles" asp-action="Index">Vehicles</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Suppliers" asp-action="Index">Suppliers</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Branches" asp-action="Index">Branches</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Clients" asp-action="Index">Clients</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Drivers" asp-action="Index">Drivers</a></li>
 
-
-                        }
-
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            if (Context.IsSuperAdminElevated())
-                            {
-                                <li class="nav-item"><a class="nav-link" asp-controller="Audit" asp-action="Index">Audit Logs</a></li>
-                                <li class="nav-item"><a class="nav-link" asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Index">Admin Portal</a></li>
-
-                                <li class="nav-item">
-                                    <span class="nav-link text-success fw-bold">
-                                        <i class="bi bi-shield-check"></i>Admin Mode Active
-                                    </span>
-                                </li>
-                            }
-                            else if (User.IsInRole("SuperAdminCandidate"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Elevation" asp-action="Elevate">
-                                        <i class="bi bi-shield-lock"></i>Admin Portal
-                                    </a>
-                                </li>
-                            }
-                        }
-                    </ul>
+                <div class="d-flex align-items-center ms-auto">
+                    @if (User.Identity.IsAuthenticated && Context.IsSuperAdminElevated())
+                    {
+                        <span class="admin-badge me-3 d-none d-md-block">
+                            <i class="fas fa-check-circle me-1"></i> Admin Mode Active
+                        </span>
+                    }
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+        <main role="main" class="px-md-4 py-4">
             @RenderBody()
         </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - EaziLease - <a asp-area="" asp-controller="Dashboard" asp-action="Index">Home</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+        <footer class="mt-auto">
+            <div class="container-fluid text-center">
+                <span class="text-muted small">&copy; @DateTime.Now.Year EaziLease Fleet Solutions. Built for Efficiency.</span>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+
+        // Auto-active link detection
+        var currentPath = window.location.pathname;
+        $('.nav-link-custom').each(function() {
+            if($(this).attr('href') === currentPath) {
+                $('.nav-link-custom').removeClass('active');
+                $(this).addClass('active');
+            }
+        });
+    });
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

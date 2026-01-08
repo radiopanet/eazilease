@@ -33,7 +33,7 @@ namespace EaziLease.Models
         public LeaseStatus Status {get; set;} = LeaseStatus.Active;
         public bool IsActive => ReturnDate == null;
 
-        public decimal? ReturnOdometer { get; set; }
+        public decimal ReturnOdometer { get; set; }
         public string? ReturnConditionNotes { get; set; }
 
         public bool IsExtended {get; set;}

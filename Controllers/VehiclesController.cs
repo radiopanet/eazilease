@@ -124,13 +124,14 @@ namespace EaziLease.Controllers
                     existing.Color = vehicle.Color;
                     existing.FuelType = vehicle.FuelType;
                     existing.Transmission = vehicle.Transmission;
+                    existing.OdometerReading = vehicle.OdometerReading;
+                    existing.Status = vehicle.Status;
                     existing.DailyRate = vehicle.DailyRate;
+                    existing.LastServiceDate = vehicle.LastServiceDate;
                     existing.PurchasePrice = vehicle.PurchasePrice;
                     existing.PurchaseDate = vehicle.PurchaseDate;
-                    existing.LastServiceDate = vehicle.LastServiceDate;
                     existing.SupplierId = vehicle.SupplierId;
                     existing.BranchId = vehicle.BranchId;
-                    existing.Status = vehicle.Status;
 
                     // if(vehicle.Status == )
 
@@ -324,7 +325,7 @@ namespace EaziLease.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EndLease(string id, DateTime returnDate, int? finalOdometerReading,
+        public async Task<IActionResult> EndLease(string id, DateTime returnDate, decimal finalOdometerReading,
                          string? returnNotes, decimal? penaltyFee)
         {
 
@@ -346,6 +347,7 @@ namespace EaziLease.Controllers
             vehicle.CurrentLease.ReturnOdometer = finalOdometerReading;
             vehicle.CurrentLease.ReturnConditionNotes = returnNotes;
             vehicle.CurrentLease.PenaltyFee = penaltyFee;
+            vehicle.OdometerReading = vehicle.CurrentLease.ReturnOdometer;
 
 
             lease.FinalAmount = lease.CalculateProRataAmount(vehicle.DailyRate)

@@ -27,7 +27,7 @@
                 <span class="badge bg-white text-primary mb-2 px-3 py-2">@Model.Year Model</span>
                 <h1 class="display-5 fw-bold mb-0">@Model.Manufacturer @Model.Model</h1>
                 <p class="lead opacity-75 mb-0"><i class="fas fa-fingerprint me-2"></i>VIN: @Model.VIN</p>
-                <p class="lead opacity-75 mb-0"><i class="fas fa-speedometer me-2"></i>OR: @Model.OdometerReading</p>
+                <p class="lead opacity-75 mb-0"><i class="fal fa-tachometer-alt me-2"></i>Odometer Reading: @Model.OdometerReading (Km)</p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 <div class="h2 fw-bold mb-1">@Model.RegistrationNumber</div>
@@ -230,6 +230,7 @@
                         <small class="text-uppercase fw-bold opacity-75">Active Lease</small>
                         <div class="h6 fw-bold mb-1">@Model.CurrentLease.Client?.CompanyName</div>
                         <div class="small mb-2">Expires: @Model.CurrentLease.LeaseEndDate.ToShortDateString()</div>
+                        <a asp-action="RequestRateOverride" asp-route-vehicleId="@Model.CurrentLease.VehicleId" class="btn btn-sm btn-white w-100 shadow-sm mb-2">Request Rate Override</a>
                         <a asp-action="ExtendLease" asp-route-leaseId="@Model.CurrentLease.Id" class="btn btn-sm btn-white w-100 shadow-sm mb-2">Extend</a>
                         <a asp-action="EndLease" asp-route-id="@Model.Id" class="btn btn-sm btn-danger w-100">Terminate Lease</a>
                     </div>

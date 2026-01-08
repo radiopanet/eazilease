@@ -3,64 +3,158 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EaziLease Admin Portal</title>
+    <title>@ViewData["Title"] - System Core | EaziLease</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <style>
+        :root {
+            --core-dark: #020617;
+            --core-accent: #f59e0b; /* Safety Gold */
+            --core-danger: #e11d48;
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
+            min-height: 100vh;
+        }
 
-<link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" asp-append-version="true" />
+        /* High-Security Navbar */
+        .super-nav {
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--core-accent);
+            padding: 0.8rem 2rem;
+        }
 
+        .navbar-brand {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
 
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        .core-badge {
+            font-size: 0.65rem;
+            background: var(--core-accent);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
 
-    @await RenderSectionAsync("Styles", required: false)
+        /* Nav Items */
+        .nav-link {
+            color: #94a3b8 !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1.2rem !important;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #f8fafc !important;
+        }
+
+        .nav-link.active {
+            color: var(--core-accent) !important;
+        }
+
+        /* Exit Button */
+        .btn-exit {
+            border: 1px solid var(--core-danger);
+            color: var(--core-danger) !important;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-exit:hover {
+            background: var(--core-danger);
+            color: white !important;
+        }
+
+        /* Safety Bar */
+        .security-banner {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-align: center;
+            padding: 4px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Content Container */
+        .main-container {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        footer {
+            margin-top: auto;
+            border-top: 1px solid #334155;
+            padding: 2rem 0;
+            color: #64748b;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body class="d-flex flex-column">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="security-banner">
+        <i class="fas fa-exclamation-triangle me-2"></i> High Privilege Mode Active - All Actions are Logged
+    </div>
+
+    <nav class="navbar navbar-expand-lg super-nav sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" asp-area="SuperAdmin" asp-action="Index" asp-controller="SuperDashboard">
-                EaziLease <small class="text-warning">Admin</small>
+            <a class="navbar-brand text-white" asp-area="SuperAdmin" asp-action="Index" asp-controller="SuperDashboard">
+                EAZILEASE<span class="core-badge">CORE</span>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#superNavbar">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#superNavbar">
+                <i class="fas fa-bars text-white"></i>
             </button>
 
             <div class="collapse navbar-collapse" id="superNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                   <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                            User Portal
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Index">
+                            <i class="fas fa-terminal me-2"></i>Dashboard
                         </a>
                     </li>
-                    @* <li class="nav-item">
-                        <a class="nav-link" asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Index">
-                            Dashboard
-                        </a>
-                    </li> *@
                     <li class="nav-item">
                         <a class="nav-link" asp-area="SuperAdmin" asp-controller="UserManagement" asp-action="Index">
-                             User Management
+                            <i class="fas fa-users-cog me-2"></i>User Access
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="SuperAdmin" asp-controller="RateOverride" asp-action="Index">
-                            Rate Overrides
+                            <i class="fas fa-percentage me-2"></i>Overrides
                         </a>
                     </li>
                 </ul>
 
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <span class="nav-link text-success fw-bold">
-                            <i class="bi bi-shield-check-fill"></i> Admin
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <span class="text-success small fw-bold">
+                            <i class="fas fa-user-shield me-1"></i> Root Auth
                         </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-warning" asp-area="SuperAdmin" asp-controller="SuperDashboard" asp-action="Exit">
-                            <i class="bi bi-box-arrow-left"></i> Exit Admin Portal
+                        <a class="nav-link btn-exit px-3" asp-area="" asp-controller="Elevation" asp-action="Exit">
+                            <i class="fas fa-power-off me-2"></i>Exit Core
                         </a>
                     </li>
                 </ul>
@@ -68,13 +162,19 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main role="main" class="container py-4">
-        @RenderBody()
+    <main role="main" class="container">
+        <div class="main-container shadow-2xl">
+            @RenderBody()
+        </div>
     </main>
 
-    <!-- Scripts -->
-   <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <footer class="mt-auto">
+        <div class="container text-center">
+            <small>&copy; @DateTime.Now.Year EaziLease System Core. Internal Use Only.</small>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

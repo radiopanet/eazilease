@@ -21,7 +21,7 @@ namespace EaziLease.Controllers
         }
 
         public async Task<IActionResult> Index() =>
-            View(await _context.Suppliers.Where(s => !s.IsDeleted).OrderBy(s => s.Name).ToListAsync());
+            View(await _context.Suppliers.Include(v => v.Vehicles).Where(s => !s.IsDeleted).OrderBy(s => s.Name).ToListAsync());
 
         public IActionResult Create() => View();
 

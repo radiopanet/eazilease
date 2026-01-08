@@ -109,7 +109,7 @@
                                         </div>
                                         <div>
                                             <div class="fw-bold text-dark">@obj.FullName</div>
-                                            <small class="text-muted">ID: #DRV-@obj.Id.ToString("D3")</small>
+                                            <small class="text-muted">ID: #DRV-@obj.Id.Substring(0, 5)</small>
                                         </div>
                                     </div>
                                 </td>
@@ -124,7 +124,7 @@
                                 <td>
                                     <div class="expiry-badge @(isExpired ? "bg-danger-subtle text-danger" : (isExpiringSoon ? "bg-warning-subtle text-warning-emphasis" : "bg-light text-muted"))">
                                         <i class="far fa-calendar-alt me-1"></i>
-                                        @obj.LicenseExpiry.ToString("dd MMM yyyy")
+                                        @obj.LicenseExpiry
                                     </div>
                                 </td>
                                 <td>

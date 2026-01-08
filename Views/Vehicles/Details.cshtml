@@ -1,5 +1,5 @@
 @model EaziLease.Models.Vehicle
-@using EaziLease.Models // Ensure Enum access
+@using EaziLease.Models 
 
 @{
     ViewData["Title"] = "Vehicle: " + Model.RegistrationNumber;
@@ -103,32 +103,119 @@
                     <li class="nav-item"><button class="nav-link me-2" data-bs-toggle="pill" data-bs-target="#pills-assign">Assignments</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-maint">Maintenance</button></li>
                 </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="pills-lease">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-light">
+                <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-lease" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Client</th>
+                                <th>Duration</th>
+                                <th>Monthly Rate</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LeaseHistory.Any())
+                            {
+                                foreach (var lease in Model.LeaseHistory.OrderByDescending(l => l.LeaseStartDate))
+                                {
                                     <tr>
-                                        <th>Client</th>
-                                        <th>Duration</th>
-                                        <th>Rate</th>
-                                        <th>Status</th>
+                                        <td class="fw-bold">@lease.Client.CompanyName</td>
+                                        <td class="small text-muted">@lease.LeaseStartDate.ToShortDateString() - @(lease.ReturnDate?.ToShortDateString() ?? "Active")</td>
+                                        <td>@lease.MonthlyRate.ToString("C")</td>
+                                        <td>
+                                            <span class="badge @(lease.IsActive ? "bg-success" : "bg-light text-dark border")">
+                                                @(lease.IsActive ? "Active" : "Ended")
+                                            </span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var lease in Model.LeaseHistory.OrderByDescending(l => l.LeaseStartDate)) {
-                                        <tr>
-                                            <td class="fw-bold">@lease.Client.CompanyName</td>
-                                            <td class="small">@lease.LeaseStartDate.ToShortDateString() - @lease.LeaseEndDate.ToShortDateString()</td>
-                                            <td>@lease.MonthlyRate.ToString("C")</td>
-                                            <td><span class="badge @(lease.IsActive ? "bg-success" : "bg-light text-dark border")">@(lease.IsActive ? "Active" : "Ended")</span></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="text-center py-4 text-muted">No lease history found.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="pills-assign" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Driver Name</th>
+                                <th>Assigned Date</th>
+                                <th>Returned Date</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.AssignementHistory.Any())
+                            {
+                                foreach (var ass in Model.AssignementHistory.OrderByDescending(a => a.AssignedDate))
+                                {
+                                    <tr>
+                                        <td class="fw-bold"><i class="fas fa-user-tie me-2 text-muted"></i>@ass.Driver.FullName</td>
+                                        <td>@ass.AssignedDate.ToShortDateString()</td>
+                                        <td>@(ass.ReturnedDate?.ToShortDateString() ?? "Current")</td>
+                                        <td>
+                                            @{
+                                                var end = ass.ReturnedDate ?? DateTime.UtcNow;
+                                                var days = (end - ass.AssignedDate).Days + 1;
+                                            }
+                                            <span class="badge bg-light text-primary border">@days Days</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="text-center py-4 text-muted">No assignment history found.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+    <div class="tab-pane fade" id="pills-maint" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Service Date</th>
+                        <th>Description / Garage</th>
+                        <th>Mileage</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.MaintenanceHistory.Any())
+                    {
+                        foreach (var m in Model.MaintenanceHistory.OrderByDescending(x => x.ServiceDate))
+                        {
+                            <tr>
+                                <td>@m.ServiceDate.ToShortDateString()</td>
+                                <td>
+                                    <div class="fw-bold">@m.Description</div>
+                                    <small class="text-muted">Garage: @(m.GarageName ?? "Not Specified")</small>
+                                </td>
+                                <td>@(m.MileageAtService?.ToString("N0") ?? "-") KM</td>
+                                <td class="fw-bold text-danger">@m.Cost.ToString("C")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="4" class="text-center py-4 text-muted">No maintenance records found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
             </div>
         </div>
 

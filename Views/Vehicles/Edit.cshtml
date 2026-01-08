@@ -67,6 +67,11 @@
                         <select asp-for="Transmission" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Models.TransmissionType>()"></select>
                         <span asp-validation-for="Transmission" class="text-danger"></span>
                     </div>
+                     <div class="col-md-3 mb-3">
+                        <label asp-for="OdometerReading" class="form-label"></label>
+                        <input asp-for="OdometerReading" class="form-control" type="number" />
+                        <span asp-validation-for="OdometerReading" class="text-danger"></span>
+                    </div>
                     <div class="col-md-3 mb-3">
                         <label asp-for="Status" class="form-label"></label>
                         <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Models.VehicleStatus>()"></select>

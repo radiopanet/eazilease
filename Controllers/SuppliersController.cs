@@ -64,6 +64,7 @@ namespace EaziLease.Controllers
                 existing.Address = supplier.Address;
                 existing.City = supplier.City;
                 existing.Country = supplier.Country;
+                existing.AverageRating = supplier.AverageRating;
                 existing.UpdatedAt = DateTime.UtcNow;
                 existing.UpdatedBy = User.Identity!.Name ?? "admin";
 

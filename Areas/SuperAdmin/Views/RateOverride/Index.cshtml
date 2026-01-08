@@ -1,48 +1,131 @@
 @model IEnumerable<RateOverrideRequest>
 
-<h2>Pending Rate Override Requests</h2>
-
-@if (!Model.Any())
-{
-    <p class="text-muted">No pending requests.</p>
+@{
+    ViewData["Title"] = "Rate Authorization Queue";
 }
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Vehicle</th>
-                <th>Requested Rate</th>
-                <th>Original Rate</th>
-                <th>Type</th>
-                <th>Requested By</th>
-                <th>Reason</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+
+<style>
+    .override-card {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid #334155;
+        border-radius: 16px;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+    .override-card:hover {
+        border-color: #f59e0b;
+        background: rgba(30, 41, 59, 0.6);
+    }
+    .variance-badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        padding: 4px 12px;
+        border-radius: 6px;
+    }
+    .rate-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+    }
+    .rate-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    .input-notes {
+        background: #020617 !important;
+        border: 1px solid #334155 !important;
+        color: #f8fafc !important;
+        font-size: 0.85rem;
+    }
+    .input-notes:focus {
+        border-color: #f59e0b !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="mb-5">
+        <h2 class="fw-bold text-white mb-0">Rate Authorization Queue</h2>
+        <p class="text-muted">Review and adjudicate deviations from standard pricing protocols.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 border border-dashed border-secondary rounded-4">
+            <i class="fas fa-check-circle text-success fa-3x mb-3 opacity-25"></i>
+            <h5 class="text-muted">No pending override requests found.</h5>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
             @foreach (var req in Model)
             {
-                <tr>
-                    <td>@req.Vehicle?.RegistrationNumber</td>
-                    <td>@req.RequestedDailyRate.ToString("C")</td>
-                    <td>@req.OriginalDailyRate.ToString("C")</td>
-                    <td>@(req.IsPermanent ? "Permanent" : "Temporary")</td>
-                    <td>@req.RequestedBy</td>
-                    <td>@req.Reason</td>
-                    <td>
-                        <form asp-action="Approve" asp-route-id="@req.Id" method="post" class="d-inline">
-                            <input type="text" name="notes" placeholder="Approval notes (optional)" class="form-control form-control-sm d-inline w-auto" />
-                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
-                        </form>
+                var variance = req.RequestedDailyRate - req.OriginalDailyRate;
+                var isDiscount = variance < 0;
 
-                        <form asp-action="Reject" asp-route-id="@req.Id" method="post" class="d-inline">
-                            <input type="text" name="notes" placeholder="Rejection reason" class="form-control form-control-sm d-inline w-auto" />
-                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
-                        </form>
-                    </td>
-                </tr>
+                <div class="col-xl-6">
+                    <div class="override-card p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-dark text-warning p-3 rounded-3 me-3 border border-secondary">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div>
+                                    <h5 class="text-white fw-bold mb-0">@req.Vehicle?.RegistrationNumber</h5>
+                                    <span class="badge @(req.IsPermanent ? "bg-danger" : "bg-info") text-dark small px-2">
+                                        @(req.IsPermanent ? "PERMANENT CHANGE" : "TEMPORARY OVERRIDE")
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="variance-badge @(isDiscount ? "bg-danger-subtle text-danger" : "bg-success-subtle text-success")">
+                                    <i class="fas @(isDiscount ? "fa-arrow-down" : "fa-arrow-up") me-1"></i>
+                                    @Math.Abs(variance).ToString("C") Variance
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 bg-black bg-opacity-25 rounded-3 p-3 mx-0">
+                            <div class="col-6 border-end border-secondary border-opacity-25">
+                                <div class="rate-label">Original Rate</div>
+                                <div class="rate-value text-muted">@req.OriginalDailyRate.ToString("C")</div>
+                            </div>
+                            <div class="col-6 ps-4">
+                                <div class="rate-label text-warning">Proposed Rate</div>
+                                <div class="rate-value text-white">@req.RequestedDailyRate.ToString("C")</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="rate-label mb-1">Reason for Request</div>
+                            <p class="small text-light">"@req.Reason"</p>
+                            <div class="small text-muted">Requested by: <span class="text-info">@req.RequestedBy</span></div>
+                        </div>
+
+                        <div class="pt-3 border-top border-secondary">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <form asp-action="Approve" asp-route-id="@req.Id" method="post">
+                                        <div class="input-group input-group-sm mb-2">
+                                            <input type="text" name="notes" placeholder="Approval notes..." class="form-control input-notes" />
+                                            <button type="submit" class="btn btn-success fw-bold">APPROVE</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-6">
+                                    <form asp-action="Reject" asp-route-id="@req.Id" method="post">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" name="notes" required placeholder="Reason for rejection..." class="form-control input-notes" />
+                                            <button type="submit" class="btn btn-danger fw-bold">REJECT</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        </div>
+    }
+</div>

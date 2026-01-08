@@ -1,37 +1,103 @@
 @using EaziLease.Models.ViewModels
-
 @model CreateUserViewModel
 
 @{
-    ViewData["Title"] = "Create New User";
+    ViewData["Title"] = "Provision New Account";
 }
 
-<h2>Create New User</h2>
+<style>
+    .provision-card {
+        max-width: 600px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid #334155;
+        border-radius: 20px;
+        padding: 2.5rem;
+    }
+    .form-control-core {
+        background: #020617 !important;
+        border: 1px solid #334155 !important;
+        color: #f8fafc !important;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+    }
+    .form-control-core:focus {
+        border-color: #f59e0b !important;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1) !important;
+    }
+    .section-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #334155, transparent);
+        margin: 2rem 0;
+    }
+    .security-note {
+        background: rgba(245, 158, 11, 0.05);
+        border-left: 3px solid #f59e0b;
+        padding: 1rem;
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+</style>
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label">Email</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <div class="d-inline-block bg-warning text-dark px-3 py-1 rounded-pill fw-bold small mb-2">
+            CORE IDENTITY PROVISIONING
+        </div>
+        <h2 class="fw-bold text-white">Initialize New User</h2>
+        <p class="text-muted">Establish a new security principal within the EaziLease environment.</p>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="FullName" class="form-label">Full Name</label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
+    <div class="provision-card shadow-2xl">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger small"></div>
 
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label">Password</label>
-        <input asp-for="Password" class="form-control" type="password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+            <div class="mb-4">
+                <label asp-for="FullName" class="form-label text-muted small fw-bold">LEGAL FULL NAME</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-id-card"></i></span>
+                    <input asp-for="FullName" class="form-control form-control-core" placeholder="e.g. Johnathan Doe" />
+                </div>
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
 
-    <button type="submit" class="btn btn-primary">Create User</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label text-muted small fw-bold">SYSTEM EMAIL (IDENTIFIER)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-envelope"></i></span>
+                    <input asp-for="Email" class="form-control form-control-core" placeholder="admin@eazilease.com" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label text-muted small fw-bold">TEMPORARY ACCESS KEY</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-key"></i></span>
+                    <input asp-for="Password" type="password" class="form-control form-control-core" placeholder="••••••••••••" />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="security-note mb-4">
+                <i class="fas fa-info-circle me-2 text-warning"></i>
+                New accounts are created with <strong>Standard Admin</strong> roles by default. 
+                Elevation privileges can be granted from the Index matrix after initialization.
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-warning fw-bold py-3">
+                    <i class="fas fa-user-shield me-2"></i>COMMIT TO DATABASE
+                </button>
+                <a asp-action="Index" class="btn btn-link text-muted text-decoration-none small mt-2">
+                    <i class="fas fa-times me-1"></i> Cancel Provisioning
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

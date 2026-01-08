@@ -26,12 +26,12 @@ public class UserManagementController : Controller
     public async Task<IActionResult> Index()
     {
         var users = _userManager.Users.ToList();
-        var userList = new List<UserVeiwModel>();
+        var userList = new List<UserViewModel>();
 
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            userList.Add(new UserVeiwModel
+            userList.Add(new UserViewModel
             {
                 Id = user.Id,
                 Email = user.Email,

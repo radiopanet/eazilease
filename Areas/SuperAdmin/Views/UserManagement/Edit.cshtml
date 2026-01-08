@@ -1,28 +1,108 @@
 @using EaziLease.Models.ViewModels
 @model EditUserViewModel
 
-<h2>Edit User</h2>
+@{
+    ViewData["Title"] = "Modify Security Principal";
+}
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+<style>
+    .edit-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .profile-header-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid #334155;
+        border-radius: 20px 20px 0 0;
+        padding: 2rem;
+    }
+    .edit-form-card {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid #334155;
+        border-top: none;
+        border-radius: 0 0 20px 20px;
+        padding: 2.5rem;
+    }
+    .form-control-core {
+        background: #020617 !important;
+        border: 1px solid #334155 !important;
+        color: #f8fafc !important;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+    }
+    .form-control-core:focus {
+        border-color: #f59e0b !important;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1) !important;
+    }
+    .system-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        color: #64748b;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+</style>
 
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<div class="container py-4 edit-container">
+    <div class="profile-header-card">
+        <div class="d-flex align-items-center">
+            <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                <i class="fas fa-user-edit fa-lg"></i>
+            </div>
+            <div>
+                <h3 class="fw-bold text-white mb-0">@Model.FullName</h3>
+                <code class="text-warning">Principal ID: @Model.Id</code>
+            </div>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="FullName" class="form-label"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
+    <div class="edit-form-card shadow-2xl">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger small mb-4"></div>
+
+            <div class="row g-4">
+                <div class="col-12">
+                    <label asp-for="FullName" class="form-label system-label fw-bold">Display Identity</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-id-badge"></i></span>
+                        <input asp-for="FullName" class="form-control form-control-core" placeholder="Legal Full Name" />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Email" class="form-label system-label fw-bold">Primary Identifier (Email)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-at"></i></span>
+                        <input asp-for="Email" class="form-control form-control-core" placeholder="email@domain.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 mt-5">
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-warning fw-bold py-3">
+                            <i class="fas fa-save me-2"></i>SAVE MODIFICATIONS
+                        </button>
+                        <div class="text-center">
+                            <a asp-action="Index" class="text-muted text-decoration-none small">
+                                <i class="fas fa-chevron-left me-1"></i> Abort Changes & Return
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+    <div class="mt-4 text-center">
+        <p class="text-muted small">
+            <i class="fas fa-exclamation-triangle text-warning me-2"></i> 
+            Warning: Altering primary identifiers may affect session persistence for this user.
+        </p>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

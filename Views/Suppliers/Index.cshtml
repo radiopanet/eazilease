@@ -84,6 +84,9 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="btn-group shadow-sm rounded">
+                                        <a asp-action="Details" asp-route-id="@obj.Id" class="btn btn-white btn-sm border" title="View Details">
+                                            <i class="fas fa-eye text-info"></i>
+                                        </a>
                                         <a asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-white btn-sm border" title="Edit Supplier">
                                             <i class="fas fa-edit text-warning"></i>
                                         </a>

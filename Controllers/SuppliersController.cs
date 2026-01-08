@@ -76,6 +76,19 @@ namespace EaziLease.Controllers
             return View(supplier);
         }
 
+        public async Task<IActionResult> Details(string id)
+        {
+            if(id == null) return NotFound();
+            
+            var supplier = await _context.Suppliers
+                    .Include(v => v.Vehicles)
+                    .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+
+            if(supplier == null) return NotFound();  
+
+            return View(supplier);
+        }
+
         public async Task<IActionResult> Delete(string id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);

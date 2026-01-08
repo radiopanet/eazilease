@@ -1,99 +1,143 @@
 @model EaziLease.Models.Driver
 
 @{
-    ViewData["Title"] = "Add Driver";
+    ViewData["Title"] = "Onboard Operator";
 }
 
-<form method="post" asp-action="Create">
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Create Driver</h2>
-            <hr />
-        </div>
+<style>
+    .onboarding-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+    }
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #64748b;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+        display: block;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 0.5rem;
+    }
+    .input-group-text {
+        background-color: #f8fafc;
+        border-right: none;
+        color: #94a3b8;
+    }
+    .form-control, .form-select {
+        border-left: none;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+</style>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="mb-3 row">
-            <label asp-for="FirstName" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="LastName" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="Email" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="Phone" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="LicenseNumber" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="LicenseNumber" class="form-control" />
-                <span asp-validation-for="LicenseNumber" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="mb-3 row">
-            <label asp-for="LicenseExpiry" class="form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="LicenseExpiry" type="date" class="form-control" />
-                <span asp-validation-for="LicenseExpiry" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="AccidentCount" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="AccidentCount" class="form-control" type="number" />
-                <span asp-validation-for="AccidentCount" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="IsActive" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <select asp-for="IsActive" class="form-control">
-                    <option value=True>True</option>
-                    <option value=False>False</option>
-                </select>
-                <span asp-validation-for="IsActive" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-6">
-                <button type="submit" class="btn btn-primary" style="width:150px">Create</button>
-            </div>
-            <div class="col-6 text-end">
-                <a asp-action="Index" class="btn btn-secondary" style="width:150px">
-                    Back to List
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-9 col-lg-11">
+            <div class="mb-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h3 fw-bold text-dark mb-1">Onboard New Operator</h1>
+                    <p class="text-muted">Register personal details and driving credentials.</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+                    <i class="fas fa-times me-1"></i> Cancel
                 </a>
+            </div>
+
+            <div class="card onboarding-card p-4 p-md-5">
+                <form method="post" asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-4"></div>
+
+                    <span class="form-section-title">Personal Profile</span>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label fw-semibold small text-muted">FIRST NAME</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input asp-for="FirstName" class="form-control" placeholder="e.g. David" />
+                            </div>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label fw-semibold small text-muted">LAST NAME</label>
+                            <input asp-for="LastName" class="form-control" style="border-left: 1px solid #dee2e6;" placeholder="e.g. Miller" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label fw-semibold small text-muted">EMAIL ADDRESS</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" placeholder="david.m@example.com" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label fw-semibold small text-muted">CONTACT NUMBER</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input asp-for="Phone" class="form-control" placeholder="+27 82 123 4567" />
+                            </div>
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <span class="form-section-title">Professional Credentials</span>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label asp-for="LicenseNumber" class="form-label fw-semibold small text-muted">DRIVERS LICENSE NO.</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                <input asp-for="LicenseNumber" class="form-control text-uppercase" placeholder="ABC123456" />
+                            </div>
+                            <span asp-validation-for="LicenseNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LicenseExpiry" class="form-label fw-semibold small text-muted">LICENSE EXPIRY DATE</label>
+                            <input asp-for="LicenseExpiry" type="date" class="form-control" style="border-left: 1px solid #dee2e6;" />
+                            <span asp-validation-for="LicenseExpiry" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <span class="form-section-title">Safety & Status</span>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label asp-for="AccidentCount" class="form-label fw-semibold small text-muted">HISTORICAL ACCIDENT COUNT</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-car-crash"></i></span>
+                                <input asp-for="AccidentCount" class="form-control" type="number" min="0" value="0" />
+                            </div>
+                            <span asp-validation-for="AccidentCount" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IsActive" class="form-label fw-semibold small text-muted">EMPLOYMENT STATUS</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-toggle-on"></i></span>
+                                <select asp-for="IsActive" class="form-select">
+                                    <option value="True">Active / Ready to Drive</option>
+                                    <option value="False">Inactive / On Leave</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="IsActive" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                        <a asp-action="Index" class="text-muted fw-bold text-decoration-none small">Discard</a>
+                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm rounded-3">
+                            <i class="fas fa-check-circle me-2"></i>Register Operator
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</form>
+</div>
 
 @section Scripts {
-    @{
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

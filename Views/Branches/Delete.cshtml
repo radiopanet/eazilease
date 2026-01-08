@@ -1,42 +1,105 @@
 @model EaziLease.Models.Branch
 
 @{
-    ViewData["Title"] = "Confirm Delete: " + Model.Code;
+    ViewData["Title"] = "Decommission Hub";
 }
 
-<h1 class="h3 mb-4 text-danger">Confirm Branch Deletion</h1>
-<hr />
+<style>
+    .delete-branch-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+        overflow: hidden;
+    }
+    .danger-zone-header {
+        background: #fff1f2;
+        border-bottom: 1px solid #ffe4e6;
+        padding: 2.5rem;
+        text-align: center;
+    }
+    .warning-icon {
+        width: 70px;
+        height: 70px;
+        background: #ffe4e6;
+        color: #e11d48;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    .branch-summary-box {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+    .summary-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+</style>
 
-<div class="row">
-    <div class="col-lg-8 col-md-10 mx-auto">
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> Warning!</h4>
-            <p>You are about to move the following branch to the trash. This action will mark the branch as deleted but preserve its data.</p>
-        </div>
-        
-        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="card p-4 shadow-sm">
-            
-            <dl class="row">
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Name)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
-                
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Code)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Code)</dd>
-
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Address)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Address)</dd>
-
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.City)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.City)</dd>
-
-            </dl>
-            
-            <div class="d-flex justify-content-between pt-4 mt-3 border-top">
-                <button type="submit" class="btn btn-danger" style="width:180px;">
-                    <i class="bi bi-trash-fill"></i> Move to Trash
-                </button>
-                <a asp-action="Index" class="btn btn-secondary" style="width:180px;">Cancel and Back to List</a>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="mb-4">
+                <a asp-action="Index" class="text-decoration-none text-muted small fw-bold">
+                    <i class="fas fa-arrow-left me-1"></i> BACK TO NETWORK
+                </a>
             </div>
-        </form>
+
+            <div class="card delete-branch-card">
+                <div class="danger-zone-header">
+                    <div class="warning-icon shadow-sm">
+                        <i class="fas fa-map-marker-slash"></i>
+                    </div>
+                    <h3 class="fw-bold text-danger mb-1">Decommission Hub?</h3>
+                    <p class="text-muted mb-0">You are about to remove this facility from the network.</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="alert alert-warning border-0 rounded-4 d-flex align-items-start mb-4">
+                        <i class="fas fa-exclamation-triangle mt-1 me-3"></i>
+                        <div class="small">
+                            <strong>Warning:</strong> Ensure all vehicles assigned to this hub are transferred to another location before deletion to prevent data orphaned assets.
+                        </div>
+                    </div>
+
+                    <div class="branch-summary-box mb-5">
+                        <div class="row g-3">
+                            <div class="col-8">
+                                <span class="summary-label d-block">Facility Name</span>
+                                <span class="fw-bold text-dark fs-5">@Model.Name</span>
+                            </div>
+                            <div class="col-4 text-end">
+                                <span class="summary-label d-block">System Code</span>
+                                <code class="fw-bold text-primary">@Model.Code</code>
+                            </div>
+                            <div class="col-12 pt-2 border-top">
+                                <span class="summary-label d-block">Physical Location</span>
+                                <span class="small text-muted"><i class="fas fa-map-pin me-1"></i> @Model.Address, @Model.City</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" asp-route-id="@Model.Id">
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold py-3 shadow-sm rounded-3">
+                                <i class="fas fa-trash-alt me-2"></i>Confirm Deletion
+                            </button>
+                            <a asp-action="Index" class="btn btn-link text-muted fw-bold text-decoration-none">
+                                Keep Facility Active
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

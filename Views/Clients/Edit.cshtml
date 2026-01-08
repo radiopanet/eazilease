@@ -1,66 +1,150 @@
 @model EaziLease.Models.Client
 
 @{
-    ViewData["Title"] = "Edit Client";
+    ViewData["Title"] = "Edit Client Profile";
 }
 
-<form method="post" asp-action="Edit">
-    <input asp-for="Id" hidden />
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Edit Client</h2>
-            <hr />
-        </div>
-        
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<style>
+    .edit-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+    }
+    .profile-summary-header {
+        background: #f8fafc;
+        border-radius: 24px 24px 0 0;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 2rem;
+    }
+    .client-avatar-sm {
+        width: 50px;
+        height: 50px;
+        background: #3b82f6;
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    .form-section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-top: 1rem;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .input-group-text {
+        background-color: #ffffff;
+        border-right: none;
+        color: #94a3b8;
+    }
+    .form-control {
+        border-left: none;
+    }
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+</style>
 
-        <div class="mb-3 row">
-            <label asp-for="CompanyName" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="CompanyName" class="form-control" />
-                <span asp-validation-for="CompanyName" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="ContactPerson" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="ContactPerson" class="form-control" />
-                <span asp-validation-for="ContactPerson" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="ContactEmail" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="ContactEmail" class="form-control" />
-                <span asp-validation-for="ContactEmail" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label asp-for="ContactPhone" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="ContactPhone" class="form-control" />
-                <span asp-validation-for="ContactPhone" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-6">
-                <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
-            </div>
-            <div class="col-6 text-end">
-                <a asp-action="Index" class="btn btn-secondary" style="width:150px">
-                    Back to List
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+            <div class="mb-4">
+                <a asp-action="Index" class="text-decoration-none text-muted small fw-bold">
+                    <i class="fas fa-arrow-left me-1"></i> BACK TO DIRECTORY
                 </a>
+            </div>
+
+            <div class="card edit-card">
+                <div class="profile-summary-header d-flex align-items-center">
+                    <div class="client-avatar-sm me-3 shadow-sm">
+                        @Model.CompanyName.Substring(0, 1).ToUpper()
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-0">@Model.CompanyName</h4>
+                        <span class="badge bg-primary-subtle text-primary rounded-pill">Active Account</span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" asp-action="Edit">
+                        <input asp-for="Id" hidden />
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-4"></div>
+
+                        <div class="form-section-header">
+                            <h6 class="fw-bold text-dark mb-0"><i class="fas fa-building text-primary me-2"></i>Legal Identity</h6>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-12">
+                                <label asp-for="CompanyName" class="form-label">Company Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                                    <input asp-for="CompanyName" class="form-control" />
+                                </div>
+                                <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-section-header border-top pt-4">
+                            <h6 class="fw-bold text-dark mb-0"><i class="fas fa-id-card text-primary me-2"></i>Communication & Contact</h6>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-12">
+                                <label asp-for="ContactPerson" class="form-label">Primary Contact Person</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                                    <input asp-for="ContactPerson" class="form-control" />
+                                </div>
+                                <span asp-validation-for="ContactPerson" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ContactEmail" class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input asp-for="ContactEmail" class="form-control" />
+                                </div>
+                                <span asp-validation-for="ContactEmail" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ContactPhone" class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input asp-for="ContactPhone" class="form-control" />
+                                </div>
+                                <span asp-validation-for="ContactPhone" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                            <a asp-action="Index" class="text-muted fw-bold text-decoration-none small">
+                                Discard Changes
+                            </a>
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm rounded-3">
+                                    Save Profile Updates
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</form>
+</div>
 
 @section Scripts {
-    @{
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

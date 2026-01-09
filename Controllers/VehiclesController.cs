@@ -7,6 +7,7 @@ using EaziLease.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EaziLease.Services;
 using EaziLease.Models.ViewModels;
+using EaziLease.Services.Interfaces;
 
 namespace EaziLease.Controllers
 {
@@ -15,11 +16,16 @@ namespace EaziLease.Controllers
     {
         public readonly ApplicationDbContext _context;
         public readonly AuditService _auditService;
+        public readonly ILeaseService _leaseService;
 
-        public VehiclesController(ApplicationDbContext context, AuditService auditService)
+
+
+        public VehiclesController(ApplicationDbContext context,
+             AuditService auditService, ILeaseService leaseService)
         {
             _context = context;
             _auditService = auditService;
+            _leaseService = leaseService;
         }
 
         //GET: Vehicles
@@ -197,7 +203,7 @@ namespace EaziLease.Controllers
                 Vehicle = vehicle,
                 LeaseStartDate = DateTime.UtcNow.Date,
                 LeaseEndDate = DateTime.UtcNow.Date.AddMonths(1),
-                MonthlyRate = vehicle.DailyRate * 30
+                MonthlyRate = vehicle.DailyRate * 30.4167m
             });
         }
 
@@ -212,92 +218,17 @@ namespace EaziLease.Controllers
 
             lease.LeaseEndDate = DateTime.SpecifyKind(
                 lease.LeaseEndDate.Date, DateTimeKind.Utc);
-            // Validate FK references
-            var vehicle = await _context.Vehicles.FindAsync(lease.VehicleId);
-            var client = await _context.Clients.FindAsync(lease.ClientId);
 
-            if (vehicle == null)
+            var result = await _leaseService.StartLeaseAsync(lease, User.Identity?.Name ?? "admin");
+
+            if (!result.Success)
             {
-                ModelState.AddModelError("", "Vehicle not found.");
-                await ReloadFormData(lease);
+                ModelState.AddModelError("", result.Messsage ?? "Failed to start lease.");
+                await ReloadFormData(lease); //for dropdowns.
                 return View(lease);
             }
 
-            if (client == null)
-            {
-                ModelState.AddModelError("", "Client not found.");
-                await ReloadFormData(lease);
-                return View(lease);
-            }
-
-            if (vehicle.Status == VehicleStatus.Leased)
-            {
-                ModelState.AddModelError("", "This vehicle is already leased.");
-                await ReloadFormData(lease);
-                return View(lease);
-            }
-
-            if (lease.LeaseEndDate <= lease.LeaseStartDate)
-            {
-                ModelState.AddModelError(nameof(lease.LeaseEndDate),
-                    "End date must be after start date.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await ReloadFormData(lease);
-                return View(lease);
-            }
-
-            lease.CalculateMonthlyRate(vehicle.DailyRate);
-
-            //Check client's credit limit and enforce limit on lease
-            decimal currentCommitted = client.CurrentCommittedAmount;
-            decimal newTotal = currentCommitted + lease.MonthlyRate;
-
-            if (newTotal > client.CreditLimit)
-            {
-                    ModelState.AddModelError("",
-                $"Client credit limit exceeded. " +
-                $"Current committed: {currentCommitted:C}, " +
-                $"New lease would add {lease.MonthlyRate:C}, " +
-                $"Total would be {newTotal:C} (limit: {client.CreditLimit:C}).");
-
-                ViewBag.ClientId = new SelectList(_context.Clients, "Id", "CompanyName", lease.ClientId);
-                return View(lease);
-            }
-
-            var hasLeasedBefore = await _context.VehicleLeases
-                .AnyAsync(l => l.VehicleId == lease.VehicleId &&
-                l.ClientId == lease.ClientId);
-
-            if (hasLeasedBefore)
-            {
-                ModelState.AddModelError("",
-                    "This client has already leased this vehicle before.");
-                await ReloadFormData(lease);
-                return View(lease);
-            }
-
-            // Save Lease
-            lease.Id = Guid.NewGuid().ToString();
-            lease.Vehicle = vehicle;
-            lease.Client = client;
-
-            _context.VehicleLeases.Add(lease);
-            await _context.SaveChangesAsync();
-
-            // Update Vehicle
-            vehicle.CurrentLeaseId = lease.Id;
-            vehicle.Status = VehicleStatus.Leased;
-
-
-            await _context.SaveChangesAsync();
-
-            await _auditService.LogAsync("Lease", lease.Id, "LeaseStarted",
-                    $"Vehicle {lease.Vehicle?.RegistrationNumber} leased to {lease.Client?.CompanyName}");
-
-            TempData["success"] = $"Vehicle leased to {client.CompanyName}";
+            TempData["success"] = result.Messsage ?? $"Vehicle leased successfully.";
             return RedirectToAction("Details", new { id = lease.VehicleId });
         }
 
@@ -325,46 +256,20 @@ namespace EaziLease.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EndLease(string id, DateTime returnDate, decimal finalOdometerReading,
-                         string? returnNotes, decimal? penaltyFee)
+        public async Task<IActionResult> EndLease(string id, EndLeaseDto dto)
         {
 
-            returnDate = DateTime.SpecifyKind(
-            returnDate.Date, DateTimeKind.Utc);
+            var result = await _leaseService.EndLeaseAsync(id, dto, User.Identity?.Name ?? "admin");
 
-            var vehicle = await _context.Vehicles
-                .Include(v => v.CurrentLease)
-                .FirstOrDefaultAsync(v => v.Id == id);
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Messsage ?? "Failed to end lease.");
+                return View(dto);
+            }
 
-            if (vehicle == null || vehicle.CurrentLease == null)
-                return NotFound();
-
-            var lease = vehicle.CurrentLease;
-
-            //Update the lease record   
-            vehicle.CurrentLease.Status = LeaseStatus.Completed;
-            vehicle.CurrentLease.ReturnDate = returnDate;
-            vehicle.CurrentLease.ReturnOdometer = finalOdometerReading;
-            vehicle.CurrentLease.ReturnConditionNotes = returnNotes;
-            vehicle.CurrentLease.PenaltyFee = penaltyFee;
-            vehicle.OdometerReading = vehicle.CurrentLease.ReturnOdometer;
+            TempData["success"] = result.Messsage ?? "Lease ended successfully. Vehicle is now available.";
 
 
-            lease.FinalAmount = lease.CalculateProRataAmount(vehicle.DailyRate)
-                + penaltyFee ?? 0;
-
-            //clear current lease reference
-            vehicle.CurrentLeaseId = null;
-            vehicle.CurrentLease = null;
-
-            vehicle.Status = VehicleStatus.Available;  // or ask for new status
-
-            await _context.SaveChangesAsync();
-
-            TempData["success"] = "Lease ended successfully. Vehicle is now available.";
-
-            await _auditService.LogAsync("VehicleLease", vehicle.Id, "EndLease", $"Vehicle lease of {vehicle.RegistrationNumber} has ended.");
-            //await _auditService.LogAsync("Lease", lease.Id, "LeaseEnded", $"Lease ended early. Final billed amount: R{lease.FinalAmount}");
             return RedirectToAction("Details", new { id });
         }
 
@@ -396,33 +301,32 @@ namespace EaziLease.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExtendLease(string leaseId, DateTime newEndDate)
         {
-            newEndDate = DateTime.SpecifyKind(newEndDate.Date, DateTimeKind.Utc);
-            if (newEndDate == default)
-                return BadRequest("New end date is required.");
+            var result = await _leaseService.ExtendLeaseAsync(leaseId, newEndDate, User.Identity?.Name ?? "admin");
 
+            if(!result.Success)
+            {
+                // Reload form for error display
+                var lease = await _context.VehicleLeases
+                    .Include(l => l.Vehicle)
+                    .Include(l => l.Client)
+                    .FirstOrDefaultAsync(l => l.Id == leaseId);
 
-            var lease = await _context.VehicleLeases
-                .Include(l => l.Vehicle)
-                .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
+                var model = new ExtendLeaseViewModel
+                {
+                    LeaseId = leaseId,
+                    VehicleId = lease?.VehicleId ?? "",
+                    VehicleRegistration = lease?.Vehicle?.RegistrationNumber ?? "",
+                    ClientName = lease?.Client?.CompanyName ?? "",
+                    CurrentEndDate = lease.LeaseEndDate.Date,
+                    DailyRate = lease?.Vehicle?.DailyRate ?? 0
+                };
+                ModelState.AddModelError("", result.Messsage ?? "Failed to extend lease.");
+                return View(model);    
+            }
 
-            if (lease == null)
-                return NotFound();
-
-            if (newEndDate <= lease.LeaseEndDate)
-                return BadRequest("New end date must be after current end date.");
-
-            // Recalculate monthly rate from daily rate
-            var days = (newEndDate - lease.LeaseStartDate).Days + 1;
-            var newMonthlyRate = lease.Vehicle!.DailyRate * 30.4167m;
-
-            lease.ExtendLease(newEndDate, newMonthlyRate);
-
-            await _context.SaveChangesAsync();
-
-            await _auditService.LogAsync("VehicleLease", lease.Id, "ExtendLease",
-                 $"Lease {lease.Vehicle.RegistrationNumber} extendend successfully.");
-            TempData["success"] = "Lease extended successfully.";
-            return RedirectToAction("Details", new { id = lease.VehicleId });
+            TempData["success"] = result.Messsage ?? "Lease extended successfully.";
+            var vehicleId = (await _context.VehicleLeases.FindAsync(leaseId))?.VehicleId;
+            return RedirectToAction("Details", new { id = vehicleId });
         }
 
         // Helper function

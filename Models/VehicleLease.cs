@@ -62,6 +62,7 @@ namespace EaziLease.Models
 
         public void ExtendLease(DateTime newEndDate, decimal newMonthlyRate)
         {
+            newEndDate = DateTime.SpecifyKind(newEndDate, DateTimeKind.Utc);
             if(!IsActive)
                 throw new InvalidOperationException("Only active leases can be extended.");
 

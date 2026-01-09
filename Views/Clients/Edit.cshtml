@@ -126,6 +126,14 @@
                                 </div>
                                 <span asp-validation-for="ContactPhone" class="text-danger small"></span>
                             </div>
+                            <div class="col-md-6">
+                                <label asp-for="CreditLimit" class="form-label">Credit Limit</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input asp-for="CreditLimit" class="form-control" type="number" step="0.1" />
+                                </div>
+                                <span asp-validation-for="CreditLimit" class="text-danger small"></span>
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center pt-4 border-top">

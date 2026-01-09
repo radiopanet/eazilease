@@ -101,7 +101,10 @@ public class LeaseService: ILeaseService
         {
             lease.Status = LeaseStatus.Terminated;
         }
-        lease.Status = LeaseStatus.Completed;
+        else
+        {            
+            lease.Status = LeaseStatus.Completed;
+        }
         lease.ReturnOdometer = dto.FinalOdometerReading;
         lease.ReturnConditionNotes = dto.ReturnNotes;
         lease.PenaltyFee = dto.PenaltyFee;
@@ -116,11 +119,20 @@ public class LeaseService: ILeaseService
             if(assignment != null)
             {
                 assignment.ReturnedDate = dto.ReturnDate;
-                vehicle.CurrentDriverId = null;
-                vehicle.CurrentDriver = null;  
+                assignment.UpdatedAt = DateTime.UtcNow;
+                assignment.UpdatedBy = userName;
+            }
+
+            if(driver != null)
+            {
+                driver.CurrentVehicleId = null;
                 driver.CurrentVehicle = null;
-                driver.CurrentVehicleId = null;            
-            }    
+                driver.UpdatedBy = userName;
+                driver.UpdatedAt = DateTime.UtcNow;
+            }  
+
+            vehicle.CurrentDriverId = null;
+            vehicle.CurrentDriver = null;
         }
 
         //Update vehicle

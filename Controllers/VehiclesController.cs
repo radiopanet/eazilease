@@ -17,15 +17,18 @@ namespace EaziLease.Controllers
         public readonly ApplicationDbContext _context;
         public readonly AuditService _auditService;
         public readonly ILeaseService _leaseService;
+        public readonly IDriverAssignmentService _driverAssignmentService;
 
 
 
         public VehiclesController(ApplicationDbContext context,
-             AuditService auditService, ILeaseService leaseService)
+             AuditService auditService, ILeaseService leaseService,
+             IDriverAssignmentService driverAssignmentService)
         {
             _context = context;
             _auditService = auditService;
             _leaseService = leaseService;
+            _driverAssignmentService = driverAssignmentService;
         }
 
         //GET: Vehicles
@@ -223,12 +226,12 @@ namespace EaziLease.Controllers
 
             if (!result.Success)
             {
-                ModelState.AddModelError("", result.Messsage ?? "Failed to start lease.");
+                ModelState.AddModelError("", result.Message ?? "Failed to start lease.");
                 await ReloadFormData(lease); //for dropdowns.
                 return View(lease);
             }
 
-            TempData["success"] = result.Messsage ?? $"Vehicle leased successfully.";
+            TempData["success"] = result.Message ?? $"Vehicle leased successfully.";
             return RedirectToAction("Details", new { id = lease.VehicleId });
         }
 
@@ -263,11 +266,11 @@ namespace EaziLease.Controllers
 
             if (!result.Success)
             {
-                ModelState.AddModelError("", result.Messsage ?? "Failed to end lease.");
+                ModelState.AddModelError("", result.Message ?? "Failed to end lease.");
                 return View(dto);
             }
 
-            TempData["success"] = result.Messsage ?? "Lease ended successfully. Vehicle is now available.";
+            TempData["success"] = result.Message ?? "Lease ended successfully. Vehicle is now available.";
 
 
             return RedirectToAction("Details", new { id });
@@ -303,7 +306,7 @@ namespace EaziLease.Controllers
         {
             var result = await _leaseService.ExtendLeaseAsync(leaseId, newEndDate, User.Identity?.Name ?? "admin");
 
-            if(!result.Success)
+            if (!result.Success)
             {
                 // Reload form for error display
                 var lease = await _context.VehicleLeases
@@ -320,11 +323,11 @@ namespace EaziLease.Controllers
                     CurrentEndDate = lease.LeaseEndDate.Date,
                     DailyRate = lease?.Vehicle?.DailyRate ?? 0
                 };
-                ModelState.AddModelError("", result.Messsage ?? "Failed to extend lease.");
-                return View(model);    
+                ModelState.AddModelError("", result.Message ?? "Failed to extend lease.");
+                return View(model);
             }
 
-            TempData["success"] = result.Messsage ?? "Lease extended successfully.";
+            TempData["success"] = result.Message ?? "Lease extended successfully.";
             var vehicleId = (await _context.VehicleLeases.FindAsync(leaseId))?.VehicleId;
             return RedirectToAction("Details", new { id = vehicleId });
         }
@@ -380,73 +383,18 @@ namespace EaziLease.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignDriver(VehicleAssignment assignment)
         {
-            var vehicle = await _context.Vehicles.FindAsync(assignment.VehicleId);
-            var driver = await _context.Drivers.FindAsync(assignment.DriverId);
+            var result = await _driverAssignmentService.AssignDriverAsync(assignment, User.Identity?.Name ?? "admin");
 
-            if (vehicle == null)
+            if (!result.Success)
             {
-                ModelState.AddModelError("", "Vehicle not found.");
-                await LoadDriverDropdowns(); // helper method
-                return View(assignment);
-            }
-
-            if (driver == null || !driver.IsActive)
-            {
-                ModelState.AddModelError("", "Driver not found or inactive.");
+                ModelState.AddModelError("", result.Message ?? "Failed to assign driver.");
+                // Reload dropdowns (keep your helper)
                 await LoadDriverDropdowns();
                 return View(assignment);
             }
 
-            // **CRITICAL: Check if driver is already assigned elsewhere**
-            if (!string.IsNullOrEmpty(driver.CurrentVehicleId))
-            {
-                ModelState.AddModelError("",
-                    $"Driver {driver.FullName} is already assigned to vehicle {driver.CurrentVehicle?.RegistrationNumber} " +
-                    $"(Reg: {driver.CurrentVehicle?.RegistrationNumber}). Please return them first.");
-                await LoadDriverDropdowns();
-                return View(assignment);
-            }
-
-            if (ModelState.IsValid)
-            {
-                // Close previous assignment for THIS vehicle
-                var previous = await _context.VehicleAssignments
-                    .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);
-
-                if (previous != null)
-                {
-                    previous.ReturnedDate = DateTime.SpecifyKind(
-                        DateTime.UtcNow.Date, DateTimeKind.Utc);
-                }
-
-                // Create new assignment
-                assignment.Id = Guid.NewGuid().ToString();
-                assignment.Vehicle = vehicle;
-                assignment.Driver = driver;
-                assignment.AssignedDate = DateTime.SpecifyKind(
-                        DateTime.UtcNow.Date, DateTimeKind.Utc);
-                assignment.ReturnedDate = null;
-
-                _context.VehicleAssignments.Add(assignment);
-                await _context.SaveChangesAsync();
-
-
-                // vehicle.CurrentDriverId = driver.Id;
-                vehicle.CurrentDriver = driver;
-                // driver.CurrentVehicleId = vehicle.Id;
-                driver.CurrentVehicle = vehicle;
-
-                await _context.SaveChangesAsync();
-                await _auditService.LogAsync("Driver", driver.Id, "AssignDriver",
-                        $"Driver {driver.FullName} has been assigned to ${vehicle.RegistrationNumber}" +
-                        $"by {assignment.CreatedBy}");
-
-                TempData["success"] = $"Driver {driver.FullName} assigned to {vehicle.RegistrationNumber}";
-                return RedirectToAction("Details", new { id = assignment.VehicleId });
-            }
-
-            await LoadDriverDropdowns();
-            return View(assignment);
+            TempData["success"] = result.Message;
+            return RedirectToAction("Details", new { id = assignment.VehicleId });
         }
 
         // Helper method to reload dropdowns
@@ -482,48 +430,15 @@ namespace EaziLease.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ReturnDriver(string id, DateTime? returnDate = null)
         {
-            // Find the CURRENT assignment first
-            var currentAssignment = await _context.VehicleAssignments
-                .Include(a => a.Driver)
-                .FirstOrDefaultAsync(a => a.VehicleId == id && a.ReturnedDate == null);
+            var result = await _driverAssignmentService.ReturnDriverAsync(id, returnDate, User.Identity?.Name ?? "admin");
 
-            if (currentAssignment == null)
+            if (!result.Success)
             {
-                TempData["info"] = "No active driver assignment found to return.";
+                TempData["error"] = result.Message ?? "Failed to return driver.";
                 return RedirectToAction("Details", new { id });
             }
 
-            var driverName = currentAssignment.Driver?.FullName ?? "N/A";
-
-            returnDate = DateTime.SpecifyKind(
-                        DateTime.UtcNow.Date, DateTimeKind.Utc);
-
-            // Update the assignment
-            currentAssignment.ReturnedDate = returnDate ?? DateTime.UtcNow.Date;
-
-            // Now get the vehicle separately
-            var vehicle = await _context.Vehicles.FindAsync(id);
-
-            if (vehicle == null)
-                return NotFound();
-
-
-            // Clear the current driver reference
-            vehicle.CurrentDriverId = null;
-            vehicle.CurrentDriver = null;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                await _auditService.LogAsync("Driver", id,
-                    "ReturnDriver", $"Driver {vehicle?.CurrentDriver?.FullName} has been returned successfully.");
-                TempData["success"] = $"Driver {driverName} has been successfully returned.";
-            }
-            catch (Exception ex)
-            {
-                TempData["error"] = $"Failed to return driver: {ex.Message}";
-            }
-
+            TempData["success"] = result.Message;
             return RedirectToAction("Details", new { id });
         }
 

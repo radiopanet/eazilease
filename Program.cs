@@ -19,6 +19,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<ILeaseService, LeaseService>();
+builder.Services.AddScoped<IDriverAssignmentService, DriverAssignmentService>();
 
 builder.Services.AddAuthorization(options =>
 {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using EaziLease.Services;
 using EaziLease.Extensions;
 using Microsoft.AspNetCore.Http;
+using EaziLease.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
+builder.Services.AddScoped<ILeaseService, LeaseService>();
 
 builder.Services.AddAuthorization(options =>
 {

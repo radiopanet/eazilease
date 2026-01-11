@@ -20,6 +20,15 @@ namespace EaziLease.Models
         public decimal? PurchasePrice { get; set; }
         public DateTime PurchaseDate { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
 
+        //Maitenance scheduling intervals (configurable per vehicle).
+        public int MaintenanceIntervalKm {get; set;} = 10000; //default per 10 000 kilometers
+        public int MaintenanceIntervalMonths {get; set;} = 6; //default to 6 months.
+
+        //Next due calculations (updated on completion)
+        public int? NextMaitenanceMileage {get; set;} //e.g 90 000Km, nullable meaning no upcoming maintenance scheduled.
+        public DateTime? NextMaintenanceDate {get; set;} //e.g 2026-07-11
+
+
         //Relationships
         public string SupplierId { get; set; } = string.Empty;
         public virtual Supplier? Supplier { get; set; }
@@ -37,7 +46,6 @@ namespace EaziLease.Models
         
         [InverseProperty("CurrentVehicle")]
         public virtual Driver? CurrentDriver { get; set; }
-
         //History
         public virtual ICollection<VehicleLease> LeaseHistory { get; set; } = new List<VehicleLease>();
         public virtual ICollection<VehicleAssignment> AssignementHistory { get; set; } = new List<VehicleAssignment>();

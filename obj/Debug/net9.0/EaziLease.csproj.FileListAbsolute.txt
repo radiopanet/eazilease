@@ -391,3 +391,11 @@
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/scopedcss/Areas/SuperAdmin/Views/Shared/_Layout.cshtml.rz.scp.css
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/sxyz7dwalj-pptyjsojxs.gz
 /home/tx/Projects/DotNet/EaziLease/obj/Debug/net9.0/compressed/gc88aquzo7-pptyjsojxs.gz
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/web.config
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/appsettings.Development.json
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/appsettings.json
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/EaziLease.deps.json
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/EaziLease.runtimeconfig.json
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/EaziLease.staticwebassets.endpoints.json
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/wwwroot/package-lock.json
+/home/tx/Projects/DotNet/EaziLease/bin/Debug/net9.0/out/wwwroot/package.json

@@ -14,4 +14,13 @@ public class VehicleMaintenance: BaseEntity
     public string? InvoiceNumber { get; set; }
     public string? Notes { get; set; }
     public bool IsWarrantyWork { get; set; } = false;
+    public MaintenanceStatus Status {get; set;} = MaintenanceStatus.Scheduled;
+    public MaintenanceType Type = MaintenanceType.Routine;
+
+    public DateTime? ScheduledDate {get; set;}
+    public int? ScheduleMileage {get; set;}
+
+    //Flag to distiguish planning/actual
+    public bool IsFutureScheduled {get; set;}
+
 }

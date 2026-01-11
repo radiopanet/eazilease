@@ -16,9 +16,9 @@ namespace EaziLease.Models
         public decimal OdometerReading { get; set; } //in km
         public VehicleStatus Status { get; set; } = VehicleStatus.Available;
         public decimal DailyRate { get; set; }
-        public DateOnly? LastServiceDate { get; set; }
+        public DateTime? LastServiceDate { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
         public decimal? PurchasePrice { get; set; }
-        public DateOnly PurchaseDate { get; set; }
+        public DateTime PurchaseDate { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
 
         //Relationships
         public string SupplierId { get; set; } = string.Empty;

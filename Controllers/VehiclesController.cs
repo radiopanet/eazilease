@@ -18,17 +18,20 @@ namespace EaziLease.Controllers
         public readonly AuditService _auditService;
         public readonly ILeaseService _leaseService;
         public readonly IDriverAssignmentService _driverAssignmentService;
+        public readonly IMaintenanceService _maintenanceService;
 
 
 
         public VehiclesController(ApplicationDbContext context,
              AuditService auditService, ILeaseService leaseService,
-             IDriverAssignmentService driverAssignmentService)
+             IDriverAssignmentService driverAssignmentService,
+             IMaintenanceService maintenanceService)
         {
             _context = context;
             _auditService = auditService;
             _leaseService = leaseService;
             _driverAssignmentService = driverAssignmentService;
+            _maintenanceService = maintenanceService;
         }
 
         //GET: Vehicles
@@ -454,25 +457,16 @@ namespace EaziLease.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddMaintenance(VehicleMaintenance maintenance)
         {
-            var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
-            if (vehicle == null) return NotFound();
-            maintenance.ServiceDate = DateTime.SpecifyKind(
-            DateTime.UtcNow.Date, DateTimeKind.Utc);
+            var result = await _maintenanceService.RecordMaintenanceAsync(maintenance, User.Identity?.Name ?? "admin");
 
-            if (ModelState.IsValid)
+            if(!result.Success)
             {
-                maintenance.Id = Guid.NewGuid().ToString();
-                _context.VehicleMaintenance.Add(maintenance);
-                await _context.SaveChangesAsync();
-
-                await _auditService.LogAsync("Maintenance", maintenance.Id, "ServiceRecorded",
-                    $"Maintenance on {vehicle.RegistrationNumber}: {maintenance.Description} @ R{maintenance.Cost}");
-
-                TempData["success"] = "Maintenance record added";
-                return RedirectToAction("Details", new { id = maintenance.VehicleId });
+                ModelState.AddModelError("", result.Message ?? "Failed to add maintenance record.");
+                return View(maintenance);
             }
 
-            return View(maintenance);
+            TempData["success"] = "Maintenance record added";
+            return RedirectToAction("Details", new { id = maintenance.VehicleId });
         }
 
         [Authorize(Roles = "Admin")]

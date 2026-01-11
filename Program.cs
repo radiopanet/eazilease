@@ -20,6 +20,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<ILeaseService, LeaseService>();
 builder.Services.AddScoped<IDriverAssignmentService, DriverAssignmentService>();
+builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
 
 builder.Services.AddAuthorization(options =>
 {

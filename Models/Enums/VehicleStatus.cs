@@ -2,8 +2,8 @@ namespace EaziLease.Models
 {
     public enum VehicleStatus
     {
-        AccidentPending,
         Available,
+        AccidentPending,
         InMaintenance,
         Leased,
         OutOfService,

@@ -19,6 +19,8 @@ namespace EaziLease.Services
         {
             var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
 
+            maintenance.ServiceDate = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
+
             if(vehicle == null)
                 return new ServiceResult { Success = false, Message = "Vehicle not found."};
 

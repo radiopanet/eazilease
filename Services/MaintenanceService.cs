@@ -19,7 +19,8 @@ namespace EaziLease.Services
         {
             var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
 
-            maintenance.ServiceDate = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
+            maintenance.ServiceDate = DateTime.SpecifyKind(maintenance.ServiceDate, DateTimeKind.Utc);
+            maintenance.ScheduledDate = DateTime.SpecifyKind(maintenance.ScheduledDate ?? DateTime.MinValue, DateTimeKind.Utc);
 
             if (vehicle == null)
                 return new ServiceResult { Success = false, Message = "Vehicle not found." };
@@ -29,8 +30,8 @@ namespace EaziLease.Services
             if (!maintenance.IsFutureScheduled && maintenance.ServiceDate > DateTime.Today)
                 return new ServiceResult { Success = false, Message = "Cannot record future maintenance date for immediate service." };
 
-            if (maintenance.Cost <= 0)
-                return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
+            // if (maintenance.Cost <= 0)
+            //     return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
 
             //Update vehicle last service date with the record service date.
             // vehicle.LastServiceDate = maintenance.ServiceDate;
@@ -56,6 +57,7 @@ namespace EaziLease.Services
                 //update vehicle next due
                 vehicle.NextMaintenanceDate = nextDate;
                 vehicle.NextMaitenanceMileage = nextMileage;
+                
             }
             else
             {

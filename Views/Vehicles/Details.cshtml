@@ -204,7 +204,7 @@
                                     <small class="text-muted">Garage: @(m.GarageName ?? "Not Specified")</small>
                                 </td>
                                 <td>@(m.MileageAtService?.ToString("N0") ?? "-") KM</td>
-                                <td class="fw-bold text-danger">@m.Cost.ToString("C")</td>
+                                <td class="fw-bold text-danger">@m.Cost.ToString()</td>
                             </tr>
                         }
                     }

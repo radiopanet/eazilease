@@ -120,6 +120,9 @@ namespace EaziLease.Controllers
         {
             if (id != vehicle.Id) return NotFound();
 
+            vehicle.LastServiceDate = DateTime.SpecifyKind(vehicle.LastServiceDate ?? DateTime.MinValue, DateTimeKind.Utc);
+            vehicle.PurchaseDate = DateTime.SpecifyKind(vehicle.PurchaseDate, DateTimeKind.Utc);
+
             if (ModelState.IsValid)
             {
                 try

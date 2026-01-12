@@ -92,7 +92,7 @@
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded">
                             <div class="spec-label">Last Service</div>
-                            <div class="h5 mb-0">@Model.LastServiceDate.Value.Date.ToString("yyyy-MM-dd")</div>
+                            <div class="h5 mb-0">@Model.LastServiceDate?.ToString("yyyy-MM-dd")</div>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
                                 foreach (var lease in Model.LeaseHistory.OrderByDescending(l => l.LeaseStartDate))
                                 {
                                     <tr>
-                                        <td class="fw-bold">@lease.Client.CompanyName</td>
+                                        <td class="fw-bold">@lease.Client?.CompanyName</td>
                                         <td class="small text-muted">@lease.LeaseStartDate.ToShortDateString() - @(lease.ReturnDate?.ToShortDateString() ?? "Active")</td>
                                         <td>@lease.MonthlyRate.ToString("C")</td>
                                         <td>
@@ -159,7 +159,7 @@
                                 foreach (var ass in Model.AssignementHistory.OrderByDescending(a => a.AssignedDate))
                                 {
                                     <tr>
-                                        <td class="fw-bold"><i class="fas fa-user-tie me-2 text-muted"></i>@ass.Driver.FullName</td>
+                                        <td class="fw-bold"><i class="fas fa-user-tie me-2 text-muted"></i>@ass.Driver?.FullName</td>
                                         <td>@ass.AssignedDate.ToShortDateString()</td>
                                         <td>@(ass.ReturnedDate?.ToShortDateString() ?? "Current")</td>
                                         <td>

@@ -13,7 +13,7 @@ namespace EaziLease.Models
         public string Color { get; set; } = string.Empty;
         public FuelType FuelType { get; set; }
         public TransmissionType Transmission { get; set; }
-        public decimal OdometerReading { get; set; } //in km
+        public int? OdometerReading { get; set; } //in km
         public VehicleStatus Status { get; set; } = VehicleStatus.Available;
         public decimal DailyRate { get; set; }
         public DateTime? LastServiceDate { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
@@ -26,7 +26,7 @@ namespace EaziLease.Models
 
         //Next due calculations (updated on completion)
         public int? NextMaitenanceMileage {get; set;} //e.g 90 000Km, nullable meaning no upcoming maintenance scheduled.
-        public DateTime? NextMaintenanceDate {get; set;} //e.g 2026-07-11
+        public DateTime? NextMaintenanceDate {get; set;} = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc); //e.g 2026-07-11 
 
 
         //Relationships

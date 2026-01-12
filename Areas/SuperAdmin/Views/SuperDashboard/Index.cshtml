@@ -1,5 +1,7 @@
+@using EaziLease.Models.ViewModels
 @{
     ViewData["Title"] = "System Core Terminal";
+    var upcoming = ViewBag.UpcomingMaintenance as IEnumerable<UpcomingMaintenanceViewModel>;
 }
 
 <style>
@@ -36,6 +38,15 @@
         margin-bottom: 1rem;
         font-size: 0.85rem;
     }
+    .blink-soft {
+        animation: blinker 2s linear infinite;
+    }
+    @@keyframes blinker {
+        50% { opacity: 0.3; }
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(59, 130, 246, 0.05) !important;
+    }
 </style>
 
 <div class="container-fluid">
@@ -46,14 +57,14 @@
                     <i class="fas fa-terminal fa-2x"></i>
                 </div>
                 <div>
-                    <h2 class="fw-bold mb-0">System Core Terminal</h2>
-                    <p class="text-muted mb-0">Root Access Node: @User.Identity?.Name</p>
+                    <h2 class="fw-bold mb-0 text-white">System Core Terminal</h2>
+                    <p class="text-muted mb-0 font-monospace">Root Access Node: @User.Identity?.Name</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="terminal-card p-3">
                 <small class="text-white fw-bold d-block mb-1">SYSTEM UPTIME</small>
@@ -80,9 +91,93 @@
         </div>
     </div>
 
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-dark border-secondary shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center py-3" 
+                     style="background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);">
+                    <h5 class="mb-0 text-info fw-bold font-monospace small">
+                        <i class="fas fa-microchip me-2"></i>PREVENTATIVE MAINTENANCE FORECAST
+                    </h5>
+                    <span class="badge bg-info-subtle text-info border border-info px-3">FLEET SCAN: ACTIVE</span>
+                </div>
+                
+                <div class="card-body bg-black p-0">
+                    @if (upcoming != null && upcoming.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0 align-middle font-monospace" style="font-size: 0.85rem;">
+                                <thead class="text-secondary text-uppercase small" style="background: rgba(255,255,255,0.03);">
+                                    <tr>
+                                        <th class="ps-4 border-0">Asset #</th>
+                                        <th class="border-0">Forecast Date</th>
+                                        <th class="border-0">Threshold (KM)</th>
+                                        <th class="border-0">Time Drift</th>
+                                        <th class="border-0">KM Drift</th>
+                                        <th class="border-0">Class</th>
+                                        <th class="text-end pe-4 border-0">Severity</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="border-top-0">
+                                    @foreach (var item in upcoming)
+                                    {
+                                        var timeOverdue = item.DaysRemaining < 0;
+                                        var kmOverdue = item.KmRemaining < 0;
+
+                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                            <td class="ps-4">
+                                                <a asp-action="Details" asp-controller="Vehicles" asp-area="" asp-route-id="@item.VehicleId" 
+                                                   class="text-info text-decoration-none fw-bold">
+                                                    @item.RegistrationNumber
+                                                </a>
+                                            </td>
+                                            <td class="text-white opacity-75">
+                                                @(item.NextMaintenanceDate?.ToString("yyyy-MM-dd") ?? "NODATA")
+                                            </td>
+                                            <td class="text-white opacity-75">
+                                                @(item.NextMaintenanceMileage?.ToString("N0") ?? "---") <span class="small text-secondary">km</span>
+                                            </td>
+                                            <td class="@(timeOverdue ? "text-danger" : item.DaysRemaining <= 7 ? "text-warning" : "text-success")">
+                                                <i class="fas fa-clock me-1 small"></i>
+                                                @(timeOverdue ? "CRITICAL" : $"{item.DaysRemaining}d")
+                                            </td>
+                                            <td class="@(kmOverdue ? "text-danger" : item.KmRemaining <= 1000 ? "text-warning" : "text-success")">
+                                                <i class="fas fa-tachometer-alt me-1 small"></i>
+                                                @(kmOverdue ? "LIMIT_EXCEEDED" : $"{item.KmRemaining:N0}km")
+                                            </td>
+                                            <td class="text-info opacity-50 small">@item.Type</td>
+                                            <td class="text-end pe-4">
+                                                @if (timeOverdue || kmOverdue)
+                                                {
+                                                    <span class="text-danger fw-bold blink-soft">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i>HALT
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-success fw-bold">NOMINAL</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <p class="text-secondary small font-monospace">NO UPCOMING MAINTENANCE DETECTED</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-lg-8">
-            <h5 class="text-uppercase fw-bold mb-4 small opacity-50">Control Modules</h5>
+            <h5 class="text-uppercase fw-bold mb-4 small opacity-50 text-white">Control Modules</h5>
             <div class="row g-3">
                 <div class="col-md-6">
                     <a asp-controller="Audit" asp-action="Index" asp-area="" class="text-decoration-none">
@@ -106,50 +201,18 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-md-6">
-                    <a asp-area="SuperAdmin" asp-controller="RateOverride" asp-action="Index" class="text-decoration-none">
-                        <div class="terminal-card p-4 d-flex align-items-center">
-                            <div class="action-icon me-3"><i class="fas fa-sliders-h"></i></div>
-                            <div>
-                                <h6 class="text-white fw-bold mb-1">Financial Overrides</h6>
-                                <p class="text-success small mb-0">Adjust rates and penalty parameters.</p>
-                            </div>
-                        </div>
-                    </a>
                 </div>
-                <div class="col-md-6">
-                    <a href="#" class="text-decoration-none">
-                        <div class="terminal-card p-4 d-flex align-items-center">
-                            <div class="action-icon me-3"><i class="fas fa-cogs"></i></div>
-                            <div>
-                                <h6 class="text-white fw-bold mb-1">Global Configuration</h6>
-                                <p class="text-success small mb-0">Modify core EaziLease parameters.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
         </div>
 
         <div class="col-lg-4">
-            <h5 class="text-uppercase fw-bold mb-4 small opacity-50">Recent System Activity</h5>
-            <div class="terminal-card p-4" style="max-height: 400px; overflow-y: auto;">
+            <h5 class="text-uppercase fw-bold mb-4 small opacity-50 text-white">Recent System Activity</h5>
+            <div class="terminal-card p-4" style="max-height: 400px; overflow-y: auto; background: #0f172a;">
                 <div class="log-entry">
-                    <span class="text-warning fw-bold">ELEVATION</span><br/>
+                    <span class="text-warning fw-bold font-monospace">ELEVATION</span><br/>
                     <small class="text-success">User @User.Identity?.Name accessed SuperAdmin Area.</small>
-                    <div class="text-end small opacity-50">Just now</div>
+                    <div class="text-end small opacity-50 text-white">Just now</div>
                 </div>
-                <div class="log-entry">
-                    <span class="text-info">CONFIG_CHANGE</span><br/>
-                    <small class="text-success">Daily rate for Branch #01 updated.</small>
-                    <div class="text-end small opacity-50">14 mins ago</div>
                 </div>
-                <div class="log-entry">
-                    <span class="text-danger">USER_LOCKED</span><br/>
-                    <small class="text-success">Account 'jsmith_operator' suspended.</small>
-                    <div class="text-end small opacity-50">2 hours ago</div>
-                </div>
-            </div>
         </div>
     </div>
 

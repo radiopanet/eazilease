@@ -39,7 +39,24 @@ namespace EaziLease.Services
                 vehicle.OdometerReading = maintenance.MileageAtService.Value;
 
             //NEW: If checkbox checked -> Set InMaintenance and Auto-Return driver
-            // if(maintenance.)            
+            if (maintenance.AffectsAvailability)
+            {
+                vehicle.Status = VehicleStatus.InMaintenance;
+
+                //Auto-return driver if assigned
+                var assignment = await _context.VehicleAssignments
+                    .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);
+
+                if (assignment != null)
+                {
+                    assignment.ReturnedDate = DateTime.UtcNow;
+                    vehicle.CurrentDriverId = null;
+                    vehicle.CurrentDriver = null;
+                }
+
+                await _auditService.LogAsync("Vehicle", vehicle.Id, "StatusChange",
+                    $"Vehicle status changed to InMaintenance due to maintenance record {maintenance.Id} by {userName}");
+            }
 
             // if (maintenance.Cost <= 0)
             //     return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };

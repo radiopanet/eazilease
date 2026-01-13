@@ -181,41 +181,61 @@
                 </div>
             </div>
 
-    <div class="tab-pane fade" id="pills-maint" role="tabpanel">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Service Date</th>
-                        <th>Description / Garage</th>
-                        <th>Mileage</th>
-                        <th>Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.MaintenanceHistory.Any())
+                <div class="tab-pane fade" id="pills-maint" role="tabpanel">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Service Date</th>
+                    <th>Description / Garage</th>
+                    <th>Mileage</th>
+                    <th>Cost</th>
+                    <th class="text-end">Status / Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.MaintenanceHistory.Any())
+                {
+                    foreach (var m in Model.MaintenanceHistory.OrderByDescending(x => x.ServiceDate))
                     {
-                        foreach (var m in Model.MaintenanceHistory.OrderByDescending(x => x.ServiceDate))
-                        {
-                            <tr>
-                                <td>@m.ServiceDate.ToShortDateString()</td>
-                                <td>
-                                    <div class="fw-bold">@m.Description</div>
-                                    <small class="text-muted">Garage: @(m.GarageName ?? "Not Specified")</small>
-                                </td>
-                                <td>@(m.MileageAtService?.ToString("N0") ?? "-") KM</td>
-                                <td class="fw-bold text-danger">@m.Cost.ToString()</td>
-                            </tr>
-                        }
+                        <tr>
+                            <td>@m.ServiceDate.ToShortDateString()</td>
+                            <td>
+                                <div class="fw-bold">@m.Description</div>
+                                <small class="text-muted">Garage: @(m.GarageName ?? "Not Specified")</small>
+                            </td>
+                            <td>@(m.MileageAtService?.ToString("N0") ?? "-") KM</td>
+                            <td class="fw-bold text-danger">@m.Cost?.ToString("C")</td>
+                            <td class="text-end">
+                                @if (m.Status == MaintenanceStatus.InProgress)
+                                {
+                                    <form asp-action="CompleteMaintenance" asp-route-maintenanceId="@m.Id" method="post" class="d-inline" onsubmit="return confirm('Mark this maintenance as completed? Asset status will return to Available.');">
+                                        <button type="submit" class="btn btn-sm px-3 fw-bold rounded-pill shadow-sm" 
+                                                style="background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; font-size: 0.7rem;">
+                                            <i class="fas fa-check-circle me-1"></i> COMPLETE
+                                        </button>
+                                    </form>
+                                }
+                                else if (m.Status == MaintenanceStatus.Scheduled)
+                                {
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle px-3 rounded-pill">Scheduled</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-muted border px-3 rounded-pill">Completed</span>
+                                }
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <tr><td colspan="4" class="text-center py-4 text-muted">No maintenance records found.</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No maintenance records found.</td></tr>
+                }
+            </tbody>
+        </table>
     </div>
+</div>
 </div>
             </div>
         </div>

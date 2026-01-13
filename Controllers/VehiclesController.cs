@@ -472,6 +472,21 @@ namespace EaziLease.Controllers
             return RedirectToAction("Details", new { id = maintenance.VehicleId });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteMaintenance(string maintenanceId)
+        {
+            var result = await _maintenanceService.CompleteMaintenanceAsync(maintenanceId, User.Identity?.Name ?? "admin");
+
+            TempData[result.Success ? "success" : "error"] = result.Message;
+
+            // Redirect back to vehicle details (fetch vehicleId from maintenance)
+            var maintenance = await _context.VehicleMaintenance.FindAsync(maintenanceId);
+            var vehicleId = maintenance?.VehicleId ?? "";
+
+            return RedirectToAction("Details", new { id = vehicleId });
+        }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RequestRateOverride(string vehicleId)
         {

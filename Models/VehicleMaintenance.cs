@@ -23,5 +23,6 @@ public class VehicleMaintenance: BaseEntity
 
     //Flag to distiguish planning/actual
     public bool IsFutureScheduled {get; set;}
+    public bool AffectsAvailability { get; set; } = false;
 
 }

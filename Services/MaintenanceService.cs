@@ -31,6 +31,16 @@ namespace EaziLease.Services
             if (!maintenance.IsFutureScheduled && maintenance.ServiceDate > DateTime.Today)
                 return new ServiceResult { Success = false, Message = "Cannot record future maintenance date for immediate service." };
 
+            //For immediate maintenance
+            if(!maintenance.IsFutureScheduled && !maintenance.MileageAtService.HasValue)
+                return new ServiceResult { Success = false, Message="Mileage at service is required."};
+
+            if(maintenance.MileageAtService.HasValue)
+                vehicle.OdometerReading = maintenance.MileageAtService.Value;
+
+            //NEW: If checkbox checked -> Set InMaintenance and Auto-Return driver
+            // if(maintenance.)            
+
             // if (maintenance.Cost <= 0)
             //     return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
 

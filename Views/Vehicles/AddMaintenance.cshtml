@@ -33,6 +33,16 @@
         border-radius: 12px;
         font-size: 0.85rem;
     }
+    /* New Availability Warning Style */
+    .availability-warning {
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #9f1239;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        display: none;
+    }
     .custom-switch .form-check-input {
         width: 3rem;
         height: 1.5rem;
@@ -64,15 +74,25 @@
 
                         <div id="immediateInfo">
                             <h6 class="fw-bold text-dark small mb-3">CURRENT ODOMETER</h6>
-                            <div class="h4 fw-bold text-primary mb-4">@vehicle?.OdometerReading.ToString() <span class="small text-muted">KM</span></div>
+                            <div class="h4 fw-bold text-primary mb-4">@vehicle?.OdometerReading?.ToString("N0") <span class="small text-muted">KM</span></div>
                         </div>
 
-                        <div class="planning-alert-pill shadow-sm" id="modeNotice">
+                        <div class="planning-alert-pill shadow-sm mb-3" id="modeNotice">
                             <div class="d-flex align-items-start">
                                 <i class="fas fa-info-circle mt-1 me-2"></i>
                                 <div>
                                     <strong id="modeTitle">Standard Log</strong>
                                     <p class="small mb-0 mt-1" id="modeDesc">Recording service work that has already been executed.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="availability-warning shadow-sm" id="availabilityNotice">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-triangle mt-1 me-2"></i>
+                                <div>
+                                    <strong>Status Impact</strong>
+                                    <p class="small mb-0 mt-1">Vehicle will be marked as <b>InMaintenance</b> and unavailable for leasing.</p>
                                 </div>
                             </div>
                         </div>
@@ -90,22 +110,34 @@
                                 </div>
                             </div>
 
+                            <div class="mb-4">
+                                <label asp-for="GarageId" class="form-label fw-bold small text-muted">GARAGE / REPAIR SHOP</label>
+                                <select asp-for="GarageId" class="form-select" asp-items="@(new SelectList(ViewBag.Garages, "Id", "Name"))">
+                                    <option value="">Select Garage (optional)</option>
+                                </select>
+                            </div>
+
                             <div id="immediateFields">
                                 <div class="row g-4 mb-4">
-                                    @* <div class="col-md-7">
-                                        <label asp-for="GarageName" class="form-label fw-bold small text-muted">SERVICE CENTER</label>
-                                        <input asp-for="GarageName" class="form-control" placeholder="e.g. Bosch Workshop" />
-                                    </div> *@
-                                    <div class="col-md-5">
+                                    <div class="col-md-6">
                                         <label asp-for="ServiceDate" class="form-label fw-bold small text-muted">DATE COMPLETED</label>
                                         <input asp-for="ServiceDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <div class="form-check mb-2">
+                                            <input type="checkbox" class="form-check-input" id="affectsAvailability" name="AffectsAvailability" value="true" />
+                                            <label class="form-check-label small fw-bold text-muted" for="affectsAvailability">
+                                                Makes vehicle unavailable
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="row g-4 mb-4">
                                     <div class="col-md-6">
-                                        <label asp-for="MileageAtService" class="form-label fw-bold small text-muted">MILEAGE AT SERVICE (KM)</label>
-                                        <input asp-for="MileageAtService" class="form-control" type="number" />
+                                        <label asp-for="MileageAtService" class="form-label fw-bold small text-muted">MILEAGE AT SERVICE (KM) *</label>
+                                        <input asp-for="MileageAtService" class="form-control" type="number" required />
+                                        <span asp-validation-for="MileageAtService" class="text-danger small"></span>
                                     </div>
                                     <div class="col-md-6">
                                         <label asp-for="Cost" class="form-label fw-bold small text-muted">TOTAL COST (ZAR)</label>
@@ -118,10 +150,6 @@
                             </div>
                             <div id="futureFields" style="display: none;">
                                 <div class="row g-4 mb-4">
-                                     @* <div class="col-md-7">
-                                        <label asp-for="GarageName" class="form-label fw-bold small text-muted">SERVICE CENTER</label>
-                                        <input asp-for="GarageName" name="GarageName" class="form-control" placeholder="e.g. Bosch Workshop" />
-                                    </div> *@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold small text-muted">SCHEDULED DATE</label>
                                         <input asp-for="ScheduledDate" type="date" name="ScheduledDate" class="form-control border-primary" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
@@ -163,22 +191,39 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         const scheduleCheckbox = document.getElementById('scheduleFuture');
+        const availabilityCheckbox = document.getElementById('affectsAvailability');
         const futureFields = document.getElementById('futureFields');
         const immediateFields = document.getElementById('immediateFields');
         const modeTitle = document.getElementById('modeTitle');
         const modeDesc = document.getElementById('modeDesc');
+        const availabilityNotice = document.getElementById('availabilityNotice');
 
+        // Toggle between Future and Standard modes
         scheduleCheckbox.addEventListener('change', function() {
             if(this.checked) {
                 futureFields.style.display = 'block';
                 immediateFields.style.display = 'none';
                 modeTitle.innerText = "Future Planning";
                 modeDesc.innerText = "Setting targets for future preventative maintenance.";
+                // Hide availability checkbox logic when planning future
+                availabilityNotice.style.display = 'none';
             } else {
-                futureFields.style.display = 'none';
+                futureFields.style.display = 'block'; // Ensure block for standard
+                futureFields.style.display = 'none'; 
                 immediateFields.style.display = 'block';
                 modeTitle.innerText = "Standard Log";
                 modeDesc.innerText = "Recording service work that has already been executed.";
+                // Re-check availability notice if the box was already checked
+                if(availabilityCheckbox.checked) availabilityNotice.style.display = 'block';
+            }
+        });
+
+        // Show/Hide availability warning notice
+        availabilityCheckbox.addEventListener('change', function() {
+            if(this.checked && !scheduleCheckbox.checked) {
+                availabilityNotice.style.display = 'block';
+            } else {
+                availabilityNotice.style.display = 'none';
             }
         });
     </script>

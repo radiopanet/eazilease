@@ -452,6 +452,12 @@ namespace EaziLease.Controllers
         public IActionResult AddMaintenance(string vehicleId)
         {
             var vm = new VehicleMaintenance { VehicleId = vehicleId };
+            ViewBag.Garages = _context.Garages
+                .Where(g => !g.IsDeleted)
+                .OrderBy(g => g.Name)
+                .Select(g => new {g.Id, g.Name})
+                .ToList();
+                
             return View(vm);
         }
 

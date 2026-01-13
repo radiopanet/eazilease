@@ -2,6 +2,7 @@ using EaziLease.Data;
 using EaziLease.Models;
 using EaziLease.Services.Interfaces;
 using EaziLease.Services.ServiceModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace EaziLease.Services
 {
@@ -76,6 +77,57 @@ namespace EaziLease.Services
                     $"{maintenance.Description} @ R{maintenance.Cost} by {userName}");
                     
             return new ServiceResult { Success = true, Message = "Maintenance record added successfully." };
+        }
+
+        public async Task<ServiceResult> CompleteMaintenanceAsync(string maintenanceId, string completedBy)
+        {
+            var maintenance = await _context.VehicleMaintenance
+                .Include(m => m.Vehicle)
+                .FirstOrDefaultAsync(m => m.Id == maintenanceId);
+
+            if(maintenance == null)
+                return new ServiceResult { Success = false, Message = "Maintenance record not found."};
+
+            if(maintenance.Status != MaintenanceStatus.InProgress)
+                return new ServiceResult { Success = false, Message = "Only InProgress records can be completed." };
+
+            maintenance.Status = MaintenanceStatus.Completed;
+
+            var vehicle = maintenance.Vehicle;
+            if(vehicle != null)
+            {
+                //Calculate next due
+                var today = DateTime.UtcNow.Date;
+                var nextDate = today.AddMonths(vehicle.MaintenanceIntervalMonths);
+                var currentMileage = vehicle.OdometerReading ?? 0;
+                var nextMileage = currentMileage + vehicle.MaintenanceIntervalKm;
+
+                //Create next schedule record
+                var nextRecord = new VehicleMaintenance
+                {
+                    VehicleId = vehicle.Id,
+                    Status = MaintenanceStatus.Scheduled,
+                    Type = MaintenanceType.Routine, //default type to routine until changed.
+                    ScheduledDate = nextDate,
+                    ScheduleMileage = nextMileage,
+                    Description = $"Auto-scheduled next {MaintenanceType.Routine}",
+                    IsFutureScheduled = true,
+                    ServiceDate = DateTime.MinValue
+                };
+
+                _context.VehicleMaintenance.Add(nextRecord);
+
+                vehicle.NextMaintenanceDate = nextDate;
+                vehicle.NextMaitenanceMileage= nextMileage;
+
+            }            
+
+            await _context.SaveChangesAsync();
+
+            await _auditService.LogAsync("Maintenance", maintenance.Id, "Completed",
+                $"Maintenance completed by {completedBy}. Next scheduled auto-created for {vehicle?.RegistrationNumber}.");
+            
+            return new ServiceResult { Success = true, Message = "Maintenance completed. Next service auto-scheduled." };
         }
     }
 }

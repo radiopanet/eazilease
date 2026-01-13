@@ -16,112 +16,111 @@ namespace EaziLease.Services
             _context = context;
             _auditService = auditService;
         }
+
         public async Task<ServiceResult> RecordMaintenanceAsync(VehicleMaintenance maintenance, string userName)
         {
-            var vehicle = await _context.Vehicles.FindAsync(maintenance.VehicleId);
-
-            maintenance.ServiceDate = DateTime.SpecifyKind(maintenance.ServiceDate, DateTimeKind.Utc);
-            maintenance.ScheduledDate = DateTime.SpecifyKind(maintenance.ScheduledDate ?? DateTime.MinValue, DateTimeKind.Utc);
+            var vehicle = await _context.Vehicles
+                .Include(v => v.CurrentDriver)
+                .FirstOrDefaultAsync(v => v.Id == maintenance.VehicleId);
 
             if (vehicle == null)
                 return new ServiceResult { Success = false, Message = "Vehicle not found." };
 
-
-            //Prevent future maintenance for immediate service.
+            // Prevent future dates for immediate maintenance
             if (!maintenance.IsFutureScheduled && maintenance.ServiceDate > DateTime.Today)
                 return new ServiceResult { Success = false, Message = "Cannot record future maintenance date for immediate service." };
 
-            //For immediate maintenance
-            if(!maintenance.IsFutureScheduled && !maintenance.MileageAtService.HasValue)
-                return new ServiceResult { Success = false, Message="Mileage at service is required."};
+            if (maintenance.Cost <= 0)
+                return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
 
-            if(maintenance.MileageAtService.HasValue)
-                vehicle.OdometerReading = maintenance.MileageAtService.Value;
+            // For immediate maintenance: require mileage
+            if (!maintenance.IsFutureScheduled && !maintenance.MileageAtService.HasValue)
+                return new ServiceResult { Success = false, Message = "Mileage at service is required for immediate maintenance." };
 
-            //NEW: If checkbox checked -> Set InMaintenance and Auto-Return driver
-            if (maintenance.AffectsAvailability)
-            {
-                vehicle.Status = VehicleStatus.InMaintenance;
-
-                //Auto-return driver if assigned
-                var assignment = await _context.VehicleAssignments
-                    .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);
-
-                if (assignment != null)
-                {
-                    assignment.ReturnedDate = DateTime.UtcNow;
-                    vehicle.CurrentDriverId = null;
-                    vehicle.CurrentDriver = null;
-                }
-
-                await _auditService.LogAsync("Vehicle", vehicle.Id, "StatusChange",
-                    $"Vehicle status changed to InMaintenance due to maintenance record {maintenance.Id} by {userName}");
-            }
-
-            // if (maintenance.Cost <= 0)
-            //     return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
-
-            //Update vehicle last service date with the record service date.
-            // vehicle.LastServiceDate = maintenance.ServiceDate;
             maintenance.Id = Guid.NewGuid().ToString();
 
-            //Handle future scheduling
+            // Handle future/scheduled maintenance
             if (maintenance.IsFutureScheduled)
             {
-                //Required fields validation
+                // Required fields validation for scheduled
                 if (!maintenance.ScheduledDate.HasValue)
                     return new ServiceResult { Success = false, Message = "Scheduled date is required for future maintenance." };
 
                 if (!maintenance.ScheduledMileage.HasValue)
-                    return new ServiceResult { Success = false, Message = "Schedule mileage is required for future maintenance." };
+                    return new ServiceResult { Success = false, Message = "Scheduled mileage is required for future maintenance." };
+
+                if (maintenance.ScheduledDate <= DateTime.Today)
+                    return new ServiceResult { Success = false, Message = "Scheduled date must be in the future." };
 
                 maintenance.Status = MaintenanceStatus.Scheduled;
-                maintenance.ServiceDate = DateTime.MinValue;
+                maintenance.ServiceDate = DateTime.MinValue; // Not yet performed
 
-                //Calculate next due (allow manual override.)
+                // Calculate next due (allow manual override if needed)
                 var nextDate = maintenance.ScheduledDate.Value.AddMonths(vehicle.MaintenanceIntervalMonths);
                 var nextMileage = maintenance.ScheduledMileage.Value + vehicle.MaintenanceIntervalKm;
 
-                //update vehicle next due
+                // Update vehicle next due
                 vehicle.NextMaintenanceDate = nextDate;
                 vehicle.NextMaintenanceMileage = nextMileage;
-                
             }
             else
             {
-                //Immediate maintenance
+                // Immediate maintenance
                 maintenance.Status = MaintenanceStatus.InProgress;
-                maintenance.ServiceDate = DateTime.UtcNow;
+                maintenance.ServiceDate = DateTime.UtcNow.Date;
+
+                // Update vehicle odometer with latest reading
+                if (maintenance.MileageAtService.HasValue)
+                    vehicle.OdometerReading = maintenance.MileageAtService.Value;
+
+                // If admin checked "makes vehicle unavailable"
+                if (maintenance.AffectsAvailability)
+                {
+                    vehicle.Status = VehicleStatus.InMaintenance;
+
+                    // Auto-return driver if currently assigned
+                    var assignment = await _context.VehicleAssignments
+                        .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);
+
+                    if (assignment != null)
+                    {
+                        assignment.ReturnedDate = DateTime.UtcNow;
+                        vehicle.CurrentDriverId = null;
+
+                        await _auditService.LogAsync("DriverAssignment", assignment.Id, "AutoReturned",
+                            $"Driver auto-returned due to maintenance start (ID: {maintenance.Id}) by {userName}");
+                    }
+
+                    await _auditService.LogAsync("Vehicle", vehicle.Id, "StatusChange",
+                        $"Vehicle status changed to InMaintenance due to maintenance record {maintenance.Id} by {userName}");
+                }
             }
-
-
 
             _context.VehicleMaintenance.Add(maintenance);
             await _context.SaveChangesAsync();
 
             await _auditService.LogAsync("Maintenance", maintenance.Id, "Recorded",
-                    $"Maintenance {(maintenance.IsFutureScheduled ? "scheduled" : "recorded")} on {vehicle.RegistrationNumber}: " +
-                    $"{maintenance.Description} @ R{maintenance.Cost} by {userName}");
-                    
-            return new ServiceResult { Success = true, Message = "Maintenance record added successfully." };
-        }
+                $"Maintenance {(maintenance.IsFutureScheduled ? "scheduled" : "recorded")} on {vehicle.RegistrationNumber}: " +
+                $"{maintenance.Description} @ R{maintenance.Cost} by {userName}");
 
+            return new ServiceResult { Success = true, Message = "Maintenance record saved successfully." };
+        }
         public async Task<ServiceResult> CompleteMaintenanceAsync(string maintenanceId, string completedBy)
         {
             var maintenance = await _context.VehicleMaintenance
                 .Include(m => m.Vehicle)
                 .FirstOrDefaultAsync(m => m.Id == maintenanceId);
 
-            if(maintenance == null)
-                return new ServiceResult { Success = false, Message = "Maintenance record not found."};
+            if (maintenance == null)
+                return new ServiceResult { Success = false, Message = "Maintenance record not found." };
 
-            if(maintenance.Status != MaintenanceStatus.InProgress)
+            if (maintenance.Status != MaintenanceStatus.InProgress)
                 return new ServiceResult { Success = false, Message = "Only InProgress records can be completed." };
 
             maintenance.Status = MaintenanceStatus.Completed;
 
             var vehicle = maintenance.Vehicle;
-            if(vehicle != null)
+            if (vehicle != null)
             {
                 //Calculate next due
                 var today = DateTime.UtcNow.Date;
@@ -145,15 +144,15 @@ namespace EaziLease.Services
                 _context.VehicleMaintenance.Add(nextRecord);
 
                 vehicle.NextMaintenanceDate = nextDate;
-                vehicle.NextMaintenanceMileage= nextMileage;
+                vehicle.NextMaintenanceMileage = nextMileage;
 
-            }            
+            }
 
             await _context.SaveChangesAsync();
 
             await _auditService.LogAsync("Maintenance", maintenance.Id, "Completed",
                 $"Maintenance completed by {completedBy}. Next scheduled auto-created for {vehicle?.RegistrationNumber}.");
-            
+
             return new ServiceResult { Success = true, Message = "Maintenance completed. Next service auto-scheduled." };
         }
     }

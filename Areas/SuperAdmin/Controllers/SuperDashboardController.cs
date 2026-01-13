@@ -26,9 +26,9 @@ namespace EaziLease.Areas.SuperAdmin.Controllers
             //Fetch raw data first
             var vehicles = await _context.Vehicles
                 .Where(v => !v.IsDeleted)
-                .Where(v => v.NextMaintenanceDate != null || v.NextMaitenanceMileage != null)
+                .Where(v => v.NextMaintenanceDate != null || v.NextMaintenanceMileage != null)
                 .OrderBy(v => v.NextMaintenanceDate)
-                .ThenBy(v => v.NextMaitenanceMileage)
+                .ThenBy(v => v.NextMaintenanceMileage)
                 .Take(10)
                 .ToListAsync();
 
@@ -39,9 +39,9 @@ namespace EaziLease.Areas.SuperAdmin.Controllers
                      VehicleId = v.Id,
                      RegistrationNumber = v.RegistrationNumber,
                      NextMaintenanceDate = v.NextMaintenanceDate,
-                     NextMaintenanceMileage = v.NextMaitenanceMileage,
+                     NextMaintenanceMileage = v.NextMaintenanceMileage,
                      DaysRemaining = v.NextMaintenanceDate != null ? (v.NextMaintenanceDate.Value.Date - DateTime.Today).Days : 999,
-                     KmRemaining = v.NextMaitenanceMileage != null ? v.NextMaitenanceMileage - (v.OdometerReading ?? 0) : 9999,
+                     KmRemaining = v.NextMaintenanceMileage != null ? v.NextMaintenanceMileage - (v.OdometerReading ?? 0) : 9999,
                      Type = v.MaintenanceHistory .Where(m => m.Status == MaintenanceStatus.Scheduled)
                       .OrderBy(m => m.ScheduledDate) 
                       .Select(m => m.Type) .FirstOrDefault() }) 

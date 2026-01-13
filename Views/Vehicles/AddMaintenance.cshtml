@@ -92,10 +92,10 @@
 
                             <div id="immediateFields">
                                 <div class="row g-4 mb-4">
-                                    <div class="col-md-7">
+                                    @* <div class="col-md-7">
                                         <label asp-for="GarageName" class="form-label fw-bold small text-muted">SERVICE CENTER</label>
                                         <input asp-for="GarageName" class="form-control" placeholder="e.g. Bosch Workshop" />
-                                    </div>
+                                    </div> *@
                                     <div class="col-md-5">
                                         <label asp-for="ServiceDate" class="form-label fw-bold small text-muted">DATE COMPLETED</label>
                                         <input asp-for="ServiceDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
@@ -118,17 +118,17 @@
                             </div>
                             <div id="futureFields" style="display: none;">
                                 <div class="row g-4 mb-4">
-                                     <div class="col-md-7">
+                                     @* <div class="col-md-7">
                                         <label asp-for="GarageName" class="form-label fw-bold small text-muted">SERVICE CENTER</label>
                                         <input asp-for="GarageName" name="GarageName" class="form-control" placeholder="e.g. Bosch Workshop" />
-                                    </div>
+                                    </div> *@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold small text-muted">SCHEDULED DATE</label>
                                         <input asp-for="ScheduledDate" type="date" name="ScheduledDate" class="form-control border-primary" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold small text-muted">SCHEDULED MILEAGE (KM)</label>
-                                        <input asp-for="ScheduleMileage" type="number" name="ScheduleMileage" class="form-control border-primary" placeholder="Planned km..." />
+                                        <input asp-for="ScheduledMileage" type="number" name="ScheduledMileage" class="form-control border-primary" placeholder="Planned km..." />
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-bold small text-muted">MAINTENANCE TYPE</label>

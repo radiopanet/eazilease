@@ -45,7 +45,7 @@ namespace EaziLease.Services
                 if (!maintenance.ScheduledDate.HasValue)
                     return new ServiceResult { Success = false, Message = "Scheduled date is required for future maintenance." };
 
-                if (!maintenance.ScheduleMileage.HasValue)
+                if (!maintenance.ScheduledMileage.HasValue)
                     return new ServiceResult { Success = false, Message = "Schedule mileage is required for future maintenance." };
 
                 maintenance.Status = MaintenanceStatus.Scheduled;
@@ -53,11 +53,11 @@ namespace EaziLease.Services
 
                 //Calculate next due (allow manual override.)
                 var nextDate = maintenance.ScheduledDate.Value.AddMonths(vehicle.MaintenanceIntervalMonths);
-                var nextMileage = maintenance.ScheduleMileage.Value + vehicle.MaintenanceIntervalKm;
+                var nextMileage = maintenance.ScheduledMileage.Value + vehicle.MaintenanceIntervalKm;
 
                 //update vehicle next due
                 vehicle.NextMaintenanceDate = nextDate;
-                vehicle.NextMaitenanceMileage = nextMileage;
+                vehicle.NextMaintenanceMileage = nextMileage;
                 
             }
             else
@@ -109,7 +109,7 @@ namespace EaziLease.Services
                     Status = MaintenanceStatus.Scheduled,
                     Type = MaintenanceType.Routine, //default type to routine until changed.
                     ScheduledDate = nextDate,
-                    ScheduleMileage = nextMileage,
+                    ScheduledMileage = nextMileage,
                     Description = $"Auto-scheduled next {MaintenanceType.Routine}",
                     IsFutureScheduled = true,
                     ServiceDate = DateTime.MinValue
@@ -118,7 +118,7 @@ namespace EaziLease.Services
                 _context.VehicleMaintenance.Add(nextRecord);
 
                 vehicle.NextMaintenanceDate = nextDate;
-                vehicle.NextMaitenanceMileage= nextMileage;
+                vehicle.NextMaintenanceMileage= nextMileage;
 
             }            
 

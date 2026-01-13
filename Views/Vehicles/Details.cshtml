@@ -200,10 +200,10 @@
                     {
                         <tr>
                             <td>@m.ServiceDate.ToShortDateString()</td>
-                            <td>
+                            @* <td>
                                 <div class="fw-bold">@m.Description</div>
                                 <small class="text-muted">Garage: @(m.GarageName ?? "Not Specified")</small>
-                            </td>
+                            </td> *@
                             <td>@(m.MileageAtService?.ToString("N0") ?? "-") KM</td>
                             <td class="fw-bold text-danger">@m.Cost?.ToString("C")</td>
                             <td class="text-end">

@@ -8,9 +8,10 @@ public class VehicleMaintenance: BaseEntity
     public Vehicle? Vehicle { get; set; } = null!;
     public DateTime ServiceDate { get; set; }
     public string Description { get; set; } = string.Empty; // e.g. "Oil change + filter", "Brake pads replacement"
-    public string? GarageName { get; set; }
+    public string? GarageId { get; set; }
+    public Garage? Garage {get; set;}
     public decimal? Cost { get; set; } = 0.0m;
-    public int? MileageAtService { get; set; } // km at time of service
+    public decimal? MileageAtService { get; set; } // km at time of service
     public string? InvoiceNumber { get; set; }
     public string? Notes { get; set; }
     public bool IsWarrantyWork { get; set; } = false;
@@ -18,7 +19,7 @@ public class VehicleMaintenance: BaseEntity
     public MaintenanceType Type = MaintenanceType.Routine;
 
     public DateTime? ScheduledDate {get; set;}
-    public int? ScheduleMileage {get; set;}
+    public decimal? ScheduledMileage {get; set;}
 
     //Flag to distiguish planning/actual
     public bool IsFutureScheduled {get; set;}

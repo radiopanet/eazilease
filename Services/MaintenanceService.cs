@@ -39,8 +39,61 @@ namespace EaziLease.Services
 
             maintenance.Id = Guid.NewGuid().ToString();
 
+            //Handle Historical Records.
+            if(maintenance.IsHistorical)
+            {
+                //Past record: must be in the past
+                if(maintenance.ServiceDate > DateTime.Today)
+                    return new ServiceResult { Success = false, Message="Historical records must have a date in the past."};
+
+                //Force complete (Maintenance already happened.)
+                maintenance.Status = MaintenanceStatus.Completed;
+
+                //Do not affect current availability status
+                maintenance.AffectsAvailability = false;
+
+                //Update LastServiceDate if ONLY if this is more recent than current
+                if(maintenance.ServiceDate > vehicle.LastServiceDate)
+                    vehicle.LastServiceDate = maintenance.ServiceDate;
+
+                bool isRecent = (DateTime.Today - maintenance.ServiceDate).TotalDays <= (vehicle.MaintenanceIntervalMonths * 30);
+                if(isRecent)
+                {
+                    // Recent past record → auto-create next scheduled
+                    var today = DateTime.UtcNow.Date;
+                    var nextDate = today.AddMonths(vehicle.MaintenanceIntervalMonths);
+                    var currentMileage = vehicle.OdometerReading ?? 0;
+                    var nextMileage = currentMileage + vehicle.MaintenanceIntervalKm;
+
+                    var nextRecord = new VehicleMaintenance
+                    {
+                        VehicleId = vehicle.Id,
+                        Status = MaintenanceStatus.Scheduled,
+                        Type = MaintenanceType.Routine,
+                        ScheduledDate = nextDate,
+                        ScheduledMileage = nextMileage,
+                        Description = $"Auto-scheduled next {MaintenanceType.Routine} (triggered by recent historical record)",
+                        IsFutureScheduled = true,
+                        ServiceDate = DateTime.MinValue
+                    };
+
+                    _context.VehicleMaintenance.Add(nextRecord);
+
+                    vehicle.NextMaintenanceDate = nextDate;
+                    vehicle.NextMaintenanceMileage = nextMileage;
+
+                    await _auditService.LogAsync("Maintenance", nextRecord.Id, "AutoScheduled",
+                        $"Next scheduled maintenance auto-created after recent historical record {maintenance.Id} by {userName}");
+                }
+                else
+                {
+                    await _auditService.LogAsync("Maintenance", maintenance.Id, "HistoricalRecord",
+                        $"Very old historical maintenance recorded (date: {maintenance.ServiceDate:dd MMM yyyy}) " +
+                        $"on {vehicle.RegistrationNumber} by {userName} - no future scheduling triggered.");
+                }
+            }
             // Handle future/scheduled maintenance
-            if (maintenance.IsFutureScheduled)
+            else if (maintenance.IsFutureScheduled)
             {
                 // Required fields validation for scheduled
                 if (!maintenance.ScheduledDate.HasValue)

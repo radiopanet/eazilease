@@ -1,5 +1,7 @@
 using EaziLease.Models.Entities;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EaziLease.Models
 {
@@ -38,6 +40,13 @@ namespace EaziLease.Models
 
         public bool IsExtended {get; set;}
         public int ExtensionCount {get; set;}
+        public virtual ICollection<VehicleMaintenance> MaintenanceHistory { get; set; } = new List<VehicleMaintenance>();
+
+
+        [NotMapped]
+        public decimal? BillableMaintenanceCosts => MaintenanceHistory?
+            .Where(m => m.IsBillableToClient)
+            .Sum(m => m.BillableAmount ?? 0) ?? 0;
 
         public void CalculateMonthlyRate(decimal dailyRate)
         {

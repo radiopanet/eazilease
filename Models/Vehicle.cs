@@ -28,6 +28,16 @@ namespace EaziLease.Models
         public decimal? NextMaintenanceMileage {get; set;} //e.g 90 000Km, nullable meaning no upcoming maintenance scheduled.
         public DateTime? NextMaintenanceDate {get; set;} = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc); //e.g 2026-07-11 
 
+        [NotMapped]
+        public decimal TotalBillableMaintenance
+        {
+            get
+            {
+                if(CurrentLease == null) return 0m;
+                return CurrentLease.BillableMaintenanceCosts ?? 0m;
+            }
+        }
+
 
         //Relationships
         public string SupplierId { get; set; } = string.Empty;

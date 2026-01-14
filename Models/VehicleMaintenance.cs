@@ -1,4 +1,6 @@
 using EaziLease.Models.Entities;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EaziLease.Models;
 
@@ -27,4 +29,15 @@ public class VehicleMaintenance: BaseEntity
     public bool IsHistorical {get; set;} = false; //Checkbox flag for historical records.
 
     public string? Reason {get; set;} = string.Empty; // Explanation for the record (required for historical/scheduled)
+
+    //Financial Tracking.
+    public bool IsBillableToClient {get; set;} = false; //Checkbox flag for billing clients.
+    
+    [Range(0, double.MaxValue)]
+    public decimal? BillableAmount {get; set;} //Can differ from cost (e.g partial reimbursement)
+
+    public InsuranceClaimStatus InsuranceClaimStatus {get; set;} = InsuranceClaimStatus.NA; 
+    public string? InsuranceClaimNumber {get; set;}
+    public string? InsuranceName {get; set;}
+
 }

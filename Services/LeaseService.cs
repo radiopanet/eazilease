@@ -127,8 +127,11 @@ public class LeaseService: ILeaseService
             {
                 driver.CurrentVehicleId = null;
                 driver.CurrentVehicle = null;
+                vehicle.CurrentDriverId = null;
+                vehicle.CurrentDriver = null;
                 driver.UpdatedBy = userName;
                 driver.UpdatedAt = DateTime.UtcNow;
+               
             }  
 
             vehicle.CurrentDriverId = null;
@@ -138,6 +141,10 @@ public class LeaseService: ILeaseService
         //Update vehicle
         vehicle.OdometerReading = (int) dto.FinalOdometerReading;
         vehicle.CurrentLeaseId = null;
+        vehicle.CurrentDriver = null;
+        vehicle.CurrentDriverId = null;
+        driver.CurrentVehicle = null;
+        driver.CurrentVehicleId = null;
         vehicle.Status = VehicleStatus.Available;
 
         await _context.SaveChangesAsync();

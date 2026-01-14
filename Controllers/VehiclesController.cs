@@ -19,6 +19,7 @@ namespace EaziLease.Controllers
         public readonly ILeaseService _leaseService;
         public readonly IDriverAssignmentService _driverAssignmentService;
         public readonly IMaintenanceService _maintenanceService;
+        public readonly IVehicleService _vehicleService;
 
 
 
@@ -275,6 +276,9 @@ namespace EaziLease.Controllers
                 ModelState.AddModelError("", result.Message ?? "Failed to end lease.");
                 return View(dto);
             }
+
+            await _vehicleService.CreateUsageSnapshotAsync(id, "LeaseEnd", User.Identity?.Name ?? "admin");
+
 
             TempData["success"] = result.Message ?? "Lease ended successfully. Vehicle is now available.";
 

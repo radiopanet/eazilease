@@ -3,6 +3,7 @@ using System;
 using EaziLease.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EaziLease.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114142922_AmendedHighMaintenanceCalculations")]
+    partial class AmendedHighMaintenanceCalculations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -912,9 +915,6 @@ namespace EaziLease.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("RepairRecordsCount")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("SnapshotDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -923,9 +923,6 @@ namespace EaziLease.Migrations
 
                     b.Property<decimal>("TotalMaintenanceCost")
                         .HasColumnType("numeric");
-
-                    b.Property<int>("TotalMaintenanceRecords")
-                        .HasColumnType("integer");
 
                     b.Property<string>("TriggerEvent")
                         .HasColumnType("text");
@@ -944,7 +941,7 @@ namespace EaziLease.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("VehicleUsageSnapshots");
+                    b.ToTable("vehicleUsageSnapshots");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

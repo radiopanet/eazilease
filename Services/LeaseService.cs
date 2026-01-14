@@ -5,6 +5,7 @@ using EaziLease.Services.Interfaces;
 using EaziLease.Services.ServiceModels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+
 namespace EaziLease.Services;
 
 public class LeaseService: ILeaseService
@@ -147,6 +148,7 @@ public class LeaseService: ILeaseService
         driver.CurrentVehicleId = null;
         vehicle.Status = VehicleStatus.Available;
 
+        
         await _context.SaveChangesAsync();
 
         await _auditService.LogAsync("Lease", lease.Id, "LeaseEnded",

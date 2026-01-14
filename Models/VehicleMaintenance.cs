@@ -24,5 +24,7 @@ public class VehicleMaintenance: BaseEntity
     //Flag to distiguish planning/actual
     public bool IsFutureScheduled {get; set;}
     public bool AffectsAvailability { get; set; } = false;
+    public bool IsHistorical {get; set;} = false; //Checkbox flag for historical records.
 
+    public string? Reason {get; set;} = string.Empty; // Explanation for the record (required for historical/scheduled)
 }

@@ -22,7 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<VehicleMaintenance> VehicleMaintenance => Set<VehicleMaintenance>();
     public DbSet<RateOverrideRequest> RateOverrideRequests => Set<RateOverrideRequest>();
     public DbSet<Garage> Garages => Set<Garage>();
-    
+    public DbSet<VehicleUsageSnapshot> vehicleUsageSnapshots => Set<VehicleUsageSnapshot>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

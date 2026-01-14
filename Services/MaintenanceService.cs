@@ -37,6 +37,34 @@ namespace EaziLease.Services
             if (!maintenance.IsFutureScheduled && !maintenance.MileageAtService.HasValue)
                 return new ServiceResult { Success = false, Message = "Mileage at service is required for immediate maintenance." };
 
+
+            //Warranty work overrides
+            if(maintenance.IsWarrantyWork)
+            {
+                maintenance.Cost = 0;
+                maintenance.IsBillableToClient = false;
+                maintenance.BillableAmount = 0;
+            }    
+
+            //Billable work logic
+            if(maintenance.IsBillableToClient)
+            {
+                maintenance.BillableAmount = maintenance.BillableAmount ?? maintenance.Cost; //default to full cost
+            }
+            else
+            {
+                maintenance.BillableAmount = 0;
+            }
+
+            //Insurance claim overrides
+            if(maintenance.InsuranceClaimStatus == InsuranceClaimStatus.Approved)
+            {
+                maintenance.BillableAmount = 0; //Claim paid -> not billable to client
+                maintenance.Cost = 0; 
+            }
+
+
+
             maintenance.Id = Guid.NewGuid().ToString();
 
             //Handle Historical Records.

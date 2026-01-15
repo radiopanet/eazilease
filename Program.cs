@@ -8,6 +8,8 @@ using EaziLease.Services;
 using EaziLease.Extensions;
 using Microsoft.AspNetCore.Http;
 using EaziLease.Services.Interfaces;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +17,21 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services.AddHangfire(config =>
+    config.UsePostgreSqlStorage(options =>
+        options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection"))));
+
+builder.Services.AddHangfireServer();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
 builder.Services.AddScoped<ILeaseService, LeaseService>();
 builder.Services.AddScoped<IDriverAssignmentService, DriverAssignmentService>();
 builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+
 
 builder.Services.AddAuthorization(options =>
 {
@@ -57,6 +68,10 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate("monthly-vehicle-snapshots", () => MonthlySnapshotJob(), Cron.Monthly);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -277,11 +277,11 @@ namespace EaziLease.Controllers
                 return View(dto);
             }
 
-            await _vehicleService.CreateUsageSnapshotAsync(id, "LeaseEnd", User.Identity?.Name ?? "admin");
 
 
             TempData["success"] = result.Message ?? "Lease ended successfully. Vehicle is now available.";
 
+            await _vehicleService.CreateUsageSnapshotAsync(id, "LeaseEnd", User.Identity?.Name ?? "admin");
 
             return RedirectToAction("Details", new { id });
         }
@@ -547,5 +547,43 @@ namespace EaziLease.Controllers
             return RedirectToAction("Details", new { id = model.VehicleId });
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "RequireSuperAdmin")]
+        public async Task<IActionResult> ToggleRateOverride(string id)
+        {
+            var vehicle = await _context.Vehicles.FindAsync(id);
+            if (vehicle == null) return NotFound();
+
+            vehicle.OverrideHighMaintenanceRate = !vehicle.OverrideHighMaintenanceRate;
+
+            await _context.SaveChangesAsync();
+
+            TempData["success"] = $"Rate override {(vehicle.OverrideHighMaintenanceRate ? "activated" : "deactivated")}";
+            await _auditService.LogAsync("Vehicle", id, "RateOverrideToggled",
+                $"SuperAdmin toggled rate override to {vehicle.OverrideHighMaintenanceRate} for {vehicle.RegistrationNumber}");
+
+            return RedirectToAction("Details", new { id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "RequireSuperAdmin")]
+        public async Task<IActionResult> UpdateRateOverrideNotes(string id, string notes)
+        {
+            var vehicle = await _context.Vehicles.FindAsync(id);
+            if (vehicle == null) return NotFound();
+
+            vehicle.OverrideRateNotes = notes;
+
+            await _context.SaveChangesAsync();
+
+            TempData["success"] = "Rate override notes updated.";
+            await _auditService.LogAsync("Vehicle", id, "RateOverrideNotesUpdated",
+                $"SuperAdmin updated rate override notes for {vehicle.RegistrationNumber}");
+
+            return RedirectToAction("Details", new { id });
+        }
     }
 }

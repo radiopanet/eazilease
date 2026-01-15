@@ -5,10 +5,14 @@ namespace EaziLease.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
+
+    public ApplicationDbContext()
+    {}
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
+
 
     //Add Models
     public DbSet<AuditLogs> AuditLogs => Set<AuditLogs>();

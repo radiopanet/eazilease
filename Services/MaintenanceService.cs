@@ -11,10 +11,14 @@ namespace EaziLease.Services
         private readonly ApplicationDbContext _context;
         private readonly AuditService _auditService;
 
-        public MaintenanceService(ApplicationDbContext context, AuditService auditService)
+        private readonly IVehicleService _vehicleService;
+
+        public MaintenanceService(ApplicationDbContext context, AuditService auditService, 
+            IVehicleService vehicleService)
         {
             _context = context;
             _auditService = auditService;
+            _vehicleService = vehicleService;
         }
 
         public async Task<ServiceResult> RecordMaintenanceAsync(VehicleMaintenance maintenance, string userName)
@@ -179,6 +183,27 @@ namespace EaziLease.Services
 
             _context.VehicleMaintenance.Add(maintenance);
             await _context.SaveChangesAsync();
+
+            decimal currentScore = 0m;
+            if (vehicle.OdometerReading > 0 && vehicle.PurchasePrice > 0)
+            {
+                var completed = vehicle.MaintenanceHistory
+                    .Where(m => m.Status == MaintenanceStatus.Completed)
+                    .ToList();
+
+                decimal totalCost = completed.Sum(m => m.Cost ?? 0);
+                int repairCount = completed.Count(m => m.Type == MaintenanceType.Repair);
+
+                decimal costFactor = (totalCost / vehicle.PurchasePrice) * 10m ?? 0;
+                decimal freqFactor = (repairCount * 10000m) / vehicle.OdometerReading ?? 0;
+                currentScore = Math.Min(10m, Math.Round(costFactor + freqFactor, 1));
+            }
+
+            // Trigger snapshot on high cost or high score
+            if (maintenance.Cost > 5000m || currentScore >= 7.0m)
+            {
+                await _vehicleService.CreateUsageSnapshotAsync(vehicle.Id, "HighMaintenanceEvent", userName);
+            }
 
             await _auditService.LogAsync("Maintenance", maintenance.Id, "Recorded",
                 $"Maintenance {(maintenance.IsFutureScheduled ? "scheduled" : "recorded")} on {vehicle.RegistrationNumber}: " +

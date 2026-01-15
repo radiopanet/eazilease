@@ -37,6 +37,44 @@ namespace EaziLease.Models
                 return CurrentLease.BillableMaintenanceCosts ?? 0m;
             }
         }
+// In Models/Vehicle.cs
+
+        [NotMapped]
+        public decimal MaintenanceScore
+        {
+            get
+            {
+                if (OdometerReading <= 0 || PurchasePrice <= 0) return 0m;
+
+                var completed = MaintenanceHistory
+                    .Where(m => m.Status == MaintenanceStatus.Completed)
+                    .ToList();
+
+                if (!completed.Any()) return 0m;
+
+                decimal totalCost = completed.Sum(m => m.Cost ?? 0);
+                int repairCount = completed.Count(m => m.Type == MaintenanceType.Repair);
+
+                decimal costFactor = (totalCost / PurchasePrice) * 10m ?? 0;
+                decimal freqFactor = (repairCount * 10000m) / OdometerReading ?? 0;
+
+                return Math.Min(10m, Math.Round(costFactor + freqFactor, 1));
+            }
+        }
+
+        [NotMapped]
+        public bool IsHighMaintenance => MaintenanceScore >= 7.0m;
+
+        [NotMapped]
+        public decimal AdjustedDailyRate
+        {
+            get
+            {
+                if (OverrideHighMaintenanceRate) return DailyRate; // SuperAdmin override
+                return IsHighMaintenance ? DailyRate * 1.20m : DailyRate;
+            }
+        }
+
 
         /// <summary>
         /// If true, SuperAdmin has manually overridden the high-maintenance auto-rate increase
@@ -46,12 +84,12 @@ namespace EaziLease.Models
         /// <summary>
         /// If true, SuperAdmin has manually allowed leasing despite high-maintenance block
         /// </summary>
-        public bool OverrideHighMaintenanceBlock {get; set;} = false;
+        public bool OverrideLeasingBlock {get; set;} = false;
 
         /// <summary>
         /// Optional notes, explaining the overrides
         /// </summary>
-        public string? OverrideNotes {get; set;}
+        public string? OverrideRateNotes {get; set;}
         
 
         //Relationships

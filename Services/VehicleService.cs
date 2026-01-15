@@ -66,5 +66,13 @@ namespace EaziLease.Services
 
             return new ServiceResult { Success = true, Message = ""};
         }
+
+        public async Task<VehicleUsageSnapshot?> GetLatestSnapshotAsync(string vehicleId)
+        {
+            return await _context.VehicleUsageSnapshots
+                .Where(s => s.VehicleId == vehicleId)
+                .OrderByDescending(s => s.SnapshotDate)
+                .FirstOrDefaultAsync();
+        }
     }
 }

@@ -18,6 +18,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddScoped<MonthlySnapshotJob>();
 builder.Services.AddHangfire(config =>
     config.UsePostgreSqlStorage(options =>
         options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection"))));
@@ -71,8 +72,9 @@ var app = builder.Build();
 
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate("monthly-vehicle-snapshots", () => MonthlySnapshotJob(), Cron.Monthly);
 
+// Schedule recurring job 
+RecurringJob.AddOrUpdate<MonthlySnapshotJob>( job => job.Execute(), Cron.Monthly);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

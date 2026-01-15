@@ -34,7 +34,9 @@ namespace EaziLease.Services
             if (!maintenance.IsFutureScheduled && maintenance.ServiceDate > DateTime.Today)
                 return new ServiceResult { Success = false, Message = "Cannot record future maintenance date for immediate service." };
 
-            if (maintenance.Cost <= 0)
+
+            //Prevent 0 cost for immediate work
+            if (!maintenance.IsFutureScheduled && !maintenance.IsWarrantyWork && maintenance.Cost <= 0)
                 return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
 
             // For immediate maintenance: require mileage
@@ -138,7 +140,9 @@ namespace EaziLease.Services
                     return new ServiceResult { Success = false, Message = "Scheduled date must be in the future." };
 
                 maintenance.Status = MaintenanceStatus.Scheduled;
-                maintenance.ServiceDate = DateTime.MinValue; // Not yet performed
+                maintenance.ServiceDate = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc); // Not yet performed
+
+
 
                 // Calculate next due (allow manual override if needed)
                 var nextDate = maintenance.ScheduledDate.Value.AddMonths(vehicle.MaintenanceIntervalMonths);
@@ -147,12 +151,14 @@ namespace EaziLease.Services
                 // Update vehicle next due
                 vehicle.NextMaintenanceDate = nextDate;
                 vehicle.NextMaintenanceMileage = nextMileage;
+
+                nextDate = DateTime.SpecifyKind(nextDate, DateTimeKind.Utc);
             }
             else
             {
                 // Immediate maintenance
                 maintenance.Status = MaintenanceStatus.InProgress;
-                maintenance.ServiceDate = DateTime.UtcNow.Date;
+                maintenance.ServiceDate = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
 
                 // Update vehicle odometer with latest reading
                 if (maintenance.MileageAtService.HasValue)

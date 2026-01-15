@@ -3,6 +3,7 @@ using EaziLease.Models;
 using EaziLease.Services.Interfaces;
 using EaziLease.Services.ServiceModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EaziLease.Services
 {
@@ -76,6 +77,7 @@ namespace EaziLease.Services
             //Handle Historical Records.
             if(maintenance.IsHistorical)
             {
+                vehicle.NextMaintenanceDate = DateTime.SpecifyKind((DateTime)vehicle.NextMaintenanceDate, DateTimeKind.Utc);
                 //Past record: must be in the past
                 if(maintenance.ServiceDate > DateTime.Today)
                     return new ServiceResult { Success = false, Message="Historical records must have a date in the past."};
@@ -94,7 +96,7 @@ namespace EaziLease.Services
                 if(isRecent)
                 {
                     // Recent past record → auto-create next scheduled
-                    var today = DateTime.UtcNow.Date;
+                    var today = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
                     var nextDate = today.AddMonths(vehicle.MaintenanceIntervalMonths);
                     var currentMileage = vehicle.OdometerReading ?? 0;
                     var nextMileage = currentMileage + vehicle.MaintenanceIntervalKm;
@@ -129,6 +131,8 @@ namespace EaziLease.Services
             // Handle future/scheduled maintenance
             else if (maintenance.IsFutureScheduled)
             {
+                maintenance.ScheduledDate = DateTime.SpecifyKind((DateTime)maintenance.ScheduledDate,
+                     DateTimeKind.Utc);
                 // Required fields validation for scheduled
                 if (!maintenance.ScheduledDate.HasValue)
                     return new ServiceResult { Success = false, Message = "Scheduled date is required for future maintenance." };
@@ -187,8 +191,18 @@ namespace EaziLease.Services
                 }
             }
 
-            _context.VehicleMaintenance.Add(maintenance);
-            await _context.SaveChangesAsync();
+
+
+            try
+            {
+                _context.VehicleMaintenance.Add(maintenance);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             decimal currentScore = 0m;
             if (vehicle.OdometerReading > 0 && vehicle.PurchasePrice > 0)

@@ -38,6 +38,21 @@ namespace EaziLease.Models
             }
         }
 
+        /// <summary>
+        /// If true, SuperAdmin has manually overridden the high-maintenance auto-rate increase
+        /// </summary>
+        public bool OverrideHighMaintenanceRate {get; set;} = false;
+
+        /// <summary>
+        /// If true, SuperAdmin has manually allowed leasing despite high-maintenance block
+        /// </summary>
+        public bool OverrideHighMaintenanceBlock {get; set;} = false;
+
+        /// <summary>
+        /// Optional notes, explaining the overrides
+        /// </summary>
+        public string? OverrideNotes {get; set;}
+        
 
         //Relationships
         public string SupplierId { get; set; } = string.Empty;

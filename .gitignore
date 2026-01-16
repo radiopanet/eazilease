@@ -4,3 +4,7 @@ obj/
 bin/
 .vs/
 *.user
+obj/
+bin/
+.vs/
+*.user

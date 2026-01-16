@@ -5,6 +5,7 @@ using EaziLease.Services.Interfaces;
 using EaziLease.Services.ServiceModels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 
 namespace EaziLease.Services;
 
@@ -112,8 +113,36 @@ public class LeaseService: ILeaseService
         //Calculate final amount
         lease.FinalAmount = lease.CalculateProRataAmount(vehicle.DailyRate) + (dto.PenaltyFee ?? 0);
 
+
+        // Accident/Issue Handling
+        if (dto.TerminationReason == TerminationReason.Accident || dto.TerminationReason == TerminationReason.MechanicalIssue)
+        {
+            //Auto-set vehicle status
+            vehicle.Status = VehicleStatus.InMaintenance;
+
+            // Auto-create maintenance record
+            var maintenance = new VehicleMaintenance
+            {
+                VehicleId = vehicleId,
+                ServiceDate = DateTime.UtcNow.Date,
+                Description = $"Damage from {dto.TerminationReason}: {dto.TerminationNotes ?? "Accident during lease"}",
+                Cost = 0, // To be assessed
+                MileageAtService = dto.FinalOdometerReading,
+                Status = MaintenanceStatus.InProgress,
+                IsBillableToClient = true, // Default billable for accidents
+                InsuranceClaimStatus = InsuranceClaimStatus.Pending
+            };
+
+            _context.VehicleMaintenance.Add(maintenance);
+
+            // Flag for insurance/SuperAdmin review
+            await _auditService.LogAsync("Lease", lease.Id, "AccidentTermination",
+                $"Lease terminated due to {dto.TerminationReason}. Vehicle set to AccidentPending. " +
+                $"Maintenance record created. Billable to client.");
+        }
+
         //Auto return driver if assigned
-        if(vehicle.CurrentDriverId != null)
+        if (vehicle.CurrentDriverId != null)
         {
             var assignment = await _context.VehicleAssignments
                 .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);

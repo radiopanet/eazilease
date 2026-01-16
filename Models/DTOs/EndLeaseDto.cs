@@ -10,5 +10,7 @@ namespace EaziLease.Models.ViewModels
         public decimal FinalOdometerReading {get; set;}
         public string? ReturnNotes {get; set;}
         public decimal? PenaltyFee {get; set;}
+        public TerminationReason TerminationReason {get; set;}
+        public string? TerminationNotes {get; set;}
     }
 }

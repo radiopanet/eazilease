@@ -38,6 +38,8 @@ namespace EaziLease.Models
         public decimal ReturnOdometer { get; set; }
 
         public TerminationReason TerminationReason {get; set;} = TerminationReason.NormalEnd;
+        public string? TerminationNotes {get; set;}
+        
         public string? ReturnConditionNotes { get; set; }
 
         public bool IsExtended {get; set;}

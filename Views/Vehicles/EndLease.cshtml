@@ -31,6 +31,14 @@
         border-radius: 12px;
         border: 1px solid #e2e8f0;
     }
+    /* New Style for Termination Reason */
+    .termination-reason-box {
+        background: #fff;
+        border: 2px solid #ef4444;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
 </style>
 
 <div class="container py-5">
@@ -89,6 +97,18 @@
 
                             <span class="form-section-title">Return Inspection Report</span>
 
+                            <div class="termination-reason-box shadow-sm">
+                                <label for="TerminationReason" class="form-label fw-bold text-danger">REASON FOR TERMINATION <span class="text-danger">*</span></label>
+                                <select name="TerminationReason" id="TerminationReason" class="form-select border-danger-subtle fw-bold" required>
+                                    <option value="" disabled selected>Select a reason...</option>
+                                    <option value="NormalEnd">Normal End of Lease</option>
+                                    <option value="Accident">Accident / Damage</option>
+                                    <option value="MechanicalIssue">Mechanical Issue</option>
+                                    <option value="ClientRequest">Client Requested Early Termination</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
                             <div class="row g-4 mb-4">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small">RETURN DATE</label>
@@ -103,13 +123,18 @@
                                         <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-tachometer-alt"></i></span>
                                         <input type="number" name="FinalOdometerReading" class="form-control border-start-0" min="@Model.OdometerReading" placeholder="Current: @Model.OdometerReading" required />
                                     </div>
-                                    <div class="form-text small">Must be higher than last recorded mileage.</div>
+                                    <div class="form-text small">Must be ≥ @Model.OdometerReading KM.</div>
                                 </div>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold small">CONDITION NOTES & DAMAGES</label>
-                                <textarea name="returnNotes" class="form-control" rows="4" placeholder="Describe fuel levels, scratches, or required cleaning..."></textarea>
+                                <textarea name="returnNotes" class="form-control" rows="3" placeholder="Describe fuel levels, scratches, or required cleaning..."></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="ReturnConditionNotes" class="form-label fw-bold small">ADDITIONAL INTERNAL NOTES</label>
+                                <textarea name="ReturnConditionNotes" id="ReturnConditionNotes" class="form-control" rows="2" placeholder="Internal comments on return conditions..."></textarea>
                             </div>
 
                             <div class="inspection-group mb-5">
@@ -118,10 +143,10 @@
                                     <span class="input-group-text bg-white border-end-0 text-muted">R</span>
                                     <input type="number" name="penaltyFee" class="form-control border-start-0" step="0.01" min="0" placeholder="0.00" />
                                 </div>
-                                <div class="form-text small mt-2">Apply fees for late return, damages, or missing fuel.</div>
+                                <div class="form-text small mt-2">Late fees, damage recovery, or refueling charges.</div>
                             </div>
 
-                            <div class="d-flex gap-3">
+                            <div class="d-flex gap-3 pt-3 border-top">
                                 <button type="submit" class="btn btn-danger btn-lg px-5 shadow-sm rounded-3">
                                     <i class="fas fa-check-circle me-2"></i>Finalize Return
                                 </button>

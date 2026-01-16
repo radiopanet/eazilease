@@ -77,7 +77,9 @@ namespace EaziLease.Services
             //Handle Historical Records.
             if(maintenance.IsHistorical)
             {
-                vehicle.NextMaintenanceDate = DateTime.SpecifyKind((DateTime)vehicle.NextMaintenanceDate, DateTimeKind.Utc);
+                maintenance.ServiceDate = DateTime.SpecifyKind(maintenance.ServiceDate, DateTimeKind.Utc);
+                vehicle.LastServiceDate = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
+                maintenance.ScheduledDate = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
                 //Past record: must be in the past
                 if(maintenance.ServiceDate > DateTime.Today)
                     return new ServiceResult { Success = false, Message="Historical records must have a date in the past."};

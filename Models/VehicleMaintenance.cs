@@ -20,7 +20,7 @@ public class VehicleMaintenance: BaseEntity
     public MaintenanceStatus Status {get; set;} = MaintenanceStatus.Scheduled;
     public MaintenanceType Type = MaintenanceType.Routine;
 
-    public DateTime? ScheduledDate {get; set;}
+    public DateTime? ScheduledDate {get; set;} = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
     public decimal? ScheduledMileage {get; set;}
 
     //Flag to distiguish planning/actual

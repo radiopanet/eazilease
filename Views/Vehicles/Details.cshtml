@@ -241,7 +241,14 @@
                                         foreach (var m in Model.MaintenanceHistory.OrderByDescending(x => x.ServiceDate))
                                         {
                                             <tr>
-                                                <td>@m.ServiceDate.ToShortDateString()</td>
+                                                @if(m.IsFutureScheduled)
+                                                {
+                                                    <td>@m.ScheduledDate</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@m.ServiceDate.ToShortDateString()</td>
+                                                }
                                                 <td>
                                                     <div class="fw-bold">@m.Description</div>
                                                     <small class="text-muted">Garage: @(m.Garage?.Name ?? "Not Specified")</small>

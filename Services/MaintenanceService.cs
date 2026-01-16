@@ -3,6 +3,7 @@ using EaziLease.Models;
 using EaziLease.Services.Interfaces;
 using EaziLease.Services.ServiceModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EaziLease.Services
 {
@@ -34,7 +35,9 @@ namespace EaziLease.Services
             if (!maintenance.IsFutureScheduled && maintenance.ServiceDate > DateTime.Today)
                 return new ServiceResult { Success = false, Message = "Cannot record future maintenance date for immediate service." };
 
-            if (maintenance.Cost <= 0)
+
+            //Prevent 0 cost for immediate work
+            if (!maintenance.IsFutureScheduled && !maintenance.IsWarrantyWork && maintenance.Cost <= 0)
                 return new ServiceResult { Success = false, Message = "Maintenance cost must be greater than zero." };
 
             // For immediate maintenance: require mileage
@@ -74,6 +77,9 @@ namespace EaziLease.Services
             //Handle Historical Records.
             if(maintenance.IsHistorical)
             {
+                maintenance.ServiceDate = DateTime.SpecifyKind(maintenance.ServiceDate, DateTimeKind.Utc);
+                vehicle.LastServiceDate = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
+                maintenance.ScheduledDate = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
                 //Past record: must be in the past
                 if(maintenance.ServiceDate > DateTime.Today)
                     return new ServiceResult { Success = false, Message="Historical records must have a date in the past."};
@@ -92,7 +98,7 @@ namespace EaziLease.Services
                 if(isRecent)
                 {
                     // Recent past record → auto-create next scheduled
-                    var today = DateTime.UtcNow.Date;
+                    var today = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
                     var nextDate = today.AddMonths(vehicle.MaintenanceIntervalMonths);
                     var currentMileage = vehicle.OdometerReading ?? 0;
                     var nextMileage = currentMileage + vehicle.MaintenanceIntervalKm;
@@ -127,6 +133,8 @@ namespace EaziLease.Services
             // Handle future/scheduled maintenance
             else if (maintenance.IsFutureScheduled)
             {
+                maintenance.ScheduledDate = DateTime.SpecifyKind((DateTime)maintenance.ScheduledDate,
+                     DateTimeKind.Utc);
                 // Required fields validation for scheduled
                 if (!maintenance.ScheduledDate.HasValue)
                     return new ServiceResult { Success = false, Message = "Scheduled date is required for future maintenance." };
@@ -138,7 +146,9 @@ namespace EaziLease.Services
                     return new ServiceResult { Success = false, Message = "Scheduled date must be in the future." };
 
                 maintenance.Status = MaintenanceStatus.Scheduled;
-                maintenance.ServiceDate = DateTime.MinValue; // Not yet performed
+                maintenance.ServiceDate = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc); // Not yet performed
+
+
 
                 // Calculate next due (allow manual override if needed)
                 var nextDate = maintenance.ScheduledDate.Value.AddMonths(vehicle.MaintenanceIntervalMonths);
@@ -147,12 +157,14 @@ namespace EaziLease.Services
                 // Update vehicle next due
                 vehicle.NextMaintenanceDate = nextDate;
                 vehicle.NextMaintenanceMileage = nextMileage;
+
+                nextDate = DateTime.SpecifyKind(nextDate, DateTimeKind.Utc);
             }
             else
             {
                 // Immediate maintenance
                 maintenance.Status = MaintenanceStatus.InProgress;
-                maintenance.ServiceDate = DateTime.UtcNow.Date;
+                maintenance.ServiceDate = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
 
                 // Update vehicle odometer with latest reading
                 if (maintenance.MileageAtService.HasValue)
@@ -181,8 +193,18 @@ namespace EaziLease.Services
                 }
             }
 
-            _context.VehicleMaintenance.Add(maintenance);
-            await _context.SaveChangesAsync();
+
+
+            try
+            {
+                _context.VehicleMaintenance.Add(maintenance);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             decimal currentScore = 0m;
             if (vehicle.OdometerReading > 0 && vehicle.PurchasePrice > 0)

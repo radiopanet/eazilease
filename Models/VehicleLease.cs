@@ -44,6 +44,10 @@ namespace EaziLease.Models
 
         public bool IsExtended {get; set;}
         public int ExtensionCount {get; set;}
+        public bool IncludeDriver {get; set;} = false; //Default: client provides driver
+        public decimal? DriverFee {get; set;} //Optional extra fee for EaziLease driver
+        public string? AssignedDriverId {get; set;} // FK to Driver (only if IncludeDriver = true)
+        public virtual Driver? Driver {get; set;}
         public virtual ICollection<VehicleMaintenance> MaintenanceHistory { get; set; } = new List<VehicleMaintenance>();
 
 

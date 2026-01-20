@@ -12,5 +12,6 @@ namespace EaziLease.Models.ViewModels
         public decimal? PenaltyFee {get; set;}
         public TerminationReason TerminationReason {get; set;}
         public string? TerminationNotes {get; set;}
+        public AccidentDriverResponsibility AccidentDriverResponsibility {get; set;} = AccidentDriverResponsibility.Unknown;
     }
 }

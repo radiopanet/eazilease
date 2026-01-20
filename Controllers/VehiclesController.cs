@@ -197,6 +197,12 @@ namespace EaziLease.Controllers
                 .Include(v => v.CurrentLease)
                 .FirstOrDefaultAsync(v => v.Id == id && !v.IsDeleted);
 
+            ViewBag.AvailableDrivers = await _context.Drivers
+               .Where(d => d.IsActive && string.IsNullOrEmpty(d.CurrentVehicleId))
+               .Select(d => new { d.Id, d.FullName })
+               .ToListAsync();
+
+
             if (vehicle == null) return NotFound();
 
             if (vehicle.Status == VehicleStatus.Leased)

@@ -39,6 +39,17 @@
         background: #fffbeb;
         color: #92400e;
     }
+    /* Driver Module Styling */
+    .driver-module {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+    .driver-module.active {
+        background: #e0f2fe;
+        border-color: #3b82f6;
+    }
 </style>
 
 <div class="container py-5">
@@ -91,13 +102,34 @@
                                 </div>
                             </div>
 
+                            <div class="driver-module p-4 mb-4 shadow-sm" id="driverCard">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" id="includeDriver" name="IncludeDriver" value="true" style="width: 2.5em; height: 1.25em;">
+                                    <label class="form-check-label fw-bold ms-2 text-dark" for="includeDriver">
+                                        Include EaziLease Driver
+                                    </label>
+                                </div>
+                                <p class="small text-muted mb-3 mt-1 ms-5">Premium service: Client provides vehicle, we provide the driver (Add R200.00 / day).</p>
+
+                                <div id="driverSelection" style="display: none;" class="ms-5 animate__animated animate__fadeIn">
+                                    <label for="AssignedDriverId" class="form-label fw-bold small text-primary">SELECT ASSIGNED DRIVER</label>
+                                    <select name="AssignedDriverId" id="AssignedDriverId" class="form-select border-primary-subtle shadow-sm">
+                                        <option value="">-- Choose Available Driver --</option>
+                                        @foreach (var driver in ViewBag.AvailableDrivers)
+                                        {
+                                            <option value="@driver.Id">@driver.FullName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="mb-5">
                                 <label asp-for="MonthlyRate" class="form-label fw-bold small">CONTRACTED MONTHLY RATE</label>
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-text bg-light text-muted border-end-0">R</span>
                                     <input asp-for="MonthlyRate" class="form-control bg-light border-start-0 fw-bold" readonly />
                                 </div>
-                                <small class="text-muted">The monthly rate is fixed based on the vehicle's standard daily rate.</small>
+                                <small class="text-muted">Fixed based on vehicle daily rate. Driver fees added to final billing.</small>
                             </div>
 
                             <div class="d-flex gap-3 pt-4 border-top">
@@ -122,7 +154,7 @@
                             </div>
                         </div>
 
-                        <div class="p-3 bg-white rounded-3 border mb-4">
+                        <div class="p-3 bg-white rounded-3 border mb-4 shadow-sm">
                             <div class="row text-center">
                                 <div class="col-6 border-end">
                                     <small class="text-muted d-block">Year</small>
@@ -138,8 +170,12 @@
                         <div class="form-section-title mt-5">Lease Impact</div>
                         <ul class="list-unstyled">
                             <li class="d-flex justify-content-between mb-3">
-                                <span class="text-muted">Monthly Revenue</span>
+                                <span class="text-muted">Base Monthly Revenue</span>
                                 <span class="fw-bold text-success">+ @Model.MonthlyRate.ToString("C")</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-3" id="driverFeeInfo" style="display: none !important;">
+                                <span class="text-muted">Driver Premium (est)</span>
+                                <span class="fw-bold text-primary">+ R 6,000.00</span>
                             </li>
                             <li class="d-flex justify-content-between mb-3">
                                 <span class="text-muted">Status Transition</span>
@@ -153,27 +189,47 @@
     </div>
 </div>
 
-<script>
-    // Improved Credit Warning Logic
-    document.addEventListener('DOMContentLoaded', function() {
-        const rateField = document.querySelector('[name="MonthlyRate"]');
-        const clientSelect = document.querySelector('[name="ClientId"]');
-        const warning = document.getElementById('creditWarning');
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rateField = document.querySelector('[name="MonthlyRate"]');
+            const clientSelect = document.querySelector('[name="ClientId"]');
+            const warning = document.getElementById('creditWarning');
+            const includeDriverCheckbox = document.getElementById('includeDriver');
+            const driverSection = document.getElementById('driverSelection');
+            const driverCard = document.getElementById('driverCard');
+            const driverFeeInfo = document.getElementById('driverFeeInfo');
+            const driverSelectInput = document.getElementById('AssignedDriverId');
 
-        function checkCredit() {
-            // In a real app, you'd fetch this via AJAX when the client changes
-            const rate = parseFloat(rateField.value) || 0;
-            const currentCommitted = @(Model.Client?.CurrentCommittedAmount ?? 0); 
-            const limit = @(Model.Client?.CreditLimit ?? 0);
+            // Driver Toggle Logic
+            includeDriverCheckbox.addEventListener('change', () => {
+                if (includeDriverCheckbox.checked) {
+                    driverSection.style.display = 'block';
+                    driverCard.classList.add('active');
+                    driverFeeInfo.style.setProperty('display', 'flex', 'important');
+                    driverSelectInput.required = true;
+                } else {
+                    driverSection.style.display = 'none';
+                    driverCard.classList.remove('active');
+                    driverFeeInfo.style.setProperty('display', 'none', 'important');
+                    driverSelectInput.required = false;
+                }
+            });
 
-            if (limit > 0 && (currentCommitted + rate > limit)) {
-                warning.classList.remove('d-none');
-            } else {
-                warning.classList.add('d-none');
+            function checkCredit() {
+                const rate = parseFloat(rateField.value) || 0;
+                const currentCommitted = @(Model.Client?.CurrentCommittedAmount ?? 0); 
+                const limit = @(Model.Client?.CreditLimit ?? 0);
+
+                if (limit > 0 && (currentCommitted + rate > limit)) {
+                    warning.classList.remove('d-none');
+                } else {
+                    warning.classList.add('d-none');
+                }
             }
-        }
 
-        clientSelect.addEventListener('change', checkCredit);
-        checkCredit(); // Run on load
-    });
-</script>
+            clientSelect.addEventListener('change', checkCredit);
+            checkCredit(); 
+        });
+    </script>
+}

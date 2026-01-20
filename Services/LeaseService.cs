@@ -27,9 +27,36 @@ public class LeaseService: ILeaseService
             .Include(c => c.Leases)
             .FirstOrDefaultAsync(c => c.Id == lease.ClientId);
 
+        // If client includes driver
+        if (lease.IncludeDriver)
+        {
+            if (string.IsNullOrEmpty(lease.AssignedDriverId))
+                return new ServiceResult{Success= false,Message="Driver must be selected when including EaziLease driver."};
 
-        //1. Validation Logic <-> Moved from VehiclesController
-        if(vehicle == null || vehicle.Status == VehicleStatus.Leased)
+            var driver = await _context.Drivers.FindAsync(lease.AssignedDriverId);
+            if (driver == null || !driver.IsActive || !string.IsNullOrEmpty(driver.CurrentVehicleId))
+                return new ServiceResult{Success = false, Message="Selected driver is unavailable or inactive."};
+
+            // Assign driver
+            driver.CurrentVehicleId = vehicle?.Id;
+            vehicle.CurrentDriverId = driver.Id;
+
+            // Add driver fee to monthly rate
+            lease.DriverFee = 200m; // or configurable
+            lease.MonthlyRate += lease.DriverFee.Value;
+        }
+        else
+        {
+            // No driver – client provides their own
+            lease.AssignedDriverId = null;
+            lease.DriverFee = 0;
+        }
+
+
+
+
+        //Validation Logic <-> Moved from VehiclesController
+        if (vehicle == null || vehicle.Status == VehicleStatus.Leased)
             return new ServiceResult { Success = false, Message = "Vehicle Unavailable."};
 
         if(client ==  null || (client.CurrentCommittedAmount + lease.MonthlyRate) > client.CreditLimit)

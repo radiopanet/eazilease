@@ -2,10 +2,13 @@ using EaziLease.Data;
 using EaziLease.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace EaziLease.Controllers
 {
+
+    [Authorize(Roles="Admin")]
     public class FinanceController : Controller
     {
         private readonly ApplicationDbContext _context;

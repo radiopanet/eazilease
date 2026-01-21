@@ -216,6 +216,27 @@ public class LeaseService: ILeaseService
         await _auditService.LogAsync("Lease", lease.Id, "LeaseEnded",
                 $"Lease ended for {vehicle.RegistrationNumber}. Final amount: R{lease.FinalAmount}");
 
+        var billableMaintenance = lease.MaintenanceHistory
+            .Where(m => m.IsBillableToClient)
+            .Sum(m => m.BillableAmount ?? 0);
+
+        var nonBillableCosts = lease.MaintenanceHistory
+            .Where(m => !m.IsBillableToClient)
+            .Sum(m => m.Cost);
+
+        var summary = new LeaseFinacialSummary
+        {
+            LeaseId = lease.Id,
+            TotalLeaseRevenue = lease.MonthlyRate * lease.TermInMonths + lease.CalculateProRataAmount(vehicle.DailyRate),
+            TotalPenaltyFees = lease.PenaltyFee ?? 0,
+            TotalBillableMaitenance = billableMaintenance,
+            TotalCost = nonBillableCosts ?? 0,
+            CalculateBy = userName
+        }; 
+
+        _context.LeaseFinacialSummaries.Add(summary);
+        await _context.SaveChangesAsync();            
+
         return new ServiceResult {Success = true, Message = "Lease ended successfully. Vehicle is now available."};
     }
 

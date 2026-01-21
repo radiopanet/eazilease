@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using EaziLease.Services.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
+using EaziLease.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,8 @@ app.UseHangfireDashboard();
 
 // Schedule recurring job 
 RecurringJob.AddOrUpdate<MonthlySnapshotJob>( job => job.Execute(), Cron.Monthly);
+RecurringJob.AddOrUpdate<MonthlyCompanyFinancialSnapshot>( s => s.CreateCompanySnapshot(), Cron.Monthly);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

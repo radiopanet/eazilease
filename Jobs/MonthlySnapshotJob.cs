@@ -1,14 +1,13 @@
 using EaziLease.Services.Interfaces;
 using EaziLease.Data;
 using Microsoft.EntityFrameworkCore;
-namespace EaziLease.Models
+
+namespace EaziLease.Jobs
 {
     public class MonthlySnapshotJob
     {
         private ApplicationDbContext _context;
         private readonly IVehicleService _vehicleService;
-
-        
 
         public MonthlySnapshotJob(ApplicationDbContext context, IVehicleService vehicleService)
         {

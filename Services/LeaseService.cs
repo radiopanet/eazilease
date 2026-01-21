@@ -196,12 +196,18 @@ public class LeaseService: ILeaseService
         }
 
         //Update vehicle
-        vehicle.OdometerReading = (int) dto.FinalOdometerReading;
+        vehicle.OdometerReading = dto.FinalOdometerReading;
         vehicle.CurrentLeaseId = null;
         vehicle.CurrentDriver = null;
         vehicle.CurrentDriverId = null;
-        driver.CurrentVehicle = null;
-        driver.CurrentVehicleId = null;
+
+            
+        if(driver?.CurrentVehicleId != null)
+        {
+            driver.CurrentVehicle = null;
+        
+            driver.CurrentVehicleId = null;
+        }
         vehicle.Status = VehicleStatus.Available;
 
         

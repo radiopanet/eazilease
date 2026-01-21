@@ -26,13 +26,14 @@ namespace EaziLease.Controllers
         public VehiclesController(ApplicationDbContext context,
              AuditService auditService, ILeaseService leaseService,
              IDriverAssignmentService driverAssignmentService,
-             IMaintenanceService maintenanceService)
+             IMaintenanceService maintenanceService, IVehicleService vehicleService)
         {
             _context = context;
             _auditService = auditService;
             _leaseService = leaseService;
             _driverAssignmentService = driverAssignmentService;
             _maintenanceService = maintenanceService;
+            _vehicleService = vehicleService;
         }
 
         //GET: Vehicles

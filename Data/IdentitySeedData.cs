@@ -25,7 +25,10 @@ namespace EaziLease.Data
             if(!await roleManager.RoleExistsAsync(SuperCandidateRole))
                 await roleManager.CreateAsync(new IdentityRole(SuperCandidateRole));
 
-
+            if(!await roleManager.RoleExistsAsync("ClientUser"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("ClientUser"));
+            }
 
             var adminUser = await userManager.FindByEmailAsync(AdminEmail);
             if(adminUser == null)

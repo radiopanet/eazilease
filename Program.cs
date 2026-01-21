@@ -45,6 +45,11 @@ builder.Services.AddAuthorization(options =>
                   httpContext.IsSuperAdminElevated()));
 });
 
+builder.Services.AddAuthorization(options =>
+{
+   options.AddPolicy("ClientOnly", policy => policy.RequireRole("ClientUser"));
+});
+
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;

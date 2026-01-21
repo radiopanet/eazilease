@@ -1,4 +1,5 @@
 // Models/ViewModels/FinanceDashboardViewModel.cs
+using EaziLease.Models;
 namespace EaziLease.Models.ViewModels
 {
     public class FinanceDashboardViewModel
@@ -22,5 +23,6 @@ namespace EaziLease.Models.ViewModels
         }
 
         public List<LeaseFinacialSummary> RecentSummaries { get; set; } = new();
+        public List<MonthlyChartData> ChartData { get; set; } = new();
     }
 }

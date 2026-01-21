@@ -229,12 +229,12 @@ public class LeaseService: ILeaseService
             LeaseId = lease.Id,
             TotalLeaseRevenue = lease.MonthlyRate * lease.TermInMonths + lease.CalculateProRataAmount(vehicle.DailyRate),
             TotalPenaltyFees = lease.PenaltyFee ?? 0,
-            TotalBillableMaitenance = billableMaintenance,
+            TotalBillableMaintenance = billableMaintenance,
             TotalCost = nonBillableCosts ?? 0,
-            CalculateBy = userName
+            CalculatedBy = userName
         }; 
 
-        _context.LeaseFinacialSummaries.Add(summary);
+        _context.LeaseFinancialSummaries.Add(summary);
         await _context.SaveChangesAsync();            
 
         return new ServiceResult {Success = true, Message = "Lease ended successfully. Vehicle is now available."};

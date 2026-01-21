@@ -27,7 +27,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<RateOverrideRequest> RateOverrideRequests => Set<RateOverrideRequest>();
     public DbSet<Garage> Garages => Set<Garage>();
     public DbSet<VehicleUsageSnapshot> VehicleUsageSnapshots => Set<VehicleUsageSnapshot>();
-    public DbSet<LeaseFinacialSummary> LeaseFinacialSummaries => Set<LeaseFinacialSummary>();
+    public DbSet<LeaseFinacialSummary> LeaseFinancialSummaries => Set<LeaseFinacialSummary>();
     public DbSet<CompanyFinancialSnapshot> CompanyFinancialSnapshots => Set<CompanyFinancialSnapshot>();
 
     protected override void OnModelCreating(ModelBuilder builder)

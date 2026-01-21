@@ -212,6 +212,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Lease copy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvTGVhc2UgY29weS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Lease.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvTGVhc2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

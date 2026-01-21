@@ -189,6 +189,35 @@ namespace EaziLease.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetClientEligibility(string clientId, string vehicleId)
+        {
+            var client = await _context.Clients
+                .Include(c => c.Leases)
+                .FirstOrDefaultAsync(c => c.Id == clientId);
+
+            var vehicle = await _context.Vehicles.FindAsync(vehicleId);
+
+            if (client == null || vehicle == null) return Json(new { success = false });
+
+            // Calculate rates (same logic from the Service - TOFIX: REPETITIVE CODE)
+            decimal monthlyRate = vehicle.DailyRate * 30.4167m;
+            decimal currentCommitted = client.CurrentCommittedAmount;
+            decimal projectedTotal = currentCommitted + monthlyRate;
+            bool hasLeasedBefore = await _context.VehicleLeases
+                .AnyAsync(l => l.VehicleId == vehicleId && l.ClientId == clientId);
+
+            return Json(new
+            {
+                success = true,
+                limit = client.CreditLimit,
+                current = currentCommitted,
+                incoming = monthlyRate,
+                projected = projectedTotal,
+                hasLeasedBefore = hasLeasedBefore,
+                isOverLimit = projectedTotal > client.CreditLimit
+            });
+        }
         // GET: Vehicle/Lease/1
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Lease(string id)
@@ -465,9 +494,9 @@ namespace EaziLease.Controllers
             ViewBag.Garages = _context.Garages
                 .Where(g => !g.IsDeleted)
                 .OrderBy(g => g.Name)
-                .Select(g => new {g.Id, g.Name})
+                .Select(g => new { g.Id, g.Name })
                 .ToList();
-                
+
             return View(vm);
         }
 
@@ -478,7 +507,7 @@ namespace EaziLease.Controllers
         {
             var result = await _maintenanceService.RecordMaintenanceAsync(maintenance, User.Identity?.Name ?? "admin");
 
-            if(!result.Success)
+            if (!result.Success)
             {
                 ModelState.AddModelError("", result.Message ?? "Failed to add maintenance record.");
                 return View(maintenance);

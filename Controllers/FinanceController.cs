@@ -41,8 +41,6 @@ namespace EaziLease.Controllers
                 TotalRevenue = latestSnapshot?.TotalRevenue ?? 0,
                 TotalCosts = latestSnapshot?.TotalNonBillableCosts ?? 0,
                 RecentSummaries = recentSummaries
-
-                
             };
 
             return View(viewModel);

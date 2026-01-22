@@ -16,12 +16,12 @@ namespace EaziLease.Jobs
 
         public async Task CreateCompanySnapshot()
         {
-            var now = DateTime.UtcNow;
-            var start = new DateTime(now.Year, now.Month, 1);
+            var now = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+            var start = DateTime.SpecifyKind(new DateTime(now.Year, now.Month, 1), DateTimeKind.Utc);
             var end = start.AddMonths(1).AddDays(-1);
 
             var endedLeases = await _context.VehicleLeases
-                .Where(l => l.Status == LeaseStatus.Completed && l.ReturnDate >= start && l.ReturnDate <= end)
+                .Where(l => l.Status == LeaseStatus.Completed && l.ReturnDate <= end)
                 .ToListAsync();
 
             decimal revenue = endedLeases.Sum(l => l.FinalAmount ?? 0);
@@ -31,8 +31,8 @@ namespace EaziLease.Jobs
 
             var snapshot = new CompanyFinancialSnapshot
             {
-                PeriodStart = start,
-                PeriodEnd = end,
+                PeriodStart = DateTime.SpecifyKind(start, DateTimeKind.Utc),
+                PeriodEnd = DateTime.SpecifyKind(end, DateTimeKind.Utc),
                 TotalRevenue = revenue,
                 TotalPenalties = penalties,
                 TotalBillableMaintenance = billable,

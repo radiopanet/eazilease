@@ -9,7 +9,7 @@ using NuGet.Packaging.Signing;
 
 namespace EaziLease.Services;
 
-public class LeaseService: ILeaseService
+public class LeaseService : ILeaseService
 {
     private readonly ApplicationDbContext _context;
     private readonly AuditService _auditService;
@@ -22,7 +22,7 @@ public class LeaseService: ILeaseService
 
     public async Task<ServiceResult> StartLeaseAsync(VehicleLease lease, string userName)
     {
-        var vehicle =  await _context.Vehicles.FindAsync(lease.VehicleId);
+        var vehicle = await _context.Vehicles.FindAsync(lease.VehicleId);
         var client = await _context.Clients
             .Include(c => c.Leases)
             .FirstOrDefaultAsync(c => c.Id == lease.ClientId);
@@ -31,11 +31,11 @@ public class LeaseService: ILeaseService
         if (lease.IncludeDriver)
         {
             if (string.IsNullOrEmpty(lease.AssignedDriverId))
-                return new ServiceResult{Success= false,Message="Driver must be selected when including EaziLease driver."};
+                return new ServiceResult { Success = false, Message = "Driver must be selected when including EaziLease driver." };
 
             var driver = await _context.Drivers.FindAsync(lease.AssignedDriverId);
             if (driver == null || !driver.IsActive || !string.IsNullOrEmpty(driver.CurrentVehicleId))
-                return new ServiceResult{Success = false, Message="Selected driver is unavailable or inactive."};
+                return new ServiceResult { Success = false, Message = "Selected driver is unavailable or inactive." };
 
             // Assign driver
             driver.CurrentVehicleId = vehicle?.Id;
@@ -57,13 +57,13 @@ public class LeaseService: ILeaseService
 
         //Validation Logic <-> Moved from VehiclesController
         if (vehicle == null || vehicle.Status == VehicleStatus.Leased)
-            return new ServiceResult { Success = false, Message = "Vehicle Unavailable."};
+            return new ServiceResult { Success = false, Message = "Vehicle Unavailable." };
 
-        if(client ==  null || (client.CurrentCommittedAmount + lease.MonthlyRate) > client.CreditLimit)
-            return new ServiceResult { Success = false, Message = "Client credit limit exceeded."};
+        if (client == null || (client.CurrentCommittedAmount + lease.MonthlyRate) > client.CreditLimit)
+            return new ServiceResult { Success = false, Message = "Client credit limit exceeded." };
 
-        if(lease.LeaseEndDate <= lease.LeaseStartDate)
-            return new ServiceResult {Success = false, Message="End date must be after start date"};
+        if (lease.LeaseEndDate <= lease.LeaseStartDate)
+            return new ServiceResult { Success = false, Message = "End date must be after start date" };
 
         decimal currentCommitted = client.Leases?
                 .Where(l => l.IsActive)
@@ -71,18 +71,21 @@ public class LeaseService: ILeaseService
 
         decimal newTotal = currentCommitted + lease.MonthlyRate;
 
-        if(newTotal > client.CreditLimit)
-            return new ServiceResult {Success = false,
-             Message = $"Client credit limit exceeded. Current: {currentCommitted:C}, " +
-             $"New total: {newTotal:C} (limit: {client.CreditLimit})"};
+        if (newTotal > client.CreditLimit)
+            return new ServiceResult
+            {
+                Success = false,
+                Message = $"Client credit limit exceeded. Current: {currentCommitted:C}, " +
+             $"New total: {newTotal:C} (limit: {client.CreditLimit})"
+            };
 
         //Prevent same client leasing same vehicle twice   
         var hasLeasedBefore = await _context.VehicleLeases
             .AnyAsync(l => l.VehicleId == lease.VehicleId && l.ClientId == lease.ClientId);
 
-        if(hasLeasedBefore)
+        if (hasLeasedBefore)
         {
-            return new ServiceResult {Success = false, Message="This client has already leased this vehicle before."};
+            return new ServiceResult { Success = false, Message = "This client has already leased this vehicle before." };
         }
 
         //Apply business logic
@@ -102,8 +105,8 @@ public class LeaseService: ILeaseService
 
         await _auditService.LogAsync("Lease", lease.Id, "Started", $"Vehicle {vehicle.RegistrationNumber} leased to {client.CompanyName} by {userName}");
 
-        return new ServiceResult { Success = true, Message ="Lease successfully started."};
-            
+        return new ServiceResult { Success = true, Message = "Lease successfully started." };
+
     }
 
     public async Task<ServiceResult> EndLeaseAsync(string vehicleId, EndLeaseDto dto, string userName)
@@ -112,28 +115,28 @@ public class LeaseService: ILeaseService
         var vehicle = await _context.Vehicles
             .Include(v => v.CurrentLease)
             .ThenInclude(l => l!.Client)
-            .Include (v => v.CurrentDriver)
+            .Include(v => v.CurrentDriver)
             .FirstOrDefaultAsync(v => v.Id == vehicleId);
 
         var driver = await _context.Drivers
                 .Include(v => v.CurrentVehicle)
                 .FirstOrDefaultAsync(v => v.CurrentVehicleId == vehicleId);
 
-        if(vehicle == null || vehicle.CurrentLease == null)
-            return new ServiceResult { Success = false, Message ="No active leases found for this vehicle."};
+        if (vehicle == null || vehicle.CurrentLease == null)
+            return new ServiceResult { Success = false, Message = "No active leases found for this vehicle." };
 
         var lease = vehicle.CurrentLease;
 
         //Update lease
-        lease.ReturnDate = dto.ReturnDate.Date;      
-        if(lease.ReturnDate < lease.LeaseEndDate)
-        {
-            lease.Status = LeaseStatus.Terminated;
-        }
-        else
-        {            
-            lease.Status = LeaseStatus.Completed;
-        }
+        lease.ReturnDate = dto.ReturnDate.Date;
+        lease.Status = LeaseStatus.Completed;
+        // if(lease.ReturnDate < lease.LeaseEndDate)
+        // {
+        //     lease.Status = LeaseStatus.Terminated;
+        // }
+        // else
+        // {            
+        // }
         lease.ReturnOdometer = dto.FinalOdometerReading;
         lease.ReturnConditionNotes = dto.ReturnNotes;
         lease.PenaltyFee = dto.PenaltyFee;
@@ -173,14 +176,14 @@ public class LeaseService: ILeaseService
         {
             var assignment = await _context.VehicleAssignments
                 .FirstOrDefaultAsync(a => a.VehicleId == vehicle.Id && a.ReturnedDate == null);
-            if(assignment != null)
+            if (assignment != null)
             {
                 assignment.ReturnedDate = dto.ReturnDate;
                 assignment.UpdatedAt = DateTime.UtcNow;
                 assignment.UpdatedBy = userName;
             }
 
-            if(driver != null)
+            if (driver != null)
             {
                 driver.CurrentVehicleId = null;
                 driver.CurrentVehicle = null;
@@ -188,8 +191,8 @@ public class LeaseService: ILeaseService
                 vehicle.CurrentDriver = null;
                 driver.UpdatedBy = userName;
                 driver.UpdatedAt = DateTime.UtcNow;
-               
-            }  
+
+            }
 
             vehicle.CurrentDriverId = null;
             vehicle.CurrentDriver = null;
@@ -201,16 +204,16 @@ public class LeaseService: ILeaseService
         vehicle.CurrentDriver = null;
         vehicle.CurrentDriverId = null;
 
-            
-        if(driver?.CurrentVehicleId != null)
+
+        if (driver?.CurrentVehicleId != null)
         {
             driver.CurrentVehicle = null;
-        
+
             driver.CurrentVehicleId = null;
         }
         vehicle.Status = VehicleStatus.Available;
 
-        
+
         await _context.SaveChangesAsync();
 
         await _auditService.LogAsync("Lease", lease.Id, "LeaseEnded",
@@ -232,12 +235,12 @@ public class LeaseService: ILeaseService
             TotalBillableMaintenance = billableMaintenance,
             TotalCost = nonBillableCosts ?? 0,
             CalculatedBy = userName
-        }; 
+        };
 
         _context.LeaseFinancialSummaries.Add(summary);
-        await _context.SaveChangesAsync();            
+        await _context.SaveChangesAsync();
 
-        return new ServiceResult {Success = true, Message = "Lease ended successfully. Vehicle is now available."};
+        return new ServiceResult { Success = true, Message = "Lease ended successfully. Vehicle is now available." };
     }
 
     public async Task<ServiceResult> ExtendLeaseAsync(string leaseId, DateTime newEndDate, string userName)
@@ -246,21 +249,21 @@ public class LeaseService: ILeaseService
             .Include(l => l.Vehicle)
             .FirstOrDefaultAsync(l => l.Id == leaseId && l.ReturnDate == null);
 
-        if(lease == null)
-            return new ServiceResult { Success = false, Message = "Active lease not found."}; 
+        if (lease == null)
+            return new ServiceResult { Success = false, Message = "Active lease not found." };
 
-        if(newEndDate <= lease.LeaseEndDate)
-            return new ServiceResult { Success = false, Message = "New end date must be after current end date."};
+        if (newEndDate <= lease.LeaseEndDate)
+            return new ServiceResult { Success = false, Message = "New end date must be after current end date." };
 
         var newMonthlyRate = lease.Vehicle!.DailyRate * 30.4167m;
 
         await _context.SaveChangesAsync();
-        lease.ExtendLease(newEndDate, newMonthlyRate);           
+        lease.ExtendLease(newEndDate, newMonthlyRate);
 
         await _auditService.LogAsync("Lease", lease.Id, "LeaseExtended",
                 $"Lease for {lease.Vehicle?.RegistrationNumber} extended to {newEndDate:dd MMM yyyy} by {userName}");
 
-        return new ServiceResult {Success = true, Message = "Lease extended successfully."};
+        return new ServiceResult { Success = true, Message = "Lease extended successfully." };
     }
 
     public async Task<bool> CanLeaseToClientAsync(string clientId, decimal newMonthlyRate)
@@ -270,12 +273,12 @@ public class LeaseService: ILeaseService
             .Where(c => c.CreditLimit > newMonthlyRate)
             .FirstOrDefaultAsync();
 
-        if(client == null)
+        if (client == null)
             return false;
 
-        if(client.CreditLimit < newMonthlyRate)
+        if (client.CreditLimit < newMonthlyRate)
             return false;
-                    
+
         return true;
     }
 }

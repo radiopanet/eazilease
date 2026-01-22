@@ -41,6 +41,7 @@ namespace EaziLease.Controllers
             {
                 TotalRevenue = latestSnapshot?.TotalRevenue ?? 0,
                 TotalCosts = latestSnapshot?.TotalNonBillableCosts ?? 0,
+                TotalPenalties = latestSnapshot?.TotalPenalties ?? 0m,
                 RecentSummaries = recentSummaries
             };
 

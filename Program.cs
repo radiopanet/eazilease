@@ -82,7 +82,7 @@ app.UseHangfireDashboard();
 
 // Schedule recurring job 
 RecurringJob.AddOrUpdate<MonthlySnapshotJob>( job => job.Execute(), Cron.Monthly);
-RecurringJob.AddOrUpdate<MonthlyCompanyFinancialSnapshot>( s => s.CreateCompanySnapshot(), Cron.Minutely);
+RecurringJob.AddOrUpdate<MonthlyCompanyFinancialSnapshot>( s => s.CreateCompanySnapshot(), Cron.Monthly);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

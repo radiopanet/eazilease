@@ -34,8 +34,8 @@ namespace EaziLease.Jobs
             // Check if we have data to prevent unnecessary snapshots if desired, 
             // but for debugging, we'll proceed.
 
-            decimal revenue = endedLeases.Sum(l => l.FinalAmount ?? 0);
-            decimal penalties = endedLeases.Sum(l => l.PenaltyFee ?? 0);
+            decimal revenue = endedLeases.Sum(l => l.FinalAmount ?? 0m);
+            decimal penalties = endedLeases.Sum(l => l.PenaltyFee.GetValueOrDefault());
             decimal billable = endedLeases.Sum(l => l.BillableMaintenanceCosts ?? 0);
 
             // Ensure Vehicle is not null before calling pro-rata

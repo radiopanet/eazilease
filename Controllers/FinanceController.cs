@@ -3,6 +3,7 @@ using EaziLease.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using EaziLease.Jobs;
 
 
 namespace EaziLease.Controllers
@@ -44,6 +45,28 @@ namespace EaziLease.Controllers
             };
 
             return View(viewModel);
+        }
+    
+        [HttpPost]
+        public async Task<IActionResult> RefreshSnapshot()
+        {
+            try
+            {
+                // Resolve the job directly from the service provider
+                using(var scope = HttpContext.RequestServices.CreateScope())
+                {
+                    var job = scope.ServiceProvider.GetRequiredService<MonthlyCompanyFinancialSnapshot>();
+                    await job.CreateCompanySnapshot();
+                }
+
+                TempData["success"] = "Financial snapshot updated successfully.";
+            }
+            catch(Exception ex)
+            {
+                TempData["error"] = "Failed to refresh: " + ex.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

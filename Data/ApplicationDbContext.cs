@@ -20,6 +20,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Branch> Branches => Set<Branch>();
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Driver> Drivers => Set<Driver>();
+    public DbSet<VehicleCategory> VehicleCategories => Set<VehicleCategory>();
+    public DbSet<VehicleManufacturer> vehicleManufacturers => Set<VehicleManufacturer>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<VehicleAssignment> VehicleAssignments => Set<VehicleAssignment>();
     public DbSet<VehicleLease> VehicleLeases => Set<VehicleLease>();

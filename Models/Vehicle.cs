@@ -16,9 +16,11 @@ namespace EaziLease.Models
         public decimal? OdometerReading { get; set; } //in km
         public VehicleStatus Status { get; set; } = VehicleStatus.Available;
         public decimal DailyRate { get; set; }
-        public DateTime? LastServiceDate { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+        [DataType(DataType.DateTime)]
+        public DateTime? LastServiceDate { get; set; } 
         public decimal? PurchasePrice { get; set; }
-        public DateTime PurchaseDate { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+        [DataType(DataType.DateTime)]
+        public DateTime PurchaseDate { get; set; } 
 
         //Maitenance scheduling intervals (configurable per vehicle).
         public int MaintenanceIntervalKm {get; set;} = 10000; //default per 10 000 kilometers
@@ -26,7 +28,8 @@ namespace EaziLease.Models
 
         //Next due calculations (updated on completion)
         public decimal? NextMaintenanceMileage {get; set;} //e.g 90 000Km, nullable meaning no upcoming maintenance scheduled.
-        public DateTime? NextMaintenanceDate {get; set;} = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc); //e.g 2026-07-11 
+        [DataType(DataType.DateTime)]
+        public DateTime? NextMaintenanceDate {get; set;} 
 
         [NotMapped]
         public decimal TotalBillableMaintenance
@@ -37,7 +40,6 @@ namespace EaziLease.Models
                 return CurrentLease.BillableMaintenanceCosts ?? 0m;
             }
         }
-// In Models/Vehicle.cs
 
         [NotMapped]
         public decimal MaintenanceScore

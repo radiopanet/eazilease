@@ -84,6 +84,8 @@ namespace EaziLease.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Vehicle vehicle)
         {
+            vehicle.PurchaseDate = DateTime.SpecifyKind(vehicle.PurchaseDate, DateTimeKind.Utc);
+            
             if (ModelState.IsValid)
             {
                 vehicle.CreatedBy = User.Identity!.Name ?? "admin";

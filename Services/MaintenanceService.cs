@@ -24,6 +24,9 @@ namespace EaziLease.Services
 
         public async Task<ServiceResult> RecordMaintenanceAsync(VehicleMaintenance maintenance, string userName)
         {
+            maintenance.ServiceDate = DateTime.SpecifyKind(maintenance.ServiceDate, DateTimeKind.Utc);
+            maintenance.ScheduledDate = DateTime.SpecifyKind(maintenance.ScheduledDate ?? DateTime.MinValue, DateTimeKind.Utc);
+            
             var vehicle = await _context.Vehicles
                 .Include(v => v.CurrentDriver)
                 .FirstOrDefaultAsync(v => v.Id == maintenance.VehicleId);

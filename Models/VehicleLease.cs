@@ -91,9 +91,5 @@ namespace EaziLease.Models
             IsExtended = true;
             ExtensionCount++;  
         }
-
-        
-
-
     }
 }

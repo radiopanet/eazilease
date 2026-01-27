@@ -11,6 +11,8 @@ using EaziLease.Services.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
 using EaziLease.Jobs;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,10 +48,10 @@ builder.Services.AddAuthorization(options =>
                   httpContext.IsSuperAdminElevated()));
 });
 
-builder.Services.AddAuthorization(options =>
-{
-   options.AddPolicy("ClientOnly", policy => policy.RequireRole("ClientUser"));
-});
+// builder.Services.AddAuthorization(options =>
+// {
+//    options.AddPolicy("ClientOnly", policy => policy.RequireRole("ClientUser"));
+// });
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -66,14 +68,21 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 
 builder.Services.AddControllersWithViews();
+    // options =>
+// {
+//     var policy = new AuthorizationPolicyBuilder()
+//         .RequireAuthenticatedUser()
+//         .Build();
+//     options.Filters.Add(new AuthorizeFilter(policy));  
+// });
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Account/AccessDenied"; // Point to your new view
-    options.LogoutPath = "/Identity/Account/Logout";
-});
+// builder.Services.ConfigureApplicationCookie(options =>
+// {
+//     options.LoginPath = "/Identity/Account/Login";
+//     options.AccessDeniedPath = "/Account/AccessDenied"; // Point to the new view
+//     options.LogoutPath = "/Identity/Account/Logout";
+// });
 
 builder.Services.AddSession(options =>
 {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace EaziLease.Areas.Client.Controllers
 {
     [Area("ClientPortal")]
-    [Authorize("ClientUser")]
+    // [Authorize("ClientUser")]
     public class HomeController: Controller
     {
         public IActionResult Index()

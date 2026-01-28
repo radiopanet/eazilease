@@ -84,6 +84,18 @@ namespace EaziLease.Data
 
             context.Vehicles.AddRange(vehicles);
             await context.SaveChangesAsync();
+
+            var garages = new[]
+            {
+            new Garage{Id = Guid.NewGuid().ToString(), Name = "AutoFix Benoni", Address = "123 Main Rd", City = "Benoni", ContactPerson = "John Doe", Phone = "082 123 4567", Email = "info@autofix.co.za", IsPreferred = true, CreatedAt = DateTime.UtcNow, CreatedBy = "system" },
+            new Garage{Id = Guid.NewGuid().ToString(), Name = "Botha & Deysel", Address = "23 Sterling Rd", City = "Vanderbijlpark", ContactPerson = "Deer Judine", Phone = "016 252 6589", Email = "info@band.co.za", IsPreferred = true, CreatedAt = DateTime.UtcNow, CreatedBy = "system" },
+            new Garage{Id = Guid.NewGuid().ToString(), Name = "Synapsis Auto Repairs", Address = "12 Klassie Havenga Rd", City = "Sasolburg", ContactPerson = "Busi Dumani", Phone = "016 010 0125", Email = "info@synapsis.co.za", IsPreferred = true, CreatedAt = DateTime.UtcNow, CreatedBy = "system" },
+            new Garage{Id = Guid.NewGuid().ToString(), Name = "VW Johannesburg", Address = "22 Sloane Ave", City = "Johannesburg", ContactPerson = "Thando Masutha", Phone = "011 123 4567", Email = "info@vwjhb.co.za", IsPreferred = true, CreatedAt = DateTime.UtcNow, CreatedBy = "system" },
+            new Garage{Id = Guid.NewGuid().ToString(), Name = "Alpha Repairs", Address = "156 Main Rd", City = "Pretoria", ContactPerson = "Fannie Marie", Phone = "082 016 4567", Email = "info@alpharepairs.co.za", IsPreferred = true, CreatedAt = DateTime.UtcNow, CreatedBy = "system" }
+            };
+            context.Garages.AddRange(garages);
+            await context.SaveChangesAsync();
+
         }
     }
 }

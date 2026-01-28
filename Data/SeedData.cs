@@ -38,11 +38,11 @@ namespace EaziLease.Data
             // 3. Clients
             var clients = new[]
             {
-                new Client { CompanyName = "Vodacom Business",      ContactPerson = "Thabo Mokoena",   ContactEmail = "thabo@vodacom.co.za", ContactPhone = "082 111 2222" },
-                new Client { CompanyName = "MTN Corporate",         ContactPerson = "Lerato Pillay",    ContactEmail = "lerato@mtn.co.za",    ContactPhone = "083 333 4444" },
-                new Client { CompanyName = "Discovery Health",      ContactPerson = "Anita de Beer",   ContactEmail = "anita@discovery.co.za", ContactPhone = "084 555 6666" },
-                new Client { CompanyName = "Bidvest Facilities",    ContactPerson = "Craig Williams",  ContactEmail = "craig@bidvest.co.za", ContactPhone = "076 777 8888" },
-                new Client { CompanyName = "Standard Bank Fleet",   ContactPerson = "Nomsa Zungu",     ContactEmail = "nomsa@standardbank.co.za", ContactPhone = "079 999 0000" }
+                new Client { CompanyName = "Vodacom Business",      ContactPerson = "Thabo Mokoena",   ContactEmail = "thabo@vodacom.co.za", CreditLimit=150000m, ContactPhone = "082 111 2222" },
+                new Client { CompanyName = "MTN Corporate",         ContactPerson = "Lerato Pillay",    ContactEmail = "lerato@mtn.co.za", CreditLimit=150000m,   ContactPhone = "083 333 4444" },
+                new Client { CompanyName = "Discovery Health",      ContactPerson = "Anita de Beer",   ContactEmail = "anita@discovery.co.za", CreditLimit=150000m, ContactPhone = "084 555 6666" },
+                new Client { CompanyName = "Bidvest Facilities",    ContactPerson = "Craig Williams",  ContactEmail = "craig@bidvest.co.za", CreditLimit=150000m, ContactPhone = "076 777 8888" },
+                new Client { CompanyName = "Standard Bank Fleet",   ContactPerson = "Nomsa Zungu",     ContactEmail = "nomsa@standardbank.co.za", CreditLimit=150000m, ContactPhone = "079 999 0000" }
             };
             context.Clients.AddRange(clients);
             await context.SaveChangesAsync();

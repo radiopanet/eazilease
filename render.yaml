@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: eazilease
+    env: dotnet
+    plan: free
+    buildCommand: dotnet publish -c Release -o out
+    startCommand: dotnet ./out/EaziLease.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false  # we'll set this in Render dashboard
+
+databases:
+  - name: eazilease-db
+    plan: free
+    databaseName: eazilease
+    user: eazilease

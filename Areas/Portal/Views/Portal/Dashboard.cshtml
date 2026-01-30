@@ -1,0 +1,35 @@
+@using EaziLease.Models.ViewModels
+@model ClientDashboardViewModel
+
+@{
+    ViewData["Title"] = "Client Dashboard";
+}
+
+<div class="container mt-5">
+    <h2>Welcome to your EaziLease Client Portal, @Model.CompanyName</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Active Leases</div>
+                <div class="card-body">
+                    <h3>@Model.ActiveLeasesCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Vehicles</div>
+                <div class="card-body">
+                    <h3>@Model.TotalVehiclesLeased</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="MyLeases" class="btn btn-outline-primary btn-lg">
+            View My Leases
+        </a>
+    </div>
+</div>

@@ -49,7 +49,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasIndex(s => s.Name);
 
         builder.Entity<Client>()
-            .HasIndex(c => c.CompanyName);
+            .HasIndex(c => c.CompanyName)
+            .IsUnique();
+
+        builder.Entity<Client>()
+            .HasOne(c => c.User)
+            .WithOne()
+            .HasForeignKey<Client>(c => c.UserId);    
 
         // One-to-many
         builder.Entity<Vehicle>()

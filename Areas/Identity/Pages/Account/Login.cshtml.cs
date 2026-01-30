@@ -118,15 +118,15 @@ namespace EaziLease.Areas.Identity.Pages.Account
                     var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
                     var roles = await _signInManager.UserManager.GetRolesAsync(user);
 
-                    // if (roles.Contains("Admin") || roles.Contains("SuperAdmin"))
-                    // {
-                    //     return LocalRedirect("~/Dashboard/Index"); // Path to your Admin Dashboard
-                    // }
+                    if (roles.Contains("Admin") || roles.Contains("SuperAdmin"))
+                    {
+                        return LocalRedirect("~/Dashboard/Index"); // Path to your Admin Dashboard
+                    }
 
-                    // if (roles.Contains("ClientUser"))
-                    // {
-                    //     return LocalRedirect("~/ClientPortal/Home/Index"); // Path to Client Portal
-                    // }
+                    if (roles.Contains("ClientUser"))
+                    {
+                        return RedirectToAction("Dashboard", "Portal", new { area = "Portal"}); // Path to Client Portal
+                    }
 
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);

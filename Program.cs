@@ -48,11 +48,6 @@ builder.Services.AddAuthorization(options =>
                   httpContext.IsSuperAdminElevated()));
 });
 
-// builder.Services.AddAuthorization(options =>
-// {
-//    options.AddPolicy("ClientOnly", policy => policy.RequireRole("ClientUser"));
-// });
-
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -64,6 +59,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 }).AddRoles<IdentityRole>()
   .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAuthorization(options =>
+{
+   options.AddPolicy("ClientOnly", policy => policy.RequireRole("ClientUser"));
+});  
 
 
 
@@ -126,6 +126,10 @@ app.MapStaticAssets();
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=SuperDashboard}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=ClientDashboard}/{action=index}/{id?}");    
 
 app.MapControllerRoute(
     name: "default",

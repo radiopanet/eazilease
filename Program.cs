@@ -146,6 +146,9 @@ if (app.Environment.IsDevelopment())
         await IdentitySeedData.Seed(services);
         Console.WriteLine("Admin user seeded successfully.");
         await SeedData.InitializeAsync(context);
+
+        await ClientSeeder.SeedAsync(services);
+        Console.WriteLine("Client user seeded successfully.");
     }
     catch (Exception ex)
     {

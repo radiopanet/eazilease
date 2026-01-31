@@ -116,11 +116,11 @@
 
         <div class="py-4">
             <small class="text-uppercase px-4 mb-2 d-block opacity-50 fw-bold" style="font-size: 0.65rem; letter-spacing: 1px;">Main Menu</small>
-            <a asp-controller="Dashboard" asp-action="Index" class="nav-link-custom">
-                <i class="fas fa-chart-pie"></i> Insights
-            </a>
-
+           
             @if(User.Identity?.IsAuthenticated == true && User.IsInRole("Admin")){
+                <a asp-controller="Dashboard" asp-action="Index" class="nav-link-custom">
+                    <i class="fas fa-chart-pie"></i> Insights
+                </a>
                 <small class="text-uppercase px-4 mt-4 mb-2 d-block opacity-50 fw-bold" style="font-size: 0.65rem; letter-spacing: 1px;">Management</small>
                 <a asp-controller="Vehicles" asp-action="Index" class="nav-link-custom">
                     <i class="fas fa-car-side"></i> Fleet Inventory

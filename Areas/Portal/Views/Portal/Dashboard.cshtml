@@ -2,34 +2,140 @@
 @model ClientDashboardViewModel
 
 @{
-    ViewData["Title"] = "Client Dashboard";
+    ViewData["Title"] = "Client Portal";
 }
 
-<div class="container mt-5">
-    <h2>Welcome to your EaziLease Client Portal, @Model.CompanyName</h2>
+<style>
+    body { background-color: #f8fafc; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    
+    /* Top Navigation Bar */
+    .portal-nav {
+        background: white;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.75rem 0;
+    }
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Active Leases</div>
-                <div class="card-body">
-                    <h3>@Model.ActiveLeasesCount</h3>
+    .portal-header {
+        background: white;
+        padding: 3rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        border: none;
+        border-radius: 20px;
+        background: white;
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover { transform: translateY(-5px); }
+
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .bg-soft-primary { background-color: #eef2ff; color: #4f46e5; }
+    .bg-soft-success { background-color: #ecfdf5; color: #10b981; }
+    
+    .btn-logout {
+        color: #ef4444;
+        font-weight: 600;
+        border: 1px solid #fee2e2;
+        background: #fef2f2;
+        transition: 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: #ef4444;
+        color: white;
+        border-color: #ef4444;
+    }
+</style>
+
+<nav class="portal-nav sticky-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="fw-bold text-primary fs-4 me-2">Eazi<span class="text-dark">Lease</span></span>
+            <span class="badge bg-light text-muted border px-2 ms-2">Portal</span>
+        </div>
+        
+        <div class="d-flex align-items-center gap-4">
+            <a asp-action="MyLeases" class="text-decoration-none text-muted small fw-bold">My Leases</a>
+            <a asp-action="Support" class="text-decoration-none text-muted small fw-bold">Support</a>
+            
+            <div class="vr mx-2 text-muted opacity-25"></div>
+            
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                <button type="submit" class="btn btn-sm btn-logout rounded-pill px-4">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="portal-header">
+    <div class="container text-center text-md-start">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="text-primary fw-bold small text-uppercase tracking-wider">Dashboard Overview</span>
+                <h1 class="fw-bold text-dark mt-1">Welcome, @Model.CompanyName</h1>
+                <p class="text-muted mb-0">Securely managing @Model.TotalVehiclesLeased assets under your account.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                <div class="d-inline-block text-start bg-light p-3 rounded-4 border">
+                    <div class="small text-muted fw-bold">ACCOUNT MANAGER</div>
+                    <div class="fw-bold text-dark">EaziLease Enterprise Support</div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4">
         <div class="col-md-6">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Total Vehicles</div>
-                <div class="card-body">
-                    <h3>@Model.TotalVehiclesLeased</h3>
+            <div class="card stat-card shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="icon-box bg-soft-primary">
+                            <i class="fas fa-file-invoice-dollar fa-lg"></i>
+                        </div>
+                        <h6 class="text-muted fw-bold small text-uppercase">Active Leases</h6>
+                        <h2 class="fw-bold">@Model.ActiveLeasesCount</h2>
+                    </div>
+                    <a asp-action="MyLeases" class="btn btn-sm btn-outline-primary rounded-pill">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card stat-card shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="icon-box bg-soft-success">
+                            <i class="fas fa-shipping-fast fa-lg"></i>
+                        </div>
+                        <h6 class="text-muted fw-bold small text-uppercase">Total Fleet Vehicles</h6>
+                        <h2 class="fw-bold">@Model.TotalVehiclesLeased</h2>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success rounded-pill">Asset History</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-4">
-        <a asp-action="MyLeases" class="btn btn-outline-primary btn-lg">
-            View My Leases
-        </a>
+    <div class="mt-5 p-4 rounded-4 bg-white border shadow-sm text-center">
+        <p class="mb-0 text-muted">
+            Need immediate assistance? Call our 24/7 client hotline: 
+            <span class="text-primary fw-bold">0800-EAZI-LEASE</span>
+        </p>
     </div>
 </div>

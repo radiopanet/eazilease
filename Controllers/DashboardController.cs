@@ -6,7 +6,7 @@ using EaziLease.Models;
 using EaziLease.Models.ViewModels;
 namespace EaziLease.Controllers
 {
-    // [Authorize(Roles ="Admin", Policy ="RequireSuperAdmin")]
+    [Authorize(Roles ="Admin, SuperAdmin")]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;

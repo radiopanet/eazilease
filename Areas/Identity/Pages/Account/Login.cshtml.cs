@@ -120,10 +120,9 @@ namespace EaziLease.Areas.Identity.Pages.Account
 
                     if (roles.Contains("Admin") || roles.Contains("SuperAdmin"))
                     {
-                        return LocalRedirect("~/Dashboard/Index"); // Path to your Admin Dashboard
+                        return RedirectToAction("Dashboard", "Index"); // Path to your Admin Dashboard
                     }
-
-                    if (roles.Contains("ClientUser"))
+                    else if(roles.Contains("ClientUser"))
                     {
                         return RedirectToAction("Dashboard", "Portal", new { area = "Portal"}); // Path to Client Portal
                     }

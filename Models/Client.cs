@@ -43,7 +43,7 @@ namespace EaziLease.Models
         //Navigation
         public virtual ICollection<VehicleLease>? Leases {get; set;} = default!;
         public int ActiveLeaseCount => Leases?.Count(l => l.IsActive) ?? 0;
-        public string? UserId {get; set;} //Link to IdentityUser
+        public string? UserId {get; set;}  
         public virtual ApplicationUser? User {get; set;}
        
     }

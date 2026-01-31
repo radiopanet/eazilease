@@ -48,14 +48,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Supplier>()
             .HasIndex(s => s.Name);
 
-        builder.Entity<Client>()
-            .HasIndex(c => c.CompanyName)
-            .IsUnique();
-
+        //One-to-One
         builder.Entity<Client>()
             .HasOne(c => c.User)
             .WithOne()
-            .HasForeignKey<Client>(c => c.UserId);    
+            .HasForeignKey<Client>(c => c.UserId)
+            .IsRequired(false);
+
+        builder.Entity<Client>()
+            .HasIndex(c => c.CompanyName);
+
+          
 
         // One-to-many
         builder.Entity<Vehicle>()

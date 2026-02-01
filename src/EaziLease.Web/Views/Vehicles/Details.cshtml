@@ -1,0 +1,331 @@
+@using EaziLease.Domain.Enums 
+@using EaziLease.Domain.Entities
+@model Vehicle
+
+@{
+    ViewData["Title"] = "Vehicle: " + Model.RegistrationNumber;
+}
+
+<style>
+    .vehicle-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        border-radius: 16px;
+        color: white;
+        padding: 2rem;
+    }
+    .spec-label { font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 700; }
+    .spec-value { font-size: 1rem; color: #1e293b; font-weight: 500; }
+    .action-card { border-radius: 12px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+    .action-card:hover { border-color: #3b82f6; background: #f8fafc; }
+    .tab-container { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .nav-pills .nav-link.active { background-color: #3b82f6; }
+    /* Recovery Section Styling */
+    .recovery-card { border-radius: 12px; border: 1px solid #fed7aa; background-color: #fffaf5; }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="vehicle-header shadow-lg mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="badge bg-white text-primary mb-2 px-3 py-2">@Model.Year Model</span>
+                <h1 class="display-5 fw-bold mb-0">@Model.Manufacturer @Model.Model</h1>
+                <p class="lead opacity-75 mb-0"><i class="fas fa-fingerprint me-2"></i>VIN: @Model.VIN</p>
+                <p class="lead opacity-75 mb-0"><i class="fal fa-tachometer-alt me-2"></i>Odometer Reading: @Model.OdometerReading (Km)</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <div class="h2 fw-bold mb-1">@Model.RegistrationNumber</div>
+                <span class="badge rounded-pill px-4 py-2 bg-@(Model.Status switch {
+                    VehicleStatus.Available => "success",
+                    VehicleStatus.Leased => "info",
+                    VehicleStatus.InMaintenance => "warning text-dark",
+                    _ => "danger"
+                }) shadow">
+                    <i class="fas fa-circle me-1 small"></i> @Model.Status
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 16px;">
+                <h5 class="fw-bold mb-4 text-primary"><i class="fas fa-info-circle me-2"></i>Key Specifications</h5>
+                <div class="row g-4">
+                    <div class="col-6 col-md-3">
+                        <div class="spec-label">Fuel Type</div>
+                        <div class="spec-value"><i class="fas fa-gas-pump me-2 text-muted"></i>@Model.FuelType</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="spec-label">Transmission</div>
+                        <div class="spec-value"><i class="fas fa-cog me-2 text-muted"></i>@Model.Transmission</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="spec-label">Color</div>
+                        <div class="spec-value"><i class="fas fa-paint-brush me-2 text-muted"></i>@Model.Color</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="spec-label">Daily Rate</div>
+                        <div class="spec-value text-success fw-bold">@Model.DailyRate.ToString("C")</div>
+                    </div>
+                    
+                    <div class="col-md-6 mt-4 pt-3 border-top">
+                        <div class="spec-label">Current Location (Branch)</div>
+                        <div class="spec-value">@Model.Branch?.Name</div>
+                    </div>
+                    <div class="col-md-6 mt-4 pt-3 border-top">
+                        <div class="spec-label">Supplier / Owner</div>
+                        <div class="spec-value">@Model.Supplier?.Name</div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold mt-5 mb-3 text-primary"><i class="fas fa-history me-2"></i>Purchase & Service</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <div class="spec-label">Purchase Price</div>
+                            <div class="h5 mb-0">R @Model.PurchasePrice</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <div class="spec-label">Purchase Date</div>
+                            <div class="h5 mb-0">@Model.PurchaseDate.ToString("yyyy-MM-dd") </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <div class="spec-label">Last Service</div>
+                            <div class="h5 mb-0">@Model.LastServiceDate?.ToString("yyyy-MM-dd")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-container p-4">
+                <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+                    <li class="nav-item"><button class="nav-link active me-2" data-bs-toggle="pill" data-bs-target="#pills-lease">Lease History</button></li>
+                    <li class="nav-item"><button class="nav-link me-2" data-bs-toggle="pill" data-bs-target="#pills-assign">Assignments</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-maint">Maintenance</button></li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-lease" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Duration</th>
+                                        <th>Monthly Rate</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.LeaseHistory.Any())
+                                    {
+                                        foreach (var lease in Model.LeaseHistory.OrderByDescending(l => l.LeaseStartDate))
+                                        {
+                                            <tr>
+                                                <td class="fw-bold">@lease.Client?.CompanyName</td>
+                                                <td class="small text-muted">@lease.LeaseStartDate.ToShortDateString() - @(lease.ReturnDate?.ToShortDateString() ?? "Active")</td>
+                                                <td>@lease.MonthlyRate.ToString("C")</td>
+                                                <td>
+                                                    <span class="badge @(lease.IsActive ? "bg-success" : "bg-light text-dark border")">
+                                                        @(lease.IsActive ? "Active" : "Ended")
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="4" class="text-center py-4 text-muted">No lease history found.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (Model.CurrentLease != null && Model.MaintenanceHistory.Any(m => m.IsBillableToClient))
+                        {
+                            <div class="mt-5 p-4 recovery-card border border-warning-subtle">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-1"><i class="fas fa-file-invoice-dollar me-2 text-warning"></i>Billable Maintenance Summary</h6>
+                                        <p class="small text-muted mb-0">Current lease recovery items.</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="spec-label">Total Billable</div>
+                                        <div class="h4 fw-bold text-danger mb-0">@Model.CurrentLease.BillableMaintenanceCosts?.ToString("C")</div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive bg-white rounded-3 shadow-sm">
+                                    <table class="table table-sm table-borderless align-middle mb-0">
+                                        <thead class="bg-light border-bottom">
+                                            <tr>
+                                                <th class="ps-3 py-2 spec-label" style="font-size: 0.65rem;">Date</th>
+                                                <th class="py-2 spec-label" style="font-size: 0.65rem;">Description</th>
+                                                <th class="py-2 spec-label" style="font-size: 0.65rem;">Actual Cost</th>
+                                                <th class="pe-3 py-2 spec-label text-end" style="font-size: 0.65rem;">Billable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var m in Model.MaintenanceHistory.Where(m => m.IsBillableToClient).OrderByDescending(m => m.ServiceDate))
+                                            {
+                                                <tr class="border-bottom">
+                                                    <td class="ps-3 py-3 small fw-bold">@m.ServiceDate.ToString("dd MMM yyyy")</td>
+                                                    <td class="py-3 small text-muted">@m.Description</td>
+                                                    <td class="py-3 small">@m.Cost?.ToString("C")</td>
+                                                    <td class="pe-3 py-3 small fw-bold text-danger text-end">@m.BillableAmount?.ToString("C")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-assign" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Driver Name</th>
+                                        <th>Assigned Date</th>
+                                        <th>Returned Date</th>
+                                        <th>Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.AssignementHistory.Any())
+                                    {
+                                        foreach (var ass in Model.AssignementHistory.OrderByDescending(a => a.AssignedDate))
+                                        {
+                                            <tr>
+                                                <td class="fw-bold"><i class="fas fa-user-tie me-2 text-muted"></i>@ass.Driver?.FullName</td>
+                                                <td>@ass.AssignedDate.ToShortDateString()</td>
+                                                <td>@(ass.ReturnedDate?.ToShortDateString() ?? "Current")</td>
+                                                <td>
+                                                    @{
+                                                        var end = ass.ReturnedDate ?? DateTime.UtcNow;
+                                                        var days = (end - ass.AssignedDate).Days + 1;
+                                                    }
+                                                    <span class="badge bg-light text-primary border">@days Days</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="4" class="text-center py-4 text-muted">No assignment history found.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-maint" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Service Date</th>
+                                        <th>Description / Garage</th>
+                                        <th>Mileage</th>
+                                        <th>Cost</th>
+                                        <th class="text-end">Status / Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.MaintenanceHistory.Any())
+                                    {
+                                        foreach (var m in Model.MaintenanceHistory.OrderByDescending(x => x.ServiceDate))
+                                        {
+                                            <tr>
+                                                @if(m.IsFutureScheduled)
+                                                {
+                                                    <td>@m.ScheduledDate</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@m.ServiceDate.ToShortDateString()</td>
+                                                }
+                                                <td>
+                                                    <div class="fw-bold">@m.Description</div>
+                                                    <small class="text-muted">Garage: @(m.Garage?.Name ?? "Not Specified")</small>
+                                                </td>
+                                                <td>@(m.MileageAtService?.ToString("N0") ?? "-") KM</td>
+                                                <td class="fw-bold text-danger">@m.Cost?.ToString("C")</td>
+                                                <td class="text-end">
+                                                    @if (m.Status == MaintenanceStatus.InProgress)
+                                                    {
+                                                        <form asp-action="CompleteMaintenance" asp-route-maintenanceId="@m.Id" method="post" class="d-inline" onsubmit="return confirm('Mark this maintenance as completed? Asset status will return to Available.');">
+                                                            <button type="submit" class="btn btn-sm px-3 fw-bold rounded-pill shadow-sm" 
+                                                                    style="background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; font-size: 0.7rem;">
+                                                                <i class="fas fa-check-circle me-1"></i> COMPLETE
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                    else if (m.Status == MaintenanceStatus.Scheduled)
+                                                    {
+                                                        <span class="badge bg-info-subtle text-info border border-info-subtle px-3 rounded-pill">Scheduled</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-light text-muted border px-3 rounded-pill">Completed</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="5" class="text-center py-4 text-muted">No maintenance records found.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 20px; border-radius: 16px;">
+                <h5 class="fw-bold mb-4">Management Actions</h5>
+                
+                @if (Model.CurrentLease != null && Model.CurrentLease.IsActive)
+                {
+                    <div class="alert alert-info border-0 shadow-sm mb-4">
+                        <small class="text-uppercase fw-bold opacity-75">Active Lease</small>
+                        <div class="h6 fw-bold mb-1">@Model.CurrentLease.Client?.CompanyName</div>
+                        <div class="small mb-2">Expires: @Model.CurrentLease.LeaseEndDate.ToShortDateString()</div>
+                        <a asp-action="RequestRateOverride" asp-route-vehicleId="@Model.CurrentLease.VehicleId" class="btn btn-sm btn-white w-100 shadow-sm mb-2">Request Rate Override</a>
+                        <a asp-action="ExtendLease" asp-route-leaseId="@Model.CurrentLease.Id" class="btn btn-sm btn-white w-100 shadow-sm mb-2">Extend</a>
+                        <a asp-action="EndLease" asp-route-id="@Model.Id" class="btn btn-sm btn-danger w-100">Terminate Lease</a>
+                    </div>
+                }
+
+                <div class="d-grid gap-2">
+                    @if (Model.Status == VehicleStatus.Available)
+                    {
+                        <a asp-action="Lease" asp-route-id="@Model.Id" class="btn btn-primary py-2"><i class="fas fa-file-signature me-2"></i>Create Lease</a>
+                        <a asp-action="AssignDriver" asp-route-id="@Model.Id" class="btn btn-outline-primary py-2"><i class="fas fa-user-plus me-2"></i>Assign Driver</a>
+                    }
+                    
+                    @if (Model.Status != VehicleStatus.InMaintenance)
+                    {
+                        <a asp-action="AddMaintenance" asp-route-vehicleId="@Model.Id" class="btn btn-outline-secondary py-2"><i class="fas fa-tools me-2"></i>Log Maintenance</a>
+                    }
+                </div>
+
+                <hr class="my-4">
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a asp-action="Index" class="btn btn-link text-muted p-0 text-decoration-none"><i class="fas fa-arrow-left"></i> Back</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">Edit Vehicle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

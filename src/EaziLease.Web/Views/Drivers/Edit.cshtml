@@ -1,0 +1,171 @@
+@model EaziLease.Domain.Entities.Driver
+
+@{
+    ViewData["Title"] = "Manage Operator Profile";
+    var isLicenseValid = Model.LicenseExpiry > DateTime.Now;
+}
+
+<style>
+    .profile-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+        overflow: hidden;
+    }
+    .profile-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 2.5rem;
+    }
+    .driver-avatar-lg {
+        width: 64px;
+        height: 64px;
+        background: #4f46e5;
+        color: white;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+    .form-section-title {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+    .input-group-text {
+        background-color: #ffffff;
+        border-right: none;
+        color: #94a3b8;
+    }
+    .form-control, .form-select {
+        border-left: none;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-9 col-lg-11">
+            <div class="mb-4">
+                <a asp-action="Index" class="text-decoration-none text-muted small fw-bold">
+                    <i class="fas fa-arrow-left me-1"></i> BACK TO OPERATOR LIST
+                </a>
+            </div>
+
+            <div class="card profile-card">
+                <div class="profile-header d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="driver-avatar-lg me-3">
+                            @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+                        </div>
+                        <div>
+                            <h3 class="fw-bold text-dark mb-1">@Model.FullName</h3>
+                            <div class="d-flex gap-2">
+                                <span class="badge @(Model.IsActive ? "bg-success-subtle text-success" : "bg-light text-muted") rounded-pill">
+                                    @(Model.IsActive ? "Active Personnel" : "Inactive")
+                                </span>
+                                <span class="badge @(isLicenseValid ? "bg-blue-subtle text-primary" : "bg-danger-subtle text-danger") rounded-pill">
+                                    <i class="fas fa-id-card me-1"></i> License @(isLicenseValid ? "Valid" : "Expired")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end d-none d-md-block">
+                        <small class="text-muted d-block">Lifetime Accidents</small>
+                        <span class="h4 fw-bold @(Model.AccidentCount > 0 ? "text-danger" : "text-success")">@Model.AccidentCount</span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" asp-action="Edit">
+                        <input asp-for="Id" hidden />
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-4"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 border-end pe-md-4">
+                                <span class="form-section-title">Contact Information</span>
+                                <div class="mb-4">
+                                    <label asp-for="FirstName" class="form-label small fw-bold">First Name</label>
+                                    <input asp-for="FirstName" class="form-control bg-light" />
+                                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="LastName" class="form-label small fw-bold">Last Name</label>
+                                    <input asp-for="LastName" class="form-control bg-light" />
+                                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Email" class="form-label small fw-bold">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input asp-for="Email" class="form-control" />
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Phone" class="form-label small fw-bold">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <input asp-for="Phone" class="form-control" />
+                                    </div>
+                                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 ps-md-4">
+                                <span class="form-section-title">Driver Credentials</span>
+                                <div class="mb-4">
+                                    <label asp-for="LicenseNumber" class="form-label small fw-bold">License Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                                        <input asp-for="LicenseNumber" class="form-control fw-bold" />
+                                    </div>
+                                    <span asp-validation-for="LicenseNumber" class="text-danger small"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="LicenseExpiry" class="form-label small fw-bold">Expiry Date</label>
+                                    <input asp-for="LicenseExpiry" type="date" class="form-control" />
+                                    <span asp-validation-for="LicenseExpiry" class="text-danger small"></span>
+                                </div>
+                                
+                                <span class="form-section-title pt-3">Fleet Management</span>
+                                <div class="mb-4">
+                                    <label asp-for="AccidentCount" class="form-label small fw-bold">Reported Accidents</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-car-crash"></i></span>
+                                        <input asp-for="AccidentCount" class="form-control" type="number" />
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="IsActive" class="form-label small fw-bold">Personnel Status</label>
+                                    <select asp-for="IsActive" class="form-select border-primary-subtle">
+                                        <option value="True">Active Operator</option>
+                                        <option value="False">Inactive / Suspended</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-5 mt-4 border-top">
+                            <a asp-action="Index" class="text-muted fw-bold text-decoration-none small">Discard Changes</a>
+                            <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm rounded-3">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,106 @@
+@model EaziLease.Domain.Entities.Client
+
+@{
+    ViewData["Title"] = "Terminate Client Account";
+}
+
+<style>
+    .delete-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+        overflow: hidden;
+    }
+    .danger-header {
+        background: #fef2f2;
+        border-bottom: 1px solid #fee2e2;
+        padding: 2.5rem;
+        text-align: center;
+    }
+    .warning-icon-circle {
+        width: 70px;
+        height: 70px;
+        background: #fee2e2;
+        color: #ef4444;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .client-summary {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+    }
+    .summary-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-xl-6">
+            <div class="mb-4">
+                <a asp-action="Index" class="text-decoration-none text-muted small fw-bold">
+                    <i class="fas fa-arrow-left me-1"></i> BACK TO DIRECTORY
+                </a>
+            </div>
+
+            <div class="card delete-card">
+                <div class="danger-header">
+                    <div class="warning-icon-circle">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="fw-bold text-danger mb-1">Confirm Termination</h3>
+                    <p class="text-muted mb-0">You are about to remove this client from the system.</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="alert alert-danger border-0 rounded-4 p-3 mb-4 small d-flex">
+                        <i class="fas fa-info-circle mt-1 me-3"></i>
+                        <div>
+                            <strong>Critical Action:</strong> Deleting <strong>@Model.CompanyName</strong> will permanently remove their records. If they have active leases, please ensure those are closed before proceeding.
+                        </div>
+                    </div>
+
+                    <div class="client-summary mb-5">
+                        <div class="row g-3">
+                            <div class="col-12 border-bottom pb-2 mb-2">
+                                <span class="summary-label d-block">Company Name</span>
+                                <span class="fw-bold text-dark fs-5">@Model.CompanyName</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="summary-label d-block">Contact Person</span>
+                                <span class="fw-semibold text-dark">@Model.ContactPerson</span>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <span class="summary-label d-block">Account Status</span>
+                                <span class="badge bg-danger text-white rounded-pill">To be Terminated</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" asp-action="Delete" asp-route-id="@Model.Id">
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold py-3 shadow-sm rounded-3">
+                                <i class="fas fa-trash-alt me-2"></i>Delete Client Permanently
+                            </button>
+                            <a asp-action="Index" class="btn btn-link text-muted fw-bold text-decoration-none">
+                                No, Keep Account Active
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

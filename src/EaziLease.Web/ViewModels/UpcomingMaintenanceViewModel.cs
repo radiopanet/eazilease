@@ -1,0 +1,20 @@
+using EaziLease.Domain.Enums;
+
+namespace EaziLease.Web.ViewModels
+{
+    public class UpcomingMaintenanceViewModel
+    {
+        public string VehicleId {get; set;} = string.Empty;
+        public string? RegistrationNumber {get; set;} = string.Empty;
+        public DateTime? NextMaintenanceDate {get; set;}
+        public decimal? NextMaintenanceMileage {get; set;}
+        public int DaysRemaining {get; set;}
+        public decimal? KmRemaining {get; set;}
+        public MaintenanceType Type {get; set;}
+        public string StatusDisplay => DaysRemaining < 0 ? "Overdue" :
+                                       DaysRemaining <= 7 ? "Due soon" : "Upcoming";
+        public string StatusColor =>   DaysRemaining < 0 ? "danger":
+                                       DaysRemaining <= 7 ? "warning" : "success";
+
+    }
+}

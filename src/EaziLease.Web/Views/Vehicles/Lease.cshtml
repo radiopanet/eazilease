@@ -1,0 +1,307 @@
+@using EaziLease.Domain.Entities
+@model VehicleLease
+
+@{
+    ViewData["Title"] = "Activate Lease Wizard";
+}
+
+<style>
+    /* Progress Tracker Styling */
+    .step-indicator { display: flex; justify-content: space-between; margin-bottom: 3rem; position: relative; }
+    .step-indicator::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: #e2e8f0; z-index: 1; transform: translateY(-50%); }
+    .step { width: 40px; height: 40px; border-radius: 50%; background: white; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; z-index: 2; font-weight: bold; transition: 0.3s; color: #64748b; }
+    .step.active { border-color: #3b82f6; color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+    .step.complete { background: #3b82f6; border-color: #3b82f6; color: white; }
+
+    /* Financial Progress Bar */
+    .credit-bar-container { height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; display: flex; }
+    .bar-current { height: 100%; background: #64748b; transition: 0.8s ease; }
+    .bar-new { height: 100%; background: #3b82f6; transition: 0.8s ease; }
+    .bar-danger { background: #ef4444 !important; }
+
+    .wizard-step-pane { display: none; min-height: 420px; }
+    .wizard-step-pane.active { display: block; animation: slideIn 0.3s ease-out; }
+    @@keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+    .override-box { border-left: 4px solid #f59e0b; background: #fffbeb; display: none; }
+</style>
+
+<div class="container py-5">
+    <div class="col-xl-9 mx-auto">
+        <div class="step-indicator mb-5">
+            <div class="step active" id="s1">1</div>
+            <div class="step" id="s2">2</div>
+            <div class="step" id="s3">3</div>
+            <div class="step" id="s4">4</div>
+        </div>
+
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-lg-8 p-4 p-md-5">
+                    <form asp-action="Lease" method="post" id="leaseForm">
+                        <input type="hidden" asp-for="VehicleId" id="vid" />
+                        <input type="hidden" asp-for="MonthlyRate" id="baseRate" />
+                        <input type="hidden" name="CreditOverrideApplied" id="creditOverrideApplied" value="false" />
+
+                        <div class="wizard-step-pane active" id="pane1">
+                            <span class="text-primary fw-bold small text-uppercase mb-2 d-block">Step 01</span>
+                            <h4 class="fw-bold mb-4">Select Leasing Client</h4>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">CLIENT / COMPANY</label>
+                                <select asp-for="ClientId" id="clientSelect" class="form-select form-select-lg py-3 shadow-sm" asp-items="ViewBag.ClientId">
+                                    <option value="">-- Choose Client --</option>
+                                </select>
+                            </div>
+                            <div class="p-3 bg-light rounded-3 border">
+                                <p class="small text-muted mb-0">
+                                    <i class="fas fa-shield-alt me-2 text-primary"></i> 
+                                    System will perform a real-time credit check once a client is selected.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step-pane" id="pane2">
+                            <span class="text-primary fw-bold small text-uppercase mb-2 d-block">Step 02</span>
+                            <h4 class="fw-bold mb-4">Credit Eligibility & Impact</h4>
+                            
+                            <div id="eligibilityLoading" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 text-muted">Running financial analytics...</p>
+                            </div>
+
+                            <div id="eligibilityContent" style="display:none;">
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="small fw-bold">CREDIT UTILIZATION</span>
+                                        <span class="small text-muted fw-bold" id="limitText">Limit: R0.00</span>
+                                    </div>
+                                    <div class="credit-bar-container mb-2 shadow-sm">
+                                        <div class="bar-current" id="barCurrent" style="width: 0%"></div>
+                                        <div class="bar-new" id="barNew" style="width: 0%"></div>
+                                    </div>
+                                    <div class="d-flex gap-4 small mt-1 text-muted">
+                                        <span><i class="fas fa-circle text-secondary me-1"></i> Current Usage</span>
+                                        <span><i class="fas fa-circle text-primary me-1" id="legendNewCircle"></i> New Lease Impact</span>
+                                    </div>
+                                </div>
+
+                                <div id="eligibilityAlerts"></div>
+
+                                <div id="overrideInterface" class="override-box p-3 rounded-3 mt-3 shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="fw-bold text-warning mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Admin Override Required</h6>
+                                        <button type="button" class="btn btn-sm btn-warning fw-bold px-3 text-white" id="btnRequestOverride" onclick="applyOverride()">
+                                            Apply Override
+                                        </button>
+                                    </div>
+                                    <textarea name="CreditOverrideNotes" id="overrideNotes" class="form-control border-warning-subtle" rows="2" placeholder="Provide justification for exceeding credit limit..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step-pane" id="pane3">
+                            <span class="text-primary fw-bold small text-uppercase mb-2 d-block">Step 03</span>
+                            <h4 class="fw-bold mb-4">Lease Logistics</h4>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">COMMENCEMENT DATE</label>
+                                    <input asp-for="LeaseStartDate" class="form-control shadow-sm" type="date" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">EXPIRATION DATE</label>
+                                    <input asp-for="LeaseEndDate" class="form-control shadow-sm" type="date" />
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-light rounded-4 border">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="IncludeDriver" id="driverToggle" style="width: 2.5em; height: 1.25em;">
+                                    <label class="form-check-label fw-bold ms-2">Include Professional Driver (+R200/day)</label>
+                                </div>
+                                <div id="driverSelection" style="display:none;" class="animate__animated animate__fadeIn">
+                                    <label class="small fw-bold text-primary mb-1">SELECT ASSIGNED DRIVER</label>
+                                    <select asp-for="AssignedDriverId" class="form-select border-primary-subtle shadow-sm" id="driverList">
+                                        <option value="">-- Choose Available Driver --</option>
+                                        @foreach (var d in ViewBag.AvailableDrivers) {
+                                            <option value="@d.Id">@d.FullName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wizard-step-pane" id="pane4">
+                            <span class="text-primary fw-bold small text-uppercase mb-2 d-block">Step 04</span>
+                            <h4 class="fw-bold mb-4">Final Review</h4>
+                            <div class="card shadow-sm border-0 bg-light rounded-4 overflow-hidden mb-4">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent d-flex justify-content-between py-3">
+                                        <span class="text-muted">Client Entity</span>
+                                        <span class="fw-bold" id="revClient">--</span>
+                                    </li>
+                                    <li class="list-group-item bg-transparent d-flex justify-content-between py-3">
+                                        <span class="text-muted">Lease Period</span>
+                                        <span class="fw-bold" id="revDates">--</span>
+                                    </li>
+                                    <li class="list-group-item bg-transparent d-flex justify-content-between py-3">
+                                        <span class="text-muted">Driver Selection</span>
+                                        <span class="fw-bold" id="revDriver">Excluded</span>
+                                    </li>
+                                    <li class="list-group-item bg-white d-flex justify-content-between py-3">
+                                        <span class="text-primary fw-bold">Total Monthly Billing</span>
+                                        <span class="fw-bold text-primary h5 mb-0" id="revTotal">R 0.00</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-5 pt-4 border-top">
+                            <button type="button" class="btn btn-link text-muted fw-bold text-decoration-none" id="btnBack" onclick="nav(-1)" style="visibility:hidden;">
+                                <i class="fas fa-chevron-left me-2"></i> PREVIOUS
+                            </button>
+                            <button type="button" class="btn btn-primary px-5 rounded-pill shadow fw-bold" id="btnNext" onclick="nav(1)">
+                                NEXT STEP <i class="fas fa-chevron-right ms-2"></i>
+                            </button>
+                            <button type="submit" class="btn btn-success px-5 rounded-pill shadow fw-bold" id="btnSubmit" style="display:none;">
+                                ACTIVATE LEASE <i class="fas fa-check-circle ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="col-lg-4 bg-light border-start p-5 d-none d-lg-block">
+                    <h6 class="text-uppercase fw-bold text-muted small mb-4">Selected Asset</h6>
+                    <div class="mb-4 text-center text-lg-start">
+                        <div class="bg-white p-3 rounded-4 shadow-sm mb-3 d-inline-block d-lg-block text-center">
+                            <i class="fas fa-car fa-4x text-primary opacity-25"></i>
+                        </div>
+                        <h5 class="fw-bold">@Model.Vehicle?.Manufacturer @Model.Vehicle?.Model</h5>
+                        <p class="text-muted small">Reg: <span class="badge bg-primary-subtle text-primary px-3">@Model.Vehicle?.RegistrationNumber</span></p>
+                    </div>
+                    <hr class="my-4">
+                    <div class="mb-2">
+                        <div class="small text-muted mb-1">Standard Rate (Monthly)</div>
+                        <div class="h4 fw-bold text-dark">@Model.MonthlyRate.ToString("C")</div>
+                        @if (Model.Vehicle != null && Model.Vehicle.IsHighMaintenance) {
+                            <div class="badge bg-danger text-white rounded-pill px-3 py-2 mt-2">
+                                <i class="fas fa-tools me-1"></i> +20% High-Risk Penalty
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let step = 1;
+        const total = 4;
+        const baseMonthlyRate = parseFloat('@Model.MonthlyRate');
+
+        async function nav(dir) {
+            if (dir === 1 && !validate()) return;
+            
+            // Step 2 Logic: Perform AJAX Credit Check
+            if (step === 1 && dir === 1) {
+                await checkEligibility();
+            }
+
+            document.getElementById(`pane${step}`).classList.remove('active');
+            document.getElementById(`s${step}`).classList.remove('active');
+            if (dir === 1) document.getElementById(`s${step}`).classList.add('complete');
+            
+            step += dir;
+            
+            document.getElementById(`pane${step}`).classList.add('active');
+            document.getElementById(`s${step}`).classList.add('active');
+
+            if (step === 4) runReview();
+            updateBtns();
+        }
+
+        async function checkEligibility() {
+            const cid = document.getElementById('clientSelect').value;
+            const vid = document.getElementById('vid').value;
+            
+            document.getElementById('eligibilityLoading').style.display = 'block';
+            document.getElementById('eligibilityContent').style.display = 'none';
+            document.getElementById('btnNext').disabled = false; // Reset
+
+            const resp = await fetch(`/Vehicles/GetClientEligibility?clientId=${cid}&vehicleId=${vid}`);
+            const data = await resp.json();
+
+            document.getElementById('eligibilityLoading').style.display = 'none';
+            document.getElementById('eligibilityContent').style.display = 'block';
+
+            // Calculate Progress Bar Widths
+            const currPer = Math.min((data.current / data.limit) * 100, 100);
+            const newPer = Math.min((data.incoming / data.limit) * 100, 100 - currPer);
+            
+            document.getElementById('barCurrent').style.width = currPer + '%';
+            document.getElementById('barNew').style.width = newPer + '%';
+            document.getElementById('limitText').innerText = `Limit: R${data.limit.toLocaleString()}`;
+
+            let alertHtml = '';
+            if (data.isOverLimit) {
+                alertHtml = `<div class="alert alert-danger border-0 shadow-sm"><i class="fas fa-times-circle me-2"></i> <strong>Limit Exceeded:</strong> Total commitment (R${data.projected.toLocaleString()}) exceeds limit.</div>`;
+                document.getElementById('barNew').classList.add('bar-danger');
+                document.getElementById('legendNewCircle').classList.replace('text-primary', 'text-danger');
+                document.getElementById('btnNext').disabled = true;
+                document.getElementById('overrideInterface').style.display = 'block';
+            } else if (data.hasLeasedBefore) {
+                alertHtml = `<div class="alert alert-warning border-0 shadow-sm"><i class="fas fa-history me-2"></i> <strong>Repeat Lease:</strong> This client has previously leased this asset.</div>`;
+                document.getElementById('overrideInterface').style.display = 'none';
+            } else {
+                alertHtml = `<div class="alert alert-success border-0 shadow-sm"><i class="fas fa-check-circle me-2"></i> <strong>Approved:</strong> Client has sufficient credit available.</div>`;
+                document.getElementById('overrideInterface').style.display = 'none';
+            }
+            document.getElementById('eligibilityAlerts').innerHTML = alertHtml;
+        }
+
+        function applyOverride() {
+            const notes = document.getElementById('overrideNotes').value;
+            if (!notes.trim()) {
+                alert("Please provide justification notes to apply the override.");
+                return;
+            }
+            document.getElementById('creditOverrideApplied').value = "true";
+            document.getElementById('btnNext').disabled = false;
+            document.getElementById('btnRequestOverride').innerText = "Override Applied ✅";
+            document.getElementById('btnRequestOverride').classList.replace('btn-warning', 'btn-success');
+            document.getElementById('overrideNotes').readOnly = true;
+        }
+
+        function validate() {
+            if (step === 1 && !document.getElementById('clientSelect').value) return false;
+            if (step === 3 && document.getElementById('driverToggle').checked && !document.getElementById('driverList').value) {
+                alert("Please select a driver or disable the driver option.");
+                return false;
+            }
+            return true;
+        }
+
+        function updateBtns() {
+            document.getElementById('btnBack').style.visibility = step === 1 ? 'hidden' : 'visible';
+            document.getElementById('btnNext').style.display = step === total ? 'none' : 'block';
+            document.getElementById('btnSubmit').style.display = step === total ? 'block' : 'none';
+        }
+
+        function runReview() {
+            const clientName = document.getElementById('clientSelect').options[document.getElementById('clientSelect').selectedIndex].text;
+            document.getElementById('revClient').innerText = clientName;
+            document.getElementById('revDates').innerText = document.getElementById('LeaseStartDate').value + " to " + document.getElementById('LeaseEndDate').value;
+            
+            const driverAdded = document.getElementById('driverToggle').checked;
+            document.getElementById('revDriver').innerText = driverAdded ? "EaziLease Professional Service" : "Client Provides Own Driver";
+            
+            const finalTotal = driverAdded ? baseMonthlyRate + 200 : baseMonthlyRate;
+            document.getElementById('revTotal').innerText = `R ${finalTotal.toLocaleString()}`;
+        }
+
+        document.getElementById('driverToggle').addEventListener('change', function() {
+            document.getElementById('driverSelection').style.display = this.checked ? 'block' : 'none';
+        });
+    </script>
+}

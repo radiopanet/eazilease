@@ -1,0 +1,142 @@
+@using EaziLease.Domain.Entities
+@model VehicleAssignment
+@{
+    var busyDrivers = ViewBag.BusyDrivers as List<Driver>;
+    var vehicle = ViewBag.Vehicle as Vehicle;
+    ViewData["Title"] = "Assign Driver";
+}
+
+<style>
+    .assignment-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: none;
+        overflow: hidden;
+    }
+    .vehicle-preview-sidebar {
+        background: #f8fafc;
+        border-right: 1px solid #e2e8f0;
+    }
+    .busy-driver-pill {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+    .form-section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="mb-4">
+                <a asp-action="Details" asp-route-id="@Model.VehicleId" class="text-decoration-none text-muted small fw-bold">
+                    <i class="fas fa-arrow-left me-1"></i> BACK TO VEHICLE
+                </a>
+                <h1 class="h3 fw-bold text-dark mt-2">Driver Assignment</h1>
+            </div>
+
+            <div class="card assignment-card">
+                <div class="row g-0">
+                    <div class="col-lg-5 vehicle-preview-sidebar p-4 p-md-5">
+                        <span class="form-section-title">Assignment Context</span>
+                        
+                        <div class="mb-5">
+                            <h4 class="fw-bold mb-1">@vehicle?.Manufacturer @vehicle?.Model</h4>
+                            <span class="badge bg-primary px-3 py-2 rounded-pill">
+                                <i class="fas fa-hashtag me-1"></i> @vehicle?.RegistrationNumber
+                            </span>
+                        </div>
+
+                        @if (busyDrivers != null && busyDrivers.Any())
+                        {
+                            <div class="p-4 bg-white rounded-4 border border-warning-subtle shadow-sm">
+                                <h6 class="fw-bold text-warning-emphasis d-flex align-items-center mb-3">
+                                    <i class="fas fa-user-clock me-2"></i> Busy Drivers
+                                </h6>
+                                <p class="small text-muted mb-3">The following operators are currently active with other assets:</p>
+                                
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var driver in busyDrivers.Take(4))
+                                    {
+                                        <div class="busy-driver-pill">
+                                            <i class="fas fa-user-slash me-1"></i> 
+                                            <strong>@driver.FullName</strong> → @driver.CurrentVehicle?.RegistrationNumber
+                                        </div>
+                                    }
+                                </div>
+
+                                @if (busyDrivers.Count > 4)
+                                {
+                                    <div class="mt-2 small text-muted italic">
+                                        + @(busyDrivers.Count - 4) other busy drivers
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-lg-7 p-4 p-md-5">
+                        <form asp-action="AssignDriver" method="post">
+                            <input type="hidden" asp-for="VehicleId" />
+
+                            <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mb-4 shadow-sm" style="width: 60px; height: 60px;">
+                                <i class="fas fa-id-badge fs-3"></i>
+                            </div>
+
+                            <span class="form-section-title">Deployment Details</span>
+                            
+                            <div class="mb-4">
+                                <label asp-for="DriverId" class="form-label fw-bold small text-muted">SELECT AUTHORIZED OPERATOR</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                                    <select asp-for="DriverId" class="form-select border-start-0 shadow-none" required>
+                                        <option value="">Search for an available driver...</option>
+                                        @foreach (var driver in (SelectList)ViewBag.DriverId)
+                                        {
+                                            <option value="@driver.Value">@driver.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="DriverId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="p-4 bg-light rounded-4 border border-dashed mb-5">
+                                <div class="d-flex align-items-start">
+                                    <i class="fas fa-info-circle text-primary mt-1 me-3"></i>
+                                    <div class="small text-muted">
+                                        <strong>Pro Tip:</strong> Only drivers who are currently unassigned and have a valid license appear in the primary list. Selecting a busy driver may require manual override at the database level.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-3 pt-4 border-top">
+                                <a asp-action="Details" asp-route-id="@Model.VehicleId" class="btn btn-light px-4 fw-bold text-muted">Cancel</a>
+                                <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm rounded-3">
+                                    <i class="fas fa-user-check me-2"></i> Confirm Assignment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

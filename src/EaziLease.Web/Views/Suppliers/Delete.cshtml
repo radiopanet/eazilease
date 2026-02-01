@@ -1,0 +1,44 @@
+@model EaziLease.Domain.Entities.Supplier
+@{
+    ViewData["Title"] = "Remove Partner";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-danger p-4 text-center text-white">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h3 class="fw-bold">Terminate Partnership?</h3>
+                </div>
+                <div class="card-body p-4 p-md-5 text-center">
+                    <p class="text-muted mb-4">
+                        You are about to remove <strong>@Model.Name</strong> from the system. 
+                        This action may affect linked vehicle records and procurement history.
+                    </p>
+
+                    <div class="bg-light p-3 rounded-3 mb-4 text-start">
+                        <div class="row">
+                            <div class="col-4 text-muted small uppercase">Contact</div>
+                            <div class="col-8 fw-bold">@Model.ContactPerson</div>
+                            <div class="col-4 text-muted small uppercase">Location</div>
+                            <div class="col-8">@Model.City, @Model.Country</div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input asp-for="Id" hidden />
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold shadow-sm">
+                                YES, DELETE PERMANENTLY
+                            </button>
+                            <a asp-action="Index" class="btn btn-light fw-bold text-muted">
+                                NO, CANCEL
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

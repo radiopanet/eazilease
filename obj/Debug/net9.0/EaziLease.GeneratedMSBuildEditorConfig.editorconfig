@@ -92,80 +92,144 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXMvU3VwZXJBZG1pbi9WaWV3cy9fVmlld1N0YXJ0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Account/AccessDenied.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9BY2Nlc3NEZW5pZWQuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQWNjb3VudC9BY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Audit/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQXVkaXQvSW5kZXguY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Audit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQXVkaXQvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Branches/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQnJhbmNoZXMvQ3JlYXRlLmNzaHRtbA==
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Branches/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQnJhbmNoZXMvQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Branches/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQnJhbmNoZXMvRGVsZXRlLmNzaHRtbA==
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Branches/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQnJhbmNoZXMvRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Branches/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQnJhbmNoZXMvRWRpdC5jc2h0bWw=
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Branches/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQnJhbmNoZXMvRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Branches/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQnJhbmNoZXMvSW5kZXguY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Branches/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQnJhbmNoZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Clients/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50cy9DcmVhdGUuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Clients/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQ2xpZW50cy9DcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Clients/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50cy9EZWxldGUuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Clients/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQ2xpZW50cy9EZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Clients/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50cy9FZGl0LmNzaHRtbA==
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Clients/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQ2xpZW50cy9FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Clients/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50cy9JbmRleC5jc2h0bWw=
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Clients/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvQ2xpZW50cy9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Dashboard/Index copy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0luZGV4IGNvcHkuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Dashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRGFzaGJvYXJkL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Dashboard/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0luZGV4LmNzaHRtbA==
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Drivers/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRHJpdmVycy9DcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Drivers/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRHJpdmVycy9DcmVhdGUuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Drivers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRHJpdmVycy9EZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Drivers/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRHJpdmVycy9EZWxldGUuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Drivers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRHJpdmVycy9FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Drivers/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRHJpdmVycy9FZGl0LmNzaHRtbA==
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Drivers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRHJpdmVycy9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Drivers/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRHJpdmVycy9JbmRleC5jc2h0bWw=
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Elevation/Elevate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRWxldmF0aW9uL0VsZXZhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Elevation/Elevate.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRWxldmF0aW9uL0VsZXZhdGUuY3NodG1s
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Finance/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvRmluYW5jZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Finance/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmluYW5jZS9JbmRleC5jc2h0bWw=
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/tx/Projects/DotNet/EaziLease/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Suppliers/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvU3VwcGxpZXJzL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Suppliers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvU3VwcGxpZXJzL0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Suppliers/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvU3VwcGxpZXJzL0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Suppliers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvU3VwcGxpZXJzL0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Suppliers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvU3VwcGxpZXJzL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/AddMaintenance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvQWRkTWFpbnRlbmFuY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/AssignDriver.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvQXNzaWduRHJpdmVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/EndLease.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvRW5kTGVhc2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/ExtendLease.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvRXh0ZW5kTGVhc2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/Lease.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvTGVhc2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/RequestRateOverride.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvUmVxdWVzdFJhdGVPdmVycmlkZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/tx/Projects/DotNet/EaziLease/src/EaziLease.Web/Views/Vehicles/ReturnDriver.cshtml]
+build_metadata.AdditionalFiles.TargetPath = c3JjL0VhemlMZWFzZS5XZWIvVmlld3MvVmVoaWNsZXMvUmV0dXJuRHJpdmVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/tx/Projects/DotNet/EaziLease/Views/Shared/Error.cshtml]
@@ -178,78 +242,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/tx/Projects/DotNet/EaziLease/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Suppliers/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcGxpZXJzL0NyZWF0ZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Suppliers/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcGxpZXJzL0RlbGV0ZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Suppliers/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcGxpZXJzL0RldGFpbHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Suppliers/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcGxpZXJzL0VkaXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Suppliers/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3VwcGxpZXJzL0luZGV4LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/AddMaintenance.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvQWRkTWFpbnRlbmFuY2UuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/AssignDriver.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvQXNzaWduRHJpdmVyLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvQ3JlYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvRGVsZXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvRWRpdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/EndLease.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvRW5kTGVhc2UuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/ExtendLease.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvRXh0ZW5kTGVhc2UuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Lease copy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvTGVhc2UgY29weS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/Lease.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvTGVhc2UuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/RequestRateOverride.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvUmVxdWVzdFJhdGVPdmVycmlkZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/tx/Projects/DotNet/EaziLease/Views/Vehicles/ReturnDriver.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVmVoaWNsZXMvUmV0dXJuRHJpdmVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/tx/Projects/DotNet/EaziLease/Views/_ViewImports.cshtml]

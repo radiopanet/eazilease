@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using EaziLease.Data;
-using EaziLease.Services.Interfaces;
-using EaziLease.Services.ServiceModels;
-using EaziLease.Models;
+using EaziLease.Application.Interfaces;
+using EaziLease.Infrastucture.Services.ServiceModels;
+using EaziLease.Domain.Entities;
+using EaziLease.Domain.Enums;
 
 namespace EaziLease.Services
 {

@@ -1,8 +1,9 @@
 using EaziLease.Data;
-using EaziLease.Models;
-using EaziLease.Models.ViewModels;
-using EaziLease.Services.Interfaces;
-using EaziLease.Services.ServiceModels;
+using EaziLease.Domain.Entities;
+using EaziLease.Web.ViewModels;
+using EaziLease.Domain.Enums;
+using EaziLease.Application.Interfaces;
+using EaziLease.Infrastucture.Services.ServiceModels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;

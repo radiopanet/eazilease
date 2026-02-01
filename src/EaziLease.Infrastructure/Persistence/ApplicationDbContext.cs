@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using EaziLease.Models;
-namespace EaziLease.Data;
+using EaziLease.Domain.Entities;
+
+
+namespace EaziLease.Infrastructure.Persistence
+{
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -90,7 +93,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasIndex(l => l.VehicleId)
             .HasFilter("\"ReturnDate\" IS NULL")
             .IsUnique();
-    
 
         //Soft delete global query filter
         builder.Entity<Supplier>().HasQueryFilter(e => !e.IsDeleted);
@@ -100,4 +102,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Vehicle>().HasQueryFilter(e => !e.IsDeleted);
 
     }
+}
 }

@@ -1,9 +1,10 @@
 using EaziLease.Data;
-using EaziLease.Models;
-using EaziLease.Services.Interfaces;
-using EaziLease.Services.ServiceModels;
+using EaziLease.Domain.Enums;
+using EaziLease.Domain.Entities;
+using EaziLease.Application.Interfaces;
+using EaziLease.Infrastucture.Services.ServiceModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace EaziLease.Services
 {

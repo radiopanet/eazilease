@@ -1,7 +1,8 @@
 
-using EaziLease.Models;
-using EaziLease.Services.ServiceModels;
-namespace EaziLease.Services.Interfaces
+using EaziLease.Domain.Entities;
+using EaziLease.Infrastucture.Services.ServiceModels;
+
+namespace EaziLease.Application.Interfaces
 {
     public interface IMaintenanceService
     {

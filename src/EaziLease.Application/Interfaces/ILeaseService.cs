@@ -1,9 +1,9 @@
-using EaziLease.Services.ServiceModels;
-using EaziLease.Models;
-using EaziLease.Models.ViewModels;
+using EaziLease.Infrastucture.Services.ServiceModels;
+using EaziLease.Domain.Entities;
+using EaziLease.Application.DTOs;
 
 
-namespace EaziLease.Services.Interfaces;
+namespace EaziLease.Application.Interfaces;
 public interface ILeaseService
 {
     Task<ServiceResult> StartLeaseAsync(VehicleLease lease, string userName);

@@ -1,7 +1,7 @@
-using EaziLease.Models;
-using EaziLease.Services.ServiceModels;
+using EaziLease.Domain.Entities;
+using EaziLease.Infrastucture.Services.ServiceModels;
 
-namespace EaziLease.Services.Interfaces
+namespace EaziLease.Application.Interfaces
 {
     public interface IVehicleService
     {

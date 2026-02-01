@@ -1,5 +1,5 @@
 using EaziLease.Data;
-using EaziLease.Models;
+using EaziLease.Domain.Entities;
 
 namespace EaziLease.Services;
 public class AuditService

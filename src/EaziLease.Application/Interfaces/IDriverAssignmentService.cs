@@ -1,7 +1,7 @@
-using EaziLease.Services.ServiceModels;
-using EaziLease.Models;
+using EaziLease.Infrastucture.Services.ServiceModels;
+using EaziLease.Domain.Entities;
 
-namespace EaziLease.Services.Interfaces
+namespace EaziLease.Application.Interfaces
 {
     public interface IDriverAssignmentService
     {

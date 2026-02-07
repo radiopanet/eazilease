@@ -6,7 +6,7 @@ using EaziLease.Infrastucture.Services.ServiceModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace EaziLease.Services
+namespace EaziLease.Infrastructure.Services
 {
     public class VehicleService: IVehicleService
     {

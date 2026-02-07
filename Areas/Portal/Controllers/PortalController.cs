@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using EaziLease.Infrastructure.Persistence;
-using EaziLease.Domain.Entitiess;
+using EaziLease.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using EaziLease.Domain.Entitiess.ViewModels;
+using EaziLease.Web.ViewModels;
+using EaziLease.Domain.Enums;
 
 namespace EaziLease.Areas.Client
 {

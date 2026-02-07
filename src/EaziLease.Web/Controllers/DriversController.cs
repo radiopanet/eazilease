@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using EaziLease.Infrastructure.Persistence;
 using EaziLease.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using EaziLease.Services;
+using EaziLease.Infrastructure.Services;
 
 namespace EaziLease.Web.Controllers
 {

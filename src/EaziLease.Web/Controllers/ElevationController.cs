@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using EaziLease.Web.ViewModels;
 using EaziLease.Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using EaziLease.Services;
+using EaziLease.Infrastructure.Services;
 
 namespace EaziLease.Web.Controllers;
 

@@ -6,7 +6,8 @@ using EaziLease.Infrastucture.Services.ServiceModels;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace EaziLease.Services
+
+namespace EaziLease.Infrastructure.Services
 {
     public class MaintenanceService : IMaintenanceService
     {

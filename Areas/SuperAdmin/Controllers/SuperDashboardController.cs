@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EaziLease.Infrastructure.Persistence;
-using EaziLease.Domain.Entitiess.ViewModels;
-using EaziLease.Domain.Entitiess;
+using EaziLease.Web.ViewModels;
+using EaziLease.Domain.Entities;
+using EaziLease.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace EaziLease.Areas.SuperAdmin.Controllers

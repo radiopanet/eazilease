@@ -7,8 +7,9 @@ using EaziLease.Infrastucture.Services.ServiceModels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
+using EaziLease.Application.DTOs;
 
-namespace EaziLease.Services;
+namespace EaziLease.Infrastructure.Services;
 
 public class LeaseService : ILeaseService
 {

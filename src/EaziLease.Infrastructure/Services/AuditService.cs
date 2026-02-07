@@ -1,7 +1,7 @@
 using EaziLease.Infrastructure.Persistence;
 using EaziLease.Domain.Entities;
 
-namespace EaziLease.Services;
+namespace EaziLease.Infrastructure.Services;
 public class AuditService
 {
     private readonly ApplicationDbContext _context;

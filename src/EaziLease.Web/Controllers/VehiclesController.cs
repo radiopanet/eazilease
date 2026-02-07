@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using EaziLease.Infrastructure.Persistence;
 using EaziLease.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using EaziLease.Services;
+using EaziLease.Infrastructure.Services;
 using EaziLease.Web.ViewModels;
-using EaziLease.Services.Interfaces;
 using EaziLease.Application.DTOs;
+using EaziLease.Application.Interfaces;
+using EaziLease.Domain.Enums;
 
 namespace EaziLease.Web.Controllers
 {

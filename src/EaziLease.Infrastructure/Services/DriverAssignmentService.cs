@@ -5,7 +5,7 @@ using EaziLease.Infrastucture.Services.ServiceModels;
 using EaziLease.Domain.Entities;
 using EaziLease.Domain.Enums;
 
-namespace EaziLease.Services
+namespace EaziLease.Infrastructure.Services
 {
     public class DriverAssignmentService: IDriverAssignmentService
     {

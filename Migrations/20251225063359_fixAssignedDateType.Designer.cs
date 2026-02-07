@@ -25,7 +25,7 @@ namespace EaziLease.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.ApplicationUser", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -99,7 +99,7 @@ namespace EaziLease.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Branch", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Branch", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -155,7 +155,7 @@ namespace EaziLease.Migrations
                     b.ToTable("Branches");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Client", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Client", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -211,7 +211,7 @@ namespace EaziLease.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Driver", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Driver", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -277,7 +277,7 @@ namespace EaziLease.Migrations
                     b.ToTable("Drivers");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Supplier", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Supplier", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -336,7 +336,7 @@ namespace EaziLease.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Vehicle", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Vehicle", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -442,7 +442,7 @@ namespace EaziLease.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.VehicleAssignment", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.VehicleAssignment", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -492,7 +492,7 @@ namespace EaziLease.Migrations
                     b.ToTable("VehicleAssignments");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.VehicleLease", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.VehicleLease", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -687,38 +687,38 @@ namespace EaziLease.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Branch", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Branch", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.ApplicationUser", "Manager")
+                    b.HasOne("EaziLease.Domain.Entities.ApplicationUser", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId1");
 
                     b.Navigation("Manager");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Driver", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Driver", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.Vehicle", "CurrentVehicle")
+                    b.HasOne("EaziLease.Domain.Entities.Vehicle", "CurrentVehicle")
                         .WithOne("CurrentDriver")
-                        .HasForeignKey("EaziLease.Domain.Entitiess.Driver", "CurrentVehicleId");
+                        .HasForeignKey("EaziLease.Domain.Entities.Driver", "CurrentVehicleId");
 
                     b.Navigation("CurrentVehicle");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Vehicle", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Vehicle", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.Branch", "Branch")
+                    b.HasOne("EaziLease.Domain.Entities.Branch", "Branch")
                         .WithMany("Vehicles")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("EaziLease.Domain.Entitiess.VehicleLease", "CurrentLease")
+                    b.HasOne("EaziLease.Domain.Entities.VehicleLease", "CurrentLease")
                         .WithOne()
-                        .HasForeignKey("EaziLease.Domain.Entitiess.Vehicle", "CurrentLeaseId")
+                        .HasForeignKey("EaziLease.Domain.Entities.Vehicle", "CurrentLeaseId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("EaziLease.Domain.Entitiess.Supplier", "Supplier")
+                    b.HasOne("EaziLease.Domain.Entities.Supplier", "Supplier")
                         .WithMany("Vehicles")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -731,15 +731,15 @@ namespace EaziLease.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.VehicleAssignment", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.VehicleAssignment", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.Driver", "Driver")
+                    b.HasOne("EaziLease.Domain.Entities.Driver", "Driver")
                         .WithMany("AssignmentHistory")
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EaziLease.Domain.Entitiess.Vehicle", "Vehicle")
+                    b.HasOne("EaziLease.Domain.Entities.Vehicle", "Vehicle")
                         .WithMany("AssignementHistory")
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -750,15 +750,15 @@ namespace EaziLease.Migrations
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.VehicleLease", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.VehicleLease", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.Client", "Client")
+                    b.HasOne("EaziLease.Domain.Entities.Client", "Client")
                         .WithMany("Leases")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EaziLease.Domain.Entitiess.Vehicle", "Vehicle")
+                    b.HasOne("EaziLease.Domain.Entities.Vehicle", "Vehicle")
                         .WithMany("LeaseHistory")
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -780,7 +780,7 @@ namespace EaziLease.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.ApplicationUser", null)
+                    b.HasOne("EaziLease.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -789,7 +789,7 @@ namespace EaziLease.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.ApplicationUser", null)
+                    b.HasOne("EaziLease.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -804,7 +804,7 @@ namespace EaziLease.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EaziLease.Domain.Entitiess.ApplicationUser", null)
+                    b.HasOne("EaziLease.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -813,34 +813,34 @@ namespace EaziLease.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("EaziLease.Domain.Entitiess.ApplicationUser", null)
+                    b.HasOne("EaziLease.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Branch", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Branch", b =>
                 {
                     b.Navigation("Vehicles");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Client", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Client", b =>
                 {
                     b.Navigation("Leases");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Driver", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Driver", b =>
                 {
                     b.Navigation("AssignmentHistory");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Supplier", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Supplier", b =>
                 {
                     b.Navigation("Vehicles");
                 });
 
-            modelBuilder.Entity("EaziLease.Domain.Entitiess.Vehicle", b =>
+            modelBuilder.Entity("EaziLease.Domain.Entities.Vehicle", b =>
                 {
                     b.Navigation("AssignementHistory");
 

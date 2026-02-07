@@ -1,5 +1,5 @@
 using EaziLease.Infrastructure.Persistence;
-using EaziLease.Services;
+using EaziLease.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using EaziLease.Domain.Entities;
 using Microsoft.EntityFrameworkCore;

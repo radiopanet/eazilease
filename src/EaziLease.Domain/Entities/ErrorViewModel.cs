@@ -1,4 +1,4 @@
-namespace EaziLease.Domain.Entitiess;
+namespace EaziLease.Domain.Entities;
 
 public class ErrorViewModel
 {

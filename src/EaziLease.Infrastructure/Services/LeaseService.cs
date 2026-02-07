@@ -1,4 +1,4 @@
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using EaziLease.Domain.Entities;
 using EaziLease.Web.ViewModels;
 using EaziLease.Domain.Enums;

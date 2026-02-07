@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using Npgsql.EntityFrameworkCore;
-using EaziLease.Models;
+using EaziLease.Domain.Entitiess;
 using Microsoft.AspNetCore.Authorization;
 using EaziLease.Services;
 using EaziLease.Extensions;

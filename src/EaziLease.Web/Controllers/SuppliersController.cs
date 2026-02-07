@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using EaziLease.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EaziLease.Services;

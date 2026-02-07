@@ -1,4 +1,4 @@
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using EaziLease.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -60,12 +60,12 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label asp-for="FuelType" class="form-label"></label>
-                        <select asp-for="FuelType" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Models.FuelType>()"></select>
+                        <select asp-for="FuelType" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Domain.Entitiess.FuelType>()"></select>
                         <span asp-validation-for="FuelType" class="text-danger"></span>
                     </div>
                     <div class="col-md-3 mb-3">
                         <label asp-for="Transmission" class="form-label"></label>
-                        <select asp-for="Transmission" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Models.TransmissionType>()"></select>
+                        <select asp-for="Transmission" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Domain.Entitiess.TransmissionType>()"></select>
                         <span asp-validation-for="Transmission" class="text-danger"></span>
                     </div>
                      <div class="col-md-3 mb-3">
@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label asp-for="Status" class="form-label"></label>
-                        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Models.VehicleStatus>()"></select>
+                        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<EaziLease.Domain.Entitiess.VehicleStatus>()"></select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                 </div>

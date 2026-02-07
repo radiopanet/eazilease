@@ -1,7 +1,7 @@
-using EaziLease.Models;
+using EaziLease.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace EaziLease.Data
+namespace EaziLease.Infrastructure.Persistence
 {
     public static class ClientSeeder
     {

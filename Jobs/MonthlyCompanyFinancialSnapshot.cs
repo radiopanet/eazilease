@@ -1,6 +1,6 @@
-using EaziLease.Models.Entities;
-using EaziLease.Models;
-using EaziLease.Data;
+using EaziLease.Domain.Entitiess.Entities;
+using EaziLease.Domain.Entitiess;
+using EaziLease.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace EaziLease.Jobs

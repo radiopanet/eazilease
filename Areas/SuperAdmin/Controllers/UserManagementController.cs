@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using EaziLease.Models;
-using EaziLease.Models.ViewModels;
+using EaziLease.Domain.Entitiess;
+using EaziLease.Domain.Entitiess.ViewModels;
 using EaziLease.Services;
 
 

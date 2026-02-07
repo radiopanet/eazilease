@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using EaziLease.Application.Interfaces;
 using EaziLease.Infrastucture.Services.ServiceModels;
 using EaziLease.Domain.Entities;

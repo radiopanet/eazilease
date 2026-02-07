@@ -1,4 +1,4 @@
-using EaziLease.Models.Entities;
+using EaziLease.Domain.Entitiess.Entities;
 
 namespace EaziLease.Domain.Entities
 {

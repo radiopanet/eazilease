@@ -1,5 +1,5 @@
 using EaziLease.Services.Interfaces;
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace EaziLease.Jobs

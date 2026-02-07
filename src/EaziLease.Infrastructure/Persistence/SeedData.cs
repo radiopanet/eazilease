@@ -1,7 +1,8 @@
-using EaziLease.Models;
+using EaziLease.Domain.Entities;
+using EaziLease.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace EaziLease.Data
+namespace EaziLease.Infrastructure.Persistence
 {
     public static class SeedData
     {

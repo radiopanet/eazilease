@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 using System.ComponentModel.DataAnnotations;
-using EaziLease.Data;
+using EaziLease.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 [Area("SuperAdmin")]

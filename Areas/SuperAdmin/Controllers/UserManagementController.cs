@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using EaziLease.Domain.Entities;
 using EaziLease.Web.ViewModels;
-using EaziLease.Services;
+using EaziLease.Infrastructure.Services;
 
 
 [Area("SuperAdmin")]

@@ -1,4 +1,5 @@
-using EaziLease.Services.Interfaces;
+using EaziLease.Infrastucture.Services;
+using EaziLease.Application.Interfaces;
 using EaziLease.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

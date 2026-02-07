@@ -1,5 +1,5 @@
-using EaziLease.Domain.Entities.Entities;
 using EaziLease.Domain.Entities;
+using EaziLease.Domain.Enums;
 using EaziLease.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

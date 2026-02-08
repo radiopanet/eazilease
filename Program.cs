@@ -13,8 +13,14 @@ using Hangfire.PostgreSql;
 using EaziLease.Jobs;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Razor;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    ContentRootPath = Directory.GetCurrentDirectory(),
+
+    WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "src", "EaziLease.Web", "wwwroot")
+});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -67,7 +73,14 @@ builder.Services.AddAuthorization(options =>
 
 
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddApplicationPart(typeof(EaziLease.Web.Controllers.HomeController).Assembly);
+
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationFormats.Add("/src/EaziLease.Web/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/src/EaziLease.Web/Views/Shared/{0}.cshtml");
+});
     // options =>
 // {
 //     var policy = new AuthorizationPolicyBuilder()

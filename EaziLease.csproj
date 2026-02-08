@@ -6,9 +6,29 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-EaziLease-89cb9518-aa15-491e-a97b-def44b82a608</UserSecretsId>
   </PropertyGroup>
+  
+  <PropertyGroup>
+  <!-- Disable automatic inclusion of content files (views, wwwroot, etc.) -->
+  <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  
+  <!-- Still enable default compile items (cs files) -->
+  <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+</PropertyGroup>
 
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copy all views -->
+    <Content Include="src\EaziLease.Web\Views\**\*.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    
+    <!-- Copy wwwroot -->
+    <Content Include="src\EaziLease.Web\wwwroot\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

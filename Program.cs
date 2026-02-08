@@ -80,6 +80,9 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationFormats.Add("/src/EaziLease.Web/Views/{1}/{0}.cshtml");
     options.ViewLocationFormats.Add("/src/EaziLease.Web/Views/Shared/{0}.cshtml");
+    options.ViewLocationFormats.Add("/src/EaziLease.Web/Areas/Identity/Views/Shared/{0}.cshtml");
+    options.AreaViewLocationFormats.Add("/src/EaziLease.Web/Areas/{2}/Views/Shared/{0}.cshtml");
+    options.AreaViewLocationFormats.Add("/src/EaziLease.Web/Areas/{2}/Views/{1}/{0}.cshtml");
 });
     // options =>
 // {

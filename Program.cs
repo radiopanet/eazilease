@@ -14,6 +14,9 @@ using EaziLease.Jobs;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -73,17 +76,32 @@ builder.Services.AddAuthorization(options =>
 
 
 
+
 builder.Services.AddControllersWithViews()
-    .AddApplicationPart(typeof(EaziLease.Web.Controllers.HomeController).Assembly);
+    .AddApplicationPart(typeof(EaziLease.Web.Controllers.HomeController).Assembly)
+    .AddRazorRuntimeCompilation();
+
+    builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+{
+   options.FileProviders.Add(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+});
 
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
-    options.ViewLocationFormats.Add("/src/EaziLease.Web/Views/{1}/{0}.cshtml");
-    options.ViewLocationFormats.Add("/src/EaziLease.Web/Views/Shared/{0}.cshtml");
-    options.ViewLocationFormats.Add("/src/EaziLease.Web/Areas/Identity/Views/Shared/{0}.cshtml");
-    // options.AreaViewLocationFormats.Add("/src/EaziLease.Web/Areas/{2}/Views/Shared/{0}.cshtml");
-    // options.AreaViewLocationFormats.Add("/src/EaziLease.Web/Areas/{2}/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Clear();
+    // Use relative paths starting from 'src'
+    options.PageViewLocationFormats.Add("src/EaziLease.Web/Views/Shared/{0}.cshtml"); 
+    options.ViewLocationFormats.Add("src/EaziLease.Web/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("src/EaziLease.Web/Views/Shared/{0}.cshtml");
+
+    options.PageViewLocationFormats.Clear();
+    options.PageViewLocationFormats.Add("src/EaziLease.Web/Areas/Identity/Pages/{1}/{0}.cshtml");
+    options.PageViewLocationFormats.Add("src/EaziLease.Web/Areas/Identity/Pages/Shared/{0}.cshtml");
+    
+    // Explicitly add the search path for Identity's internal ViewStart
+    options.PageViewLocationFormats.Add("src/EaziLease.Web/Areas/Identity/Pages/{0}.cshtml");
 });
+
     // options =>
 // {
 //     var policy = new AuthorizationPolicyBuilder()
@@ -93,12 +111,12 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 // });
 builder.Services.AddDistributedMemoryCache();
 
-// builder.Services.ConfigureApplicationCookie(options =>
-// {
-//     options.LoginPath = "/Identity/Account/Login";
-//     options.AccessDeniedPath = "/Account/AccessDenied"; // Point to the new view
-//     options.LogoutPath = "/Identity/Account/Logout";
-// });
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied"; // Point to the new view
+    options.LogoutPath = "/Identity/Account/Logout";
+});
 
 builder.Services.AddSession(options =>
 {
@@ -108,6 +126,39 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+// app.Use(async (context, next) =>
+// {
+//     // Only check if we are heading to an Identity page
+//     if (context.Request.Path.StartsWithSegments("/Identity"))
+//     {
+//         var viewEngine = context.RequestServices.GetRequiredService<IRazorViewEngine>();
+//         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+//         // These are the names the Identity UI internal code looks for
+//         string[] partialsToTest = { "_LoginPartial", "_Layout", "_ViewStart" };
+
+//         logger.LogInformation("--- Razor Search Path Debug ---");
+//         foreach (var partial in partialsToTest)
+//         {
+//             var result = viewEngine.FindView(new ActionContext(context, new Microsoft.AspNetCore.Routing.RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()), partial, isMainPage: false);
+            
+//             if (result.Success)
+//             {
+//                 logger.LogInformation($"✅ FOUND {partial} at: {result.View.Path}");
+//             }
+//             else
+//             {
+//                 logger.LogWarning($"❌ FAILED to find {partial}. Searched locations:");
+//                 foreach (var location in result.SearchedLocations)
+//                 {
+//                     logger.LogWarning($"   -> {location}");
+//                 }
+//             }
+//         }
+//         logger.LogInformation("--------------------------------");
+//     }
+//     await next();
+// });
 
 app.UseHangfireDashboard();
 
@@ -120,6 +171,7 @@ RecurringJob.AddOrUpdate<MonthlyCompanyFinancialSnapshot>( s => s.CreateCompanyS
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+
 }
 else
 {

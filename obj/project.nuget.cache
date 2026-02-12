@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "tCpe13MHpho=",
+  "dgSpecHash": "ResVMNUblSk=",
   "success": true,
   "projectFilePath": "/home/tx/Projects/DotNet/EaziLease/EaziLease.csproj",
   "expectedPackageFiles": [
@@ -64,6 +64,8 @@
     "/home/tx/.nuget/packages/microsoft.aspnetcore.diagnostics.entityframeworkcore/9.0.11/microsoft.aspnetcore.diagnostics.entityframeworkcore.9.0.11.nupkg.sha512",
     "/home/tx/.nuget/packages/microsoft.aspnetcore.identity.entityframeworkcore/9.0.11/microsoft.aspnetcore.identity.entityframeworkcore.9.0.11.nupkg.sha512",
     "/home/tx/.nuget/packages/microsoft.aspnetcore.identity.ui/9.0.11/microsoft.aspnetcore.identity.ui.9.0.11.nupkg.sha512",
+    "/home/tx/.nuget/packages/microsoft.aspnetcore.mvc.razor.extensions/6.0.0/microsoft.aspnetcore.mvc.razor.extensions.6.0.0.nupkg.sha512",
+    "/home/tx/.nuget/packages/microsoft.aspnetcore.mvc.razor.runtimecompilation/9.0.0/microsoft.aspnetcore.mvc.razor.runtimecompilation.9.0.0.nupkg.sha512",
     "/home/tx/.nuget/packages/microsoft.aspnetcore.razor.language/6.0.24/microsoft.aspnetcore.razor.language.6.0.24.nupkg.sha512",
     "/home/tx/.nuget/packages/microsoft.bcl.asyncinterfaces/7.0.0/microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "/home/tx/.nuget/packages/microsoft.build/17.10.4/microsoft.build.17.10.4.nupkg.sha512",
